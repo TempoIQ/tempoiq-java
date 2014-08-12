@@ -27,7 +27,7 @@ class DataPointCursor implements Cursor<DataPoint> {
       SegmentIterator<Segment<DataPoint>> segments = new SegmentIterator(client, result.getValue(), DataPointSegment.class);
       iterator = new SegmentInnerIterator<DataPoint>(segments);
     } else {
-      throw new TempoDBException(result.getMessage(), result.getCode());
+      throw new TempoIQException(result.getMessage(), result.getCode());
     }
     return iterator;
   }

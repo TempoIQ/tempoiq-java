@@ -236,7 +236,7 @@ public class ReadMultiRollupDataPointsTest {
 
     Cursor<MultiDataPoint> cursor = client.readMultiRollupDataPoints(series, new Interval(start, end), zone, rollup, null);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }

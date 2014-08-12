@@ -144,7 +144,7 @@ public class GetSeriesByFilterTest {
 
     Cursor<Series> cursor = client.getSeries(filter);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }

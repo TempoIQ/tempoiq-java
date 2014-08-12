@@ -37,9 +37,9 @@ import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 
 /**
- *  The main object used to make calls to the TempoDB api.
+ *  The main object used to make calls to the TempoIQ api.
  *
- *  It is a thin wrapper around the <a target="_blank" href="http://tempo-db.com/docs/api/">TempoDB Rest API</a>
+ *  It is a thin wrapper around the <a target="_blank" href="http://tempo-db.com/docs/api/">TempoIQ Rest API</a>
  *
  *  <p>A client object holds the session information required to authenticate and connect to the Rest api. An api key and secret
  *  are required. These can be obtained by signing up at <a href="http://tempo-db.com">http://tempo-db.com</a>. The client
@@ -79,7 +79,7 @@ import static com.tempoiq.util.Preconditions.*;
  *    Cursor&lt;DataPoint&gt; datapoints = client.readDataPoints(new Series("my-key"), new Interval(start, end), DateTimeZone.UTC, rollup);
  *  </pre>
  *
- *  <p>The TempoDB Rest API supports http keep-alive, and the Client object is designed to be thread-safe. It is recommended
+ *  <p>The TempoIQ Rest API supports http keep-alive, and the Client object is designed to be thread-safe. It is recommended
  *  that a Client object be created and then reused for subsequent calls. This help to amoritize the cost of setting up the
  *  http client across many calls.
  */
@@ -292,7 +292,7 @@ public class Client {
    *  @param series The series
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param predicate The predicate for the query.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @since 1.1.0
@@ -308,7 +308,7 @@ public class Client {
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param predicate The predicate for the query.
    *  @param timezone The time zone for the returned datapoints.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @since 1.1.0
@@ -363,7 +363,7 @@ public class Client {
    *  Returns a cursor of series specified by a filter.
    *
    *  @param filter The series filter
-   *  @return A Cursor of Series. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of Series. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see Filter
@@ -599,7 +599,7 @@ public class Client {
    *
    *  @param series The series
    *  @param interval An interval of time for the query (start/end datetimes)
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @since 1.0.0
@@ -614,7 +614,7 @@ public class Client {
    *  @param series The series
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param timezone The time zone for the returned datapoints.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @since 1.0.0
@@ -630,7 +630,7 @@ public class Client {
    *  @param series The series
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param rollup The rollup for the read query. This can be null.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @since 1.0.0
@@ -647,7 +647,7 @@ public class Client {
    *  @param timezone The time zone for the returned datapoints.
    *  @param rollup The rollup for the read query. This can be null.
    *  @param interpolation The interpolation for the read query. This can be null.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @since 1.0.0
@@ -681,7 +681,7 @@ public class Client {
    *  @param series The series
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param rollup The MultiRollup for the read query.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see MultiRollup
@@ -698,7 +698,7 @@ public class Client {
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param timezone The time zone for the returned datapoints.
    *  @param rollup The MultiRollup for the read query.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see MultiRollup
@@ -716,7 +716,7 @@ public class Client {
    *  @param timezone The time zone for the returned datapoints.
    *  @param rollup The MultiRollup for the read query.
    *  @param interpolation The interpolation for the read query. This can be null.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see MultiRollup
@@ -754,7 +754,7 @@ public class Client {
    *  @param filter The series filter
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param aggregation The aggregation for the read query. This is required.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Aggregation
    *  @see Cursor
@@ -775,7 +775,7 @@ public class Client {
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param aggregation The aggregation for the read query. This is required.
    *  @param rollup The rollup for the read query. This can be null.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Aggregation
    *  @see Cursor
@@ -796,7 +796,7 @@ public class Client {
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param timezone The time zone for the returned datapoints.
    *  @param aggregation The aggregation for the read query. This is required.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Aggregation
    *  @see Cursor
@@ -818,7 +818,7 @@ public class Client {
    *  @param aggregation The aggregation for the read query. This is required.
    *  @param rollup The rollup for the read query. This can be null.
    *  @param interpolation The interpolation for the read query. This can be null.
-   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of DataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Aggregation
    *  @see Cursor
@@ -860,7 +860,7 @@ public class Client {
    *
    *  @param filter The series filter
    *  @param interval An interval of time for the query (start/end datetimes)
-   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see Filter
@@ -880,7 +880,7 @@ public class Client {
    *  @param filter The series filter
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param rollup The rollup for the read query. This can be null.
-   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see Filter
@@ -900,7 +900,7 @@ public class Client {
    *  @param filter The series filter
    *  @param interval An interval of time for the query (start/end datetimes)
    *  @param timezone The time zone for the returned datapoints.
-   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see Filter
@@ -922,7 +922,7 @@ public class Client {
    *  @param timezone The time zone for the returned datapoints.
    *  @param rollup The rollup for the read query. This can be null.
    *  @param interpolation The interpolation for the read query. This can be null.
-   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoDBException} if an error occurs while making a request.
+   *  @return A Cursor of MultiDataPoints. The cursor.iterator().next() may throw a {@link TempoIQException} if an error occurs while making a request.
    *
    *  @see Cursor
    *  @see Filter
@@ -1217,7 +1217,7 @@ public class Client {
       HttpParams httpParams = new BasicHttpParams();
       HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_TIMEOUT_MILLIS);
       HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_TIMEOUT_MILLIS);
-      HttpProtocolParams.setUserAgent(httpParams, String.format("tempodb-java/%s", getVersion()));
+      HttpProtocolParams.setUserAgent(httpParams, String.format("tempoiq-java/%s", getVersion()));
 
       DefaultHttpClient defaultClient = new DefaultHttpClient(new PoolingClientConnectionManager(), httpParams);
       defaultClient.getCredentialsProvider().setCredentials(

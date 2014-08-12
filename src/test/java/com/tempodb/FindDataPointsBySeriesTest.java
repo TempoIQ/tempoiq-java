@@ -226,7 +226,7 @@ public class FindDataPointsBySeriesTest {
     Client client = Util.getClient(mockClient);
     Cursor<DataPointFound> cursor = client.findDataPoints(series, interval, predicate, zone);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }

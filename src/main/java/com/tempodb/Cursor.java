@@ -7,7 +7,7 @@ package com.tempoiq;
  *  Note that the returned iterator is not cached, so iterating multiple times requires a
  *  network call.
  *
- *  <p>This iterator will throw a {@link TempoDBException} if an error occurs while retrieving the
+ *  <p>This iterator will throw a {@link TempoIQException} if an error occurs while retrieving the
  *  data.
  *  @since 1.0.0
  */

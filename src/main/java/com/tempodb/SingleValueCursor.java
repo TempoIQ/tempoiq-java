@@ -27,7 +27,7 @@ class SingleValueCursor implements Cursor<SingleValue> {
       SegmentIterator<Segment<SingleValue>> segments = new SegmentIterator(client, result.getValue(), SingleValueSegment.class);
       iterator = new SegmentInnerIterator<SingleValue>(segments);
     } else {
-      throw new TempoDBException(result.getMessage(), result.getCode());
+      throw new TempoIQException(result.getMessage(), result.getCode());
     }
     return iterator;
   }

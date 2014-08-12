@@ -27,7 +27,7 @@ class MultiDataPointCursor implements Cursor<MultiDataPoint> {
       SegmentIterator<Segment<MultiDataPoint>> segments = new SegmentIterator(client, result.getValue(), MultiDataPointSegment.class);
       iterator = new SegmentInnerIterator<MultiDataPoint>(segments);
     } else {
-      throw new TempoDBException(result.getMessage(), result.getCode());
+      throw new TempoIQException(result.getMessage(), result.getCode());
     }
     return iterator;
   }

@@ -250,7 +250,7 @@ public class ReadDataPointsBySeriesTest {
     Client client = Util.getClient(mockClient);
     Cursor<DataPoint> cursor = client.readDataPoints(series, interval, zone, rollup, null);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }

@@ -301,7 +301,7 @@ public class ReadDataPointsByFilterTest {
 
     Cursor<DataPoint> cursor = client.readDataPoints(filter, interval, zone, aggregation);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }

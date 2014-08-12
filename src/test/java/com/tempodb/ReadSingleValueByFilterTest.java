@@ -236,7 +236,7 @@ public class ReadSingleValueByFilterTest {
 
     Cursor<SingleValue> cursor = client.readSingleValue(filter, timestamp, zone, Direction.EXACT);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }

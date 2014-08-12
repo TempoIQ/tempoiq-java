@@ -322,7 +322,7 @@ public class ReadMultiDataPointsTest {
 
     Cursor<MultiDataPoint> cursor = client.readMultiDataPoints(filter, interval, zone);
 
-    thrown.expect(TempoDBException.class);
+    thrown.expect(TempoIQException.class);
     cursor.iterator().next();
   }
 }
