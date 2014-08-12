@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.DataPoint;
+import com.tempoiq.DataPoint;
 
 
 public class DataPointTest {

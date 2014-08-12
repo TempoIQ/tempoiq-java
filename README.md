@@ -6,7 +6,7 @@ Releases are available on our maven server. Ensure that you can pull from maven 
 and add the following dependency to your pom:
 
     <dependency>
-      <groupId>com.tempodb</groupId>
+      <groupId>com.tempoiq</groupId>
       <artifactId>tempodb-java</artifactId>
       <version>1.1.5</version>
     </dependency>

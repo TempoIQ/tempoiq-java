@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,9 +16,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
 import org.joda.time.DateTimeZone;
-import com.tempodb.DataPointFound;
-import com.tempodb.DataPointFoundSegment;
-import com.tempodb.Predicate;
+import com.tempoiq.DataPointFound;
+import com.tempoiq.DataPointFoundSegment;
+import com.tempoiq.Predicate;
 
 
 public class DataPointFoundSegmentModule extends SimpleModule {

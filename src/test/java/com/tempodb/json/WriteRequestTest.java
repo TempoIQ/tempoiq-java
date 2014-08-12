@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 
@@ -8,9 +8,9 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.rules.ExpectedException;
 
-import com.tempodb.DataPoint;
-import com.tempodb.Series;
-import com.tempodb.WriteRequest;
+import com.tempoiq.DataPoint;
+import com.tempoiq.Series;
+import com.tempoiq.WriteRequest;
 
 
 public class WriteRequestTest {

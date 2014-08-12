@@ -1,10 +1,10 @@
-package com.tempodb.http;
+package com.tempoiq.http;
 
 import org.apache.http.HttpResponse;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.Util;
+import com.tempoiq.Util;
 
 
 public class PageLinksTest {

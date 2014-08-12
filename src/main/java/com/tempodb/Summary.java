@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,8 +16,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
-import com.tempodb.json.Json;
-import static com.tempodb.util.Preconditions.*;
+import com.tempoiq.json.Json;
+import static com.tempoiq.util.Preconditions.*;
 
 
 /**

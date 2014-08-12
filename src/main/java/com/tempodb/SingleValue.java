@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -11,8 +11,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.joda.time.DateTime;
 
-import com.tempodb.json.Json;
-import static com.tempodb.util.Preconditions.*;
+import com.tempoiq.json.Json;
+import static com.tempoiq.util.Preconditions.*;
 
 /**
  *  A Series/DataPoint pair for use with the getSingleValue calls

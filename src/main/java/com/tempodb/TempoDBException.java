@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 public class TempoDBException extends RuntimeException {
   private int code = 0;

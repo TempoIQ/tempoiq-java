@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -14,10 +14,10 @@ import org.joda.time.DateTimeZone;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.DataPoint;
-import com.tempodb.Series;
-import com.tempodb.SingleValue;
-import com.tempodb.SingleValueSegment;
+import com.tempoiq.DataPoint;
+import com.tempoiq.Series;
+import com.tempoiq.SingleValue;
+import com.tempoiq.SingleValueSegment;
 
 
 public class SingleValueSegmentTest {

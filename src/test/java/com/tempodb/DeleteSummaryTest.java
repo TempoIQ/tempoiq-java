@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import org.junit.*;
 import static org.junit.Assert.*;

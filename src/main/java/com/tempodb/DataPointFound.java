@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import static com.tempodb.util.Preconditions.*;
+import static com.tempoiq.util.Preconditions.*;
 
 /**
  *  A timestamp/value pair.

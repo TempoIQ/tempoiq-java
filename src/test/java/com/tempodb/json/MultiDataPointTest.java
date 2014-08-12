@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import org.joda.time.DateTimeZone;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.MultiDataPoint;
+import com.tempoiq.MultiDataPoint;
 
 
 public class MultiDataPointTest {

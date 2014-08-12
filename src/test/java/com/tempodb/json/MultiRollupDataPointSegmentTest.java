@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,10 +12,10 @@ import org.joda.time.Period;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.Fold;
-import com.tempodb.MultiDataPoint;
-import com.tempodb.MultiRollup;
-import com.tempodb.MultiRollupDataPointSegment;
+import com.tempoiq.Fold;
+import com.tempoiq.MultiDataPoint;
+import com.tempoiq.MultiRollup;
+import com.tempoiq.MultiRollupDataPointSegment;
 
 
 public class MultiRollupDataPointSegmentTest {

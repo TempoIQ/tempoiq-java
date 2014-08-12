@@ -1,9 +1,9 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static com.tempodb.util.Preconditions.*;
+import static com.tempoiq.util.Preconditions.*;
 import org.apache.http.HttpRequest;
 
 

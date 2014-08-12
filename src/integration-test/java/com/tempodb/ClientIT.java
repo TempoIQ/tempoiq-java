@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +18,7 @@ import org.joda.time.Period;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import static com.tempodb.util.Preconditions.*;
+import static com.tempoiq.util.Preconditions.*;
 
 
 public class ClientIT {

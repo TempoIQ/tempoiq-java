@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 /**
  *  An interface representing an {@link Iterable} of some other model object.

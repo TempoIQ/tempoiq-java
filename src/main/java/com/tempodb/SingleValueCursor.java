@@ -1,11 +1,11 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.net.URI;
 import java.util.Iterator;
 
 import org.apache.http.HttpRequest;
 
-import static com.tempodb.util.Preconditions.*;
+import static com.tempoiq.util.Preconditions.*;
 
 
 class SingleValueCursor implements Cursor<SingleValue> {

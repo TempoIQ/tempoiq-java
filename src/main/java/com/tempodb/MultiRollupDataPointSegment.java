@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -13,9 +13,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.joda.time.DateTimeZone;
 
-import com.tempodb.http.PageLinks;
-import com.tempodb.json.Json;
-import static com.tempodb.util.Preconditions.*;
+import com.tempoiq.http.PageLinks;
+import com.tempoiq.json.Json;
+import static com.tempoiq.util.Preconditions.*;
 
 
 public class MultiRollupDataPointSegment extends Segment<MultiDataPoint> {

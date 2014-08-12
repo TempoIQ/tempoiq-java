@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -6,8 +6,8 @@ import java.util.Arrays;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.MultiStatus;
-import com.tempodb.Status;
+import com.tempoiq.MultiStatus;
+import com.tempoiq.Status;
 
 
 public class MultiStatusTest {

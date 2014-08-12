@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -11,10 +11,10 @@ import org.joda.time.Period;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.DataPoint;
-import com.tempodb.DataPointFound;
-import com.tempodb.DataPointFoundSegment;
-import com.tempodb.Predicate;
+import com.tempoiq.DataPoint;
+import com.tempoiq.DataPointFound;
+import com.tempoiq.DataPointFoundSegment;
+import com.tempoiq.Predicate;
 
 
 public class DataPointFoundSegmentTest {

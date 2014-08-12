@@ -1,8 +1,8 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.net.InetSocketAddress;
 
-import static com.tempodb.util.Preconditions.*;
+import static com.tempoiq.util.Preconditions.*;
 
 /**
  *  A helper class to create Client objects.

@@ -1,10 +1,10 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.tempodb.util.Preconditions.*;
+import static com.tempoiq.util.Preconditions.*;
 
 
 class Segment<T> implements Iterable<T> {

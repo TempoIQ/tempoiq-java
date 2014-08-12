@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,8 +12,8 @@ import java.util.Set;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.Series;
-import com.tempodb.SeriesSegment;
+import com.tempoiq.Series;
+import com.tempoiq.SeriesSegment;
 
 
 public class SeriesSegmentTest {

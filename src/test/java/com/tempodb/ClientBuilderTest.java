@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.net.InetSocketAddress;
 

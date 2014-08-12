@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import org.joda.time.Interval;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.Series;
-import com.tempodb.Summary;
+import com.tempoiq.Series;
+import com.tempoiq.Summary;
 
 
 public class SummaryTest {

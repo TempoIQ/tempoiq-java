@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
-import com.tempodb.SingleValue;
-import com.tempodb.SingleValueSegment;
+import com.tempoiq.SingleValue;
+import com.tempoiq.SingleValueSegment;
 
 
 public class SingleValueSegmentModule extends SimpleModule {

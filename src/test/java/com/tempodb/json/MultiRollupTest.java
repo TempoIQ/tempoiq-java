@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 
@@ -6,8 +6,8 @@ import org.joda.time.Period;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.Fold;
-import com.tempodb.MultiRollup;
+import com.tempoiq.Fold;
+import com.tempoiq.MultiRollup;
 
 
 public class MultiRollupTest {

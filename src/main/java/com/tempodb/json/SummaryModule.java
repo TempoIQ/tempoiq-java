@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,8 +19,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
-import com.tempodb.Series;
-import com.tempodb.Summary;
+import com.tempoiq.Series;
+import com.tempoiq.Summary;
 
 
 public class SummaryModule extends SimpleModule {

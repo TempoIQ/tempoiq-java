@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,8 +33,8 @@ import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.tempodb.json.Json;
-import static com.tempodb.util.Preconditions.*;
+import com.tempoiq.json.Json;
+import static com.tempoiq.util.Preconditions.*;
 
 /**
  *  The main object used to make calls to the TempoDB api.

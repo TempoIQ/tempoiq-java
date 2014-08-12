@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import org.joda.time.Period;
 import org.junit.*;

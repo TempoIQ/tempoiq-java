@@ -1,4 +1,4 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.Status;
+import com.tempoiq.Status;
 
 
 public class StatusTest {

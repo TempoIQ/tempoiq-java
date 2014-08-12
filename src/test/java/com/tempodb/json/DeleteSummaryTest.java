@@ -1,11 +1,11 @@
-package com.tempodb.json;
+package com.tempoiq.json;
 
 import java.io.IOException;
 
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempodb.DeleteSummary;
+import com.tempoiq.DeleteSummary;
 
 
 public class DeleteSummaryTest {

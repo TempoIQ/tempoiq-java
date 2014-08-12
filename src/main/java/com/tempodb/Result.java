@@ -1,4 +1,4 @@
-package com.tempodb;
+package com.tempoiq;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,8 +10,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
-import com.tempodb.MultiStatus;
-import com.tempodb.json.Json;
+import com.tempoiq.MultiStatus;
+import com.tempoiq.json.Json;
 
 
 /**
