@@ -11,16 +11,21 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
+import com.tempoiq.AndSelector;
 import com.tempoiq.AttributesSelector;
 import com.tempoiq.AttributeKeySelector;
 import com.tempoiq.KeySelector;
+import com.tempoiq.OrSelector;
+import com.tempoiq.Selector;
 
 
 public class SelectorModule extends SimpleModule {
   public SelectorModule() {
+    addSerializer(AndSelector.class, new AndSelectorSerializer());
     addSerializer(AttributesSelector.class, new AttributesSelectorSerializer());
     addSerializer(AttributeKeySelector.class, new AttributeKeySelectorSerializer());
     addSerializer(KeySelector.class, new KeySelectorSerializer());
+    addSerializer(OrSelector.class, new OrSelectorSerializer());
   }
 
   private static class KeySelectorSerializer extends StdScalarSerializer<KeySelector> {
@@ -30,7 +35,7 @@ public class SelectorModule extends SimpleModule {
 
     public void serialize(KeySelector selector, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeObjectField(selectorField, selector.getData());
+      jgen.writeObjectField(selectorField, selector.getKey());
       jgen.writeEndObject();
     }
   }
@@ -43,7 +48,7 @@ public class SelectorModule extends SimpleModule {
     public void serialize(AttributesSelector selector, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
       jgen.writeStartObject();
       jgen.writeObjectFieldStart(selectorField);
-      jgen.writeObjectField(selector.getData().getLeft(), selector.getData().getRight());
+      jgen.writeObjectField(selector.getAttributes().getLeft(), selector.getAttributes().getRight());
       jgen.writeEndObject();
       jgen.writeEndObject();
     }
@@ -56,7 +61,39 @@ public class SelectorModule extends SimpleModule {
 
     public void serialize(AttributeKeySelector selector, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeObjectField(selectorField, selector.getData());
+      jgen.writeObjectField(selectorField, selector.getKey());
+      jgen.writeEndObject();
+    }
+  }
+
+  private static class OrSelectorSerializer extends StdScalarSerializer<OrSelector> {
+    private static final String selectorField = "or";
+
+    public OrSelectorSerializer() { super(OrSelector.class); }
+
+    public void serialize(OrSelector selector, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+      jgen.writeStartObject();
+      jgen.writeArrayFieldStart(selectorField);
+      for (Selector child : selector.getChildren()) {
+	jgen.writeRawValue(Json.dumps(child));
+      }
+      jgen.writeEndArray();
+      jgen.writeEndObject();
+    }
+  }
+
+  private static class AndSelectorSerializer extends StdScalarSerializer<AndSelector> {
+    private static final String selectorField = "and";
+
+    public AndSelectorSerializer() { super(AndSelector.class); }
+
+    public void serialize(AndSelector selector, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+      jgen.writeStartObject();
+      jgen.writeArrayFieldStart(selectorField);
+      for (Selector child : selector.getChildren()) {
+	jgen.writeRawValue(Json.dumps(child));
+      }
+      jgen.writeEndArray();
       jgen.writeEndObject();
     }
   }
