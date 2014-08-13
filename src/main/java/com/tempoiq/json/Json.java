@@ -29,6 +29,7 @@ public class Json {
       _mapper.registerModule(new IntervalModule());
       _mapper.registerModule(new MultiDataPointSegmentModule());
       _mapper.registerModule(new MultiRollupDataPointSegmentModule());
+      _mapper.registerModule(new SelectorModule());
       _mapper.registerModule(new SeriesSegmentModule());
       _mapper.registerModule(new SingleValueModule());
       _mapper.registerModule(new SingleValueSegmentModule());
