@@ -100,6 +100,7 @@ public class Client {
   private static final int GENERIC_ERROR_CODE = 600;
   private static final String VERSION = "1.0-SNAPSHOT";
   private static final String API_VERSION = "v1";
+  private static final String API_VERSION2 = "v2";
   private final DateTimeFormatter iso8601 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
   private enum HttpMethod { GET, POST, PUT, DELETE }
@@ -147,6 +148,41 @@ public class Client {
    *  @since 1.0.0
    */
   public String getScheme() { return scheme; }
+
+  /**
+   *  Create a Device
+   *  @param device The Device to create
+   *  @return The created Device
+   *
+   *  @since 1.1.0
+   *  @throws NullPointerException if the input Device is null.
+   */
+  public Result<Device> createDevice(Device device) {
+    checkNotNull(device);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Result<Device> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(device);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<Device>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.POST, body);
+    result = execute(request, Device.class);
+    return result;
+  }
 
   /**
    *  Creates a Series

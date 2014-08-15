@@ -1,6 +1,8 @@
 package com.tempoiq;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +10,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 
+import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 
 public class Device implements Serializable {
@@ -17,8 +22,10 @@ public class Device implements Serializable {
   private Map<String, String> attributes;
   private List<Sensor> sensors;
 
+  private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+
   public Device() {
-    this("", "", new HashMap<String, String>(), new ArrayList());
+    this("", "", new HashMap<String, String>(), new ArrayList<Sensor>());
   }
 
   public Device(String key, String name, Map<String, String> attributes, List<Sensor> sensors) {
@@ -52,6 +59,13 @@ public class Device implements Serializable {
 
   public List<Sensor> getSensors() { return sensors; }
   public void setSensors(List<Sensor> sensors) { this.sensors = sensors; }
+
+  static Device make(HttpResponse response) throws IOException {
+    String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
+    Device device = Json.loads(body, Device.class);
+    return device;
+  }
+
 
   @Override
   public int hashCode() {
