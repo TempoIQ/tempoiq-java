@@ -55,7 +55,6 @@ public class Sensor implements Serializable {
    *
    *  @param key Sensor key
    *  @param name Human readable name for the Sensor
-   *  @param tags Set of tags
    *  @param attributes Map of key/value pair metadata
    *  @since 1.0.0
    */
