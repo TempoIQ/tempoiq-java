@@ -73,4 +73,15 @@ public class SelectorTest {
     String expected = "{\"or\":[{\"and\":[{\"attribute\":\"building\"},{\"attributes\":{\"region\":\"northwest\"}}]},{\"key\":\"building-123\"}]}";
     assertEquals(expected, Json.dumps(compoundSelector));
   }
+
+  @Test
+  public void testSelectorInterface() throws IOException {
+    Selector compoundSelector = Selector.or(
+      Selector.and(
+	Selector.attributeKey("building"),
+	Selector.attributes("region", "northwest")),
+      Selector.key("building-123"));
+    String expected = "{\"or\":[{\"and\":[{\"attribute\":\"building\"},{\"attributes\":{\"region\":\"northwest\"}}]},{\"key\":\"building-123\"}]}";
+    assertEquals(expected, Json.dumps(compoundSelector));
+  }
 }
