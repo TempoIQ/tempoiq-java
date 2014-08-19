@@ -8,7 +8,7 @@ import com.tempoiq.SelectorType;
 import com.tempoiq.analytics.Grouping;
 import com.tempoiq.analytics.Pipeline;
 import com.tempoiq.analytics.PipelineCombine;
-import com.tempoiq.analytics.operations.AggregateOperation;
+import com.tempoiq.analytics.operations.AggregateOperations;
 
 
 public class Sandbox {
@@ -36,7 +36,7 @@ public class Sandbox {
 	Pipeline pipe1 = Pipeline.selectSensor("frequency")
 			.inRange(58, 62)
 			.not()
-			.aggregate(AggregateOperation.SUM, Grouping.deviceAttribute("installation"))
+			.aggregate(AggregateOperations.SUM, Grouping.deviceAttribute("installation"))
 			.gt(2);
 			
 	
@@ -45,9 +45,10 @@ public class Sandbox {
 	 * Example 2: 
 	 */
 
-	Pipeline pipe2 = PipelineCombine.and(
+	Pipeline pipe2 = PipelineCombine.and(Grouping.DEVICE,
 			Pipeline.selectSensor("dcPower").gt(10),
-			PipelineCombine.divide(Pipeline.selectSensor("acPower"), 
+			PipelineCombine.divide(Grouping.DEVICE,
+					Pipeline.selectSensor("acPower"), 
 					Pipeline.selectSensor("dcPower"))
 					.lt(0.8)
 			)
@@ -60,9 +61,10 @@ public class Sandbox {
 	If a panel's AC power is 20% below the installation's average for 30 minutes, send an alert.
 	*/
 	
-	Pipeline pipe3 = PipelineCombine.relativeDifference(Pipeline.selectSensor("acPower"),
+	Pipeline pipe3 = PipelineCombine.relativeDifference(Grouping.DEVICE,
+			Pipeline.selectSensor("acPower"),
 			Pipeline.selectSensor("acPower")
-					.aggregate(AggregateOperation.MEAN, Grouping.deviceAttribute("installation"))
+					.aggregate(AggregateOperations.MEAN, Grouping.deviceAttribute("installation"))
 			)
 			.holdTrue(Period.minutes(30));
 	

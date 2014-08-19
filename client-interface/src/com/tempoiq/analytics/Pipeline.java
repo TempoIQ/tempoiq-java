@@ -3,8 +3,8 @@ package com.tempoiq.analytics;
 import org.joda.time.Period;
 
 import com.tempoiq.Selector;
-import com.tempoiq.analytics.operations.AggregateOperation;
-import com.tempoiq.analytics.operations.CombineOperation;
+import com.tempoiq.analytics.operations.AggregateOperations;
+import com.tempoiq.analytics.operations.CombineOperations;
 import com.tempoiq.analytics.operations.PipelineOperation;
 import com.tempoiq.analytics.operations.Rollup;
 import com.tempoiq.analytics.operations.RollupFold;
@@ -63,7 +63,7 @@ public class Pipeline {
 	 * @param pipes
 	 * @return
 	 */
-	public static Pipeline combine(CombineOperation op, Grouping grp, Pipeline... pipes) {
+	public static Pipeline combine(CombineOperations op, Grouping grp, Pipeline... pipes) {
 		return null;
 	}
 	
@@ -84,7 +84,7 @@ public class Pipeline {
 	 * @param join
 	 * @return
 	 */
-	public Pipeline aggregate(AggregateOperation op, Grouping grp) {
+	public Pipeline aggregate(AggregateOperations op, Grouping grp) {
 		return null;
 	}
 	
