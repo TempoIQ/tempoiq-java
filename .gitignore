@@ -1,2 +1,5 @@
 /target
 integration-credentials.properties
+/.settings
+.classpath
+.project

@@ -2,9 +2,9 @@ package com.tempoiq.analytics;
 
 import org.joda.time.Period;
 
-import com.tempoiq.Selector;
 import com.tempoiq.analytics.operations.AggregateOperations;
 import com.tempoiq.analytics.operations.CombineOperations;
+import com.tempoiq.analytics.operations.InterpolationFunction;
 import com.tempoiq.analytics.operations.PipelineOperation;
 import com.tempoiq.analytics.operations.Rollup;
 import com.tempoiq.analytics.operations.RollupFold;
@@ -19,16 +19,19 @@ public class Pipeline {
 		return null;
 	}
 	
+	/*
 	public static Pipeline select(Selector sel) {
 		return null;
 	}
-	
+	*/
 
 	
-
+	public Pipeline interpolate(InterpolationFunction fn, Period period) {
+		return null;
+	}
 	
-	public Pipeline rollup(Period period, RollupFold fold) {
-		return this.then(new Rollup(period, fold));
+	public Pipeline rollup(Period per, RollupFold fold) {
+		return this.then(new Rollup(per, fold));
 	}
 	
 	public Pipeline exponentialMovingAverage(Period period) {
@@ -43,6 +46,7 @@ public class Pipeline {
 		return null;
 	}
 	
+	/*
 	public Pipeline inRange(double lower, double upper) {
 		return null;
 	}
@@ -54,6 +58,7 @@ public class Pipeline {
 	public Pipeline holdTrue(Period p) {
 		return null;
 	}
+	*/
 	
 	/**
 	 * General form for applying combine operations
