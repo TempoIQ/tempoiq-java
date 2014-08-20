@@ -60,6 +60,10 @@ public class Pipeline {
 	}
 	*/
 	
+	public Pipeline fanout(Pipeline... pipelines) {
+		return null;
+	}
+	
 	/**
 	 * General form for applying combine operations
 	 * 

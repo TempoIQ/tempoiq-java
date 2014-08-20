@@ -2,13 +2,19 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import com.tempoiq.Client;
+import com.tempoiq.DataPoint;
 import com.tempoiq.Response;
 import com.tempoiq.Selector;
 import com.tempoiq.SelectorType;
 import com.tempoiq.analytics.Grouping;
 import com.tempoiq.analytics.Pipeline;
 import com.tempoiq.analytics.PipelineCombine;
+import com.tempoiq.analytics.ResultSet;
+import com.tempoiq.analytics.Row;
+import com.tempoiq.analytics.Stream;
+import com.tempoiq.analytics.StreamMetadata;
 import com.tempoiq.analytics.operations.AggregateOperations;
+import com.tempoiq.analytics.operations.RollupFold;
 
 
 public class Sandbox {
@@ -24,7 +30,7 @@ public class Sandbox {
 			Selector.matchAttribute(SelectorType.DEVICE, "type", "thermostat"));
 	
 	
-	Response resp = clie.read(sel, start, end);
+	ResultSet resp = clie.read(sel, start, end);
 	
 	
 	/*
@@ -67,5 +73,62 @@ public class Sandbox {
 					.aggregate(AggregateOperations.MEAN, Grouping.deviceAttribute("installation"))
 			)
 			.holdTrue(Period.minutes(30));
+	
+	/* example 4: multi rollup for a sensor 
+	 * 
+	 */
+	
+	Pipeline pipe4 = Pipeline.selectSensor("temperature")
+			.fanout(Pipeline.all().rollup(Period.days(1), RollupFold.MAX),	// { device: { key: "asdf", attributes: { "k": "v" } }, 
+																			//   sensor: { key: "asdf", attributes: { "k": "v" } },
+																			//   
+					Pipeline.all().rollup(Period.days(1), RollupFold.MIN),
+					Pipeline.all().rollup(Period.days(1), RollupFold.MEAN));
+	
+	/*
+	 * Accessing returned data
+	 */
+	
+	/*
+	 * { device: { key: "dev1",
+	 * 			   attributes: { "key1": "val1" } }
+	 *   sensor: { key: "temp" }
+	 *   extraContext: { rollup: "mean" } }
+	 * 
+	 */
+	
+	ResultSet res = clie.read(selection, start, end); // Stream of values from 2 sensors on a device
+
+	// Iterating stream-first
+	for (Stream str : res.getAllStreams()) {
+		System.out.printf("Stream from device %s, sensor %s\n", 
+				str.getMetadata().getKey(SelectorType.DEVICE), str.getMetadata().getKey(SelectorType.SENSOR));
+		for (DataPoint dp : str) {
+			System.out.printf("t: %s, v: %d\n", dp.getTimestamp(), dp.getValue());
+		}
+	}
+	
+	// Retreiving one sensor
+	Stream voltage = res.fromSensor("voltage");
+	for (DataPoint dp : voltage) {
+		// blah blah
+	}
+	
+	// Iterating row-first
+	for (Row row : res.getRows()) {
+		System.out.printf("t: %s\n");
+		for (StreamMetadata stream : row.getStreams()) {
+			System.out.printf("sensor: %s, value: %d\n", 
+					stream.getKey(SelectorType.SENSOR), row.get(stream));
+		}
+	}
+
+	
+	
+	Response res2 = null;	// Hourly power for all houses in a neighborhood (~10)
+	
+
+	
+	
 	
 }
