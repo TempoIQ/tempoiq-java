@@ -1027,7 +1027,7 @@ public class Client {
   }
 
   /**
-   *  Writes datapoints to multiple Series.
+   *  Writes datapoints to multiple Devices and Series.
    *
    *  <p>This request can partially succeed. You should check the {@link Result#getState()} to check if the request was
    *  successful. If the request was partially successful, the result's {@link MultiStatus} can be inspected to determine
@@ -1045,7 +1045,7 @@ public class Client {
 
     URI uri = null;
     try {
-      URIBuilder builder = new URIBuilder(String.format("/%s/multi/", API_VERSION));
+      URIBuilder builder = new URIBuilder(String.format("/%s/write/", API_VERSION2));
       uri = builder.build();
     } catch (URISyntaxException e) {
       String message = "Could not build URI.";
@@ -1055,7 +1055,7 @@ public class Client {
     Result<Void> result = null;
     String body = null;
     try {
-      body = Json.dumps(request);
+      body = Json.dumps(request.asMap());
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<Void>(null, GENERIC_ERROR_CODE, message);

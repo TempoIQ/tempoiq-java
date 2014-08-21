@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 import org.junit.rules.ExpectedException;
 
 import com.tempoiq.WritableDataPoint;
+import com.tempoiq.Device;
 import com.tempoiq.Series;
 
 
@@ -22,7 +23,7 @@ public class WritableDataPointTest {
   @Test
   public void testSerialize() throws IOException {
     DateTimeZone zone = DateTimeZone.UTC;
-    WritableDataPoint datapoint = new WritableDataPoint(new Series("key1"),new DateTime(2012, 1, 1, 0, 0, 1, 0, timezone), 12.34);
+    WritableDataPoint datapoint = new WritableDataPoint(new Device("key1"), new Series("key1"),new DateTime(2012, 1, 1, 0, 0, 1, 0, timezone), 12.34);
 
     String expected = "{\"key\":\"key1\",\"t\":\"2012-01-01T00:00:01.000Z\",\"v\":12.34}";
     assertEquals(expected, Json.dumps(datapoint));

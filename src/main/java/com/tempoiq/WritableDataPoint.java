@@ -16,7 +16,7 @@ import static com.tempoiq.util.Preconditions.*;
  *  @since 1.0.0
  */
 public class WritableDataPoint implements Serializable {
-
+  private Device device;
   private Series series;
   private DateTime timestamp;
   private Number value;
@@ -25,7 +25,7 @@ public class WritableDataPoint implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public WritableDataPoint() {
-    this(new Series(""), new DateTime(), 0.0);
+    this(new Device(""), new Series(""), new DateTime(), 0.0);
   }
 
   /**
@@ -35,11 +35,26 @@ public class WritableDataPoint implements Serializable {
    *  @param value Value for the DataPoint
    *  @since 1.0.0
    */
-  public WritableDataPoint(Series series, DateTime timestamp, Number value) {
+  public WritableDataPoint(Device device, Series series, DateTime timestamp, Number value) {
+    this.device = checkNotNull(device);
     this.series = checkNotNull(series);
     this.timestamp = checkNotNull(timestamp);
     this.value = checkNotNull(value);
   }
+
+  /**
+   *  Returns the {@link Device} of this WritableDataPoint.
+   *  @return the {@link Device}
+   *  @since 1.1.0
+   */
+  public Device getDevice() { return device; }
+
+  /**
+   *  Sets the {@link Device} of this WritableDataPoint.
+   *  @param series The {@link Device}
+   *  @since 1.1.0
+   */
+  public void setDevice(Device device) { this.device = checkNotNull(device); }
 
   /**
    *  Returns the {@link Series} of this WritableDataPoint.

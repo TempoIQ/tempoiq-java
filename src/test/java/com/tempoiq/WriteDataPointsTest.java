@@ -22,17 +22,14 @@ import org.mockito.ArgumentCaptor;
 
 public class WriteDataPointsTest {
 
-  private static final String json = "[" +
-    "{\"key\":\"key1\",\"t\":\"2012-03-27T05:00:00.000Z\",\"v\":12.34}," +
-    "{\"key\":\"key2\",\"t\":\"2012-03-27T05:01:00.000Z\",\"v\":23.45}" +
-  "]";
-
+  private static final String json = "{" +
+    "\"key1\":{\"key1\":[{\"t\":\"2012-03-27T05:00:00.000Z\",\"v\":12.34}]}" +
+    "}";
   private static final String multistatus_json = "{\"multistatus\":[{\"status\":403,\"messages\":[\"Forbidden\"]}]}";
 
   private static final DateTimeZone timezone = DateTimeZone.UTC;
   private static final WriteRequest wr = new WriteRequest()
-    .add(new Series("key1"), new DataPoint(new DateTime(2012, 3, 27, 5, 0, 0, 0, timezone), 12.34))
-    .add(new Series("key2"), new DataPoint(new DateTime(2012, 3, 27, 5, 1, 0, 0, timezone), 23.45));
+    .add(new Device("key1"), new Series("key1"), new DataPoint(new DateTime(2012, 3, 27, 5, 0, 0, 0, timezone), 12.34));
 
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
@@ -69,7 +66,7 @@ public class WriteDataPointsTest {
 
     HttpRequest request = Util.captureRequest(mockClient);
     URI uri = new URI(request.getRequestLine().getUri());
-    assertEquals("/v1/multi/", uri.getPath());
+    assertEquals("/v2/write/", uri.getPath());
   }
 
   @Test

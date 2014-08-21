@@ -1,7 +1,9 @@
 package com.tempoiq;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -28,14 +30,14 @@ public class WriteRequest implements Iterable<WritableDataPoint> {
   }
 
   /**
-   *  Adds a DataPoint to the request for a Series.
+   *  Adds a DataPoint to the request for a Device and Series.
    *  @param series The Series to write to.
    *  @param datapoint The DataPoint to write.
    *  @return The updated request.
    *  @since 1.0.0
    */
-  public WriteRequest add(Series series, DataPoint datapoint) {
-    WritableDataPoint mdp = new WritableDataPoint(series, datapoint.getTimestamp(), datapoint.getValue());
+  public WriteRequest add(Device device, Series series, DataPoint datapoint) {
+    WritableDataPoint mdp = new WritableDataPoint(device, series, datapoint.getTimestamp(), datapoint.getValue());
     data.add(mdp);
     return this;
   }
@@ -47,12 +49,31 @@ public class WriteRequest implements Iterable<WritableDataPoint> {
    *  @return The updated request.
    *  @since 1.0.0
    */
-  public WriteRequest add(Series series, List<DataPoint> datapoints) {
+  public WriteRequest add(Device device, Series series, List<DataPoint> datapoints) {
     for(DataPoint datapoint : datapoints) {
-      WritableDataPoint mdp = new WritableDataPoint(series, datapoint.getTimestamp(), datapoint.getValue());
+      WritableDataPoint mdp = new WritableDataPoint(device, series, datapoint.getTimestamp(), datapoint.getValue());
       data.add(mdp);
     }
     return this;
+  }
+
+  public Map<String, Map<String, List<DataPoint>>> asMap() {
+    Map<String, Map<String, List<DataPoint>>> devices = new HashMap<String, Map<String, List<DataPoint>>>();
+    for(WritableDataPoint dp : data) {
+      Map<String, List<DataPoint>> sensorMap = devices.get(dp.getDevice().getKey());
+      if (sensorMap == null) {
+	sensorMap = new HashMap<String, List<DataPoint>>();
+	devices.put(dp.getDevice().getKey(), sensorMap);
+      }
+      List<DataPoint> points = sensorMap.get(dp.getSeries().getKey());
+      if (points == null) {
+	points = new ArrayList<DataPoint>();
+	sensorMap.put(dp.getSeries().getKey(), points);
+      }
+      points.add(new DataPoint(dp.getTimestamp(), dp.getValue()));
+    }
+
+    return devices;
   }
 
   @Override
