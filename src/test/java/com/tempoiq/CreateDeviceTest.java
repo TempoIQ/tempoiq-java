@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -18,12 +19,12 @@ import static org.mockito.Mockito.*;
 import org.mockito.ArgumentCaptor;
 
 
-public class CreateSeriesTest {
+public class CreateDeviceTest {
 
-  private static final String json = "{\"id\":\"id1\",\"key\":\"key1\",\"name\":\"name1\",\"tags\":[],\"attributes\":{}}";
-  private static final String body = "{\"key\":\"key1\",\"name\":\"name1\",\"tags\":[],\"attributes\":{}}";
-  private static final Series series = new Series("key1", "name1", new HashSet<String>(), new HashMap<String, String>());
-  private static final Series series1 = new Series("key1", "name1", new HashSet<String>(), new HashMap<String, String>());
+  private static final String json = "{\"key\":\"key1\",\"name\":\"name1\",\"attributes\":{},\"sensors\":[]}";
+  private static final String body = "{\"key\":\"key1\",\"name\":\"name1\",\"attributes\":{},\"sensors\":[]}";
+  private static final Device device = new Device("key1", "name1", new HashMap<String, String>(), new ArrayList<Sensor>());
+  private static final Device device1 = new Device("key1", "name1", new HashMap<String, String>(), new ArrayList<Sensor>());
 
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
@@ -32,9 +33,9 @@ public class CreateSeriesTest {
     HttpResponse response = Util.getResponse(200, json);
     Client client = Util.getClient(response);
 
-    Result<Series> result = client.createSeries(series);
+    Result<Device> result = client.createDevice(device);
 
-    assertEquals(series1, result.getValue());
+    assertEquals(device1, result.getValue());
   }
 
   @Test
@@ -43,7 +44,7 @@ public class CreateSeriesTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Series> result = client.createSeries(series);
+    Result<Device> result = client.createDevice(device);
 
     HttpRequest request = Util.captureRequest(mockClient);
     assertEquals("POST", request.getRequestLine().getMethod());
@@ -55,11 +56,11 @@ public class CreateSeriesTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Series> result = client.createSeries(series);
+    Result<Device> result = client.createDevice(device);
 
     HttpRequest request = Util.captureRequest(mockClient);
     URI uri = new URI(request.getRequestLine().getUri());
-    assertEquals("/v1/series/", uri.getPath());
+    assertEquals("/v2/devices/", uri.getPath());
   }
 
   @Test
@@ -68,7 +69,7 @@ public class CreateSeriesTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Series> result = client.createSeries(series);
+    Result<Device> result = client.createDevice(device);
 
     ArgumentCaptor<HttpPost> argument = ArgumentCaptor.forClass(HttpPost.class);
     verify(mockClient).execute(any(HttpHost.class), argument.capture(), any(HttpContext.class));
