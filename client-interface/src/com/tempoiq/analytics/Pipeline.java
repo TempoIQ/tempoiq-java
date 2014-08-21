@@ -97,4 +97,8 @@ public class Pipeline {
 		return null;
 	}
 	
+	public Pipeline aggregateAll(AggregateOperations op) {
+		return null;
+	}
+	
 }
