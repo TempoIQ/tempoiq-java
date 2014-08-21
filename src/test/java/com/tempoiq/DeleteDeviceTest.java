@@ -10,8 +10,8 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 
-public class DeleteSeriesTest {
-  private static final Series series = new Series("key1");
+public class DeleteDeviceTest {
+  private static final Device device = new Device("key1");
 
   @Test
   public void smokeTest() throws IOException {
@@ -19,7 +19,7 @@ public class DeleteSeriesTest {
     Client client = Util.getClient(response);
 
     Result<Void> expected = new Result<Void>(null, 200, "OK");
-    Result<Void> result = client.deleteSeries(series);
+    Result<Void> result = client.deleteDevice(device);
     assertEquals(expected, result);
   }
 
@@ -29,7 +29,7 @@ public class DeleteSeriesTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Void> result = client.deleteSeries(series);
+    Result<Void> result = client.deleteDevice(device);
 
     HttpRequest request = Util.captureRequest(mockClient);
     assertEquals("DELETE", request.getRequestLine().getMethod());
@@ -41,10 +41,10 @@ public class DeleteSeriesTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Void> result = client.deleteSeries(series);
+    Result<Void> result = client.deleteDevice(device);
 
     HttpRequest request = Util.captureRequest(mockClient);
     URI uri = new URI(request.getRequestLine().getUri());
-    assertEquals("/v1/series/key/key1/", uri.getPath());
+    assertEquals("/v2/devices/key1/", uri.getPath());
   }
 }
