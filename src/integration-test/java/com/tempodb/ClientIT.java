@@ -77,15 +77,15 @@ public class ClientIT {
   }
 
   static public void cleanup() {
-    /* Delete all datapoints all series */
-    // Cursor<Series> cursor = client.getSeries(new Filter());
-    // for(Series series : cursor) {
-    //   Result<Void> result = client.deleteDataPoints(series, interval);
+    /* Delete all datapoints all sensor */
+    // Cursor<Sensor> cursor = client.getSensor(new Filter());
+    // for(Sensor sensor : cursor) {
+    //   Result<Void> result = client.deleteDataPoints(sensor, interval);
     //   assertEquals(State.SUCCESS, result.getState());
     // }
 
-    // /* Delete all series */
-    // Result<DeleteSummary> result = client.deleteAllSeries();
+    // /* Delete all sensor */
+    // Result<DeleteSummary> result = client.deleteAllSensor();
     // assertEquals(State.SUCCESS, result.getState());
   }
 
@@ -111,41 +111,41 @@ public class ClientIT {
   }
 
   // @Test
-  // public void testDeleteDataPointsBySeries() throws InterruptedException {
+  // public void testDeleteDataPointsBySensor() throws InterruptedException {
   //   // Write datapoints
   //   DataPoint dp = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 12.34);
-  //   Result<Void> result1 = client.writeDataPoints(new Series("key1"), Arrays.asList(dp));
+  //   Result<Void> result1 = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp));
   //   assertEquals(State.SUCCESS, result1.getState());
   //   Thread.sleep(SLEEP);
 
   //   // Read datapoints
   //   List<DataPoint> expected1 = Arrays.asList(dp);
-  //   Cursor<DataPoint> cursor1 = client.readDataPoints(new Series("key1"), interval, timezone);
+  //   Cursor<DataPoint> cursor1 = client.readDataPoints(new Sensor("key1"), interval, timezone);
   //   assertEquals(expected1, toList(cursor1));
 
   //   // Delete datapoints
-  //   Result<Void> result2 = client.deleteDataPoints(new Series("key1"), interval);
+  //   Result<Void> result2 = client.deleteDataPoints(new Sensor("key1"), interval);
   //   assertEquals(new Result<Void>(null, 200, "OK"), result2);
 
   //   // Read datapoints again
   //   List<DataPoint> expected2 = new ArrayList<DataPoint>();
-  //   Cursor<DataPoint> cursor2 = client.readDataPoints(new Series("key1"), interval, timezone);
+  //   Cursor<DataPoint> cursor2 = client.readDataPoints(new Sensor("key1"), interval, timezone);
   //   assertEquals(expected2, toList(cursor2));
   // }
 
   // @Test
-  // public void testWriteDataPointBySeries() {
+  // public void testWriteDataPointBySensor() {
   //   DataPoint dp = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 12.34);
-  //   Result<Void> result = client.writeDataPoints(new Series("key1"), Arrays.asList(dp));
+  //   Result<Void> result = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp));
   //   assertEquals(State.SUCCESS, result.getState());
   // }
 
   // @Test
-  // public void testFindDataPointBySeries() throws InterruptedException {
+  // public void testFindDataPointBySensor() throws InterruptedException {
   //   DataPoint dp1 = new DataPoint(new DateTime(2012, 1, 2, 0, 0 ,0, 0, timezone), 23.45);
   //   DataPoint dp2 = new DataPoint(new DateTime(2012, 1, 2, 1, 0 ,0, 0, timezone), 34.56);
 
-  //   Result<Void> result = client.writeDataPoints(new Series("key-find"), Arrays.asList(dp1, dp2));
+  //   Result<Void> result = client.writeDataPoints(new Sensor("key-find"), Arrays.asList(dp1, dp2));
   //   assertEquals(State.SUCCESS, result.getState());
   //   Thread.sleep(SLEEP);
 
@@ -156,7 +156,7 @@ public class ClientIT {
   //   DataPointFound dpf1 = new DataPointFound(interval, dp2);
 
   //   List<DataPointFound> expected = Arrays.asList(dpf1);
-  //   Cursor<DataPointFound> cursor = client.findDataPoints(new Series("key-find"), new Interval(start, end), predicate, timezone);
+  //   Cursor<DataPointFound> cursor = client.findDataPoints(new Sensor("key-find"), new Interval(start, end), predicate, timezone);
   //   assertEquals(expected, toList(cursor));
   // }
 
@@ -165,7 +165,7 @@ public class ClientIT {
   //   DataPoint dp1 = new DataPoint(new DateTime(2012, 1, 2, 0, 0 ,0, 0, timezone), 23.45);
   //   DataPoint dp2 = new DataPoint(new DateTime(2012, 1, 2, 1, 0 ,0, 0, timezone), 34.56);
 
-  //   Result<Void> result = client.writeDataPoints(new Series("key1"), Arrays.asList(dp1, dp2));
+  //   Result<Void> result = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp1, dp2));
   //   assertEquals(State.SUCCESS, result.getState());
   //   Thread.sleep(SLEEP);
 
@@ -173,7 +173,7 @@ public class ClientIT {
   //   DateTime end = new DateTime(2012, 1, 3, 0, 0, 0, 0, timezone);
 
   //   List<DataPoint> expected = Arrays.asList(dp1, dp2);
-  //   Cursor<DataPoint> cursor = client.readDataPoints(new Series("key1"), new Interval(start, end), timezone);
+  //   Cursor<DataPoint> cursor = client.readDataPoints(new Sensor("key1"), new Interval(start, end), timezone);
   //   assertEquals(expected, toList(cursor));
   // }
 
@@ -182,24 +182,24 @@ public class ClientIT {
   //   DataPoint dp1 = new DataPoint(new DateTime(2012, 1, 2, 0, 0 ,0, 0, timezone), 23.45);
   //   DataPoint dp2 = new DataPoint(new DateTime(2012, 1, 2, 1, 0 ,0, 0, timezone), 34.56);
 
-  //   Result<Void> result = client.writeDataPoints(new Series("key1"), Arrays.asList(dp1, dp2));
+  //   Result<Void> result = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp1, dp2));
   //   assertEquals(State.SUCCESS, result.getState());
   //   Thread.sleep(SLEEP);
 
   //   DateTime ts = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
 
-  //   SingleValue expected = new SingleValue(new Series("key1"), new DataPoint(ts, 23.45));
-  //   Result<SingleValue> value = client.readSingleValue(new Series("key1"), ts, timezone, Direction.EXACT);
+  //   SingleValue expected = new SingleValue(new Sensor("key1"), new DataPoint(ts, 23.45));
+  //   Result<SingleValue> value = client.readSingleValue(new Sensor("key1"), ts, timezone, Direction.EXACT);
   //   assertEquals(expected, value.getValue());
   // }
 
   // @Test
   // public void testReadMultiDataPoints() throws InterruptedException {
   //   WriteRequest wr = new WriteRequest()
-  //     .add(new Series("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 5.0))
-  //     .add(new Series("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 6.0))
-  //     .add(new Series("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 7.0))
-  //     .add(new Series("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 8.0));
+  //     .add(new Sensor("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 5.0))
+  //     .add(new Sensor("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 6.0))
+  //     .add(new Sensor("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 7.0))
+  //     .add(new Sensor("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 8.0));
 
   //   Result<Void> result1 = client.writeDataPoints(wr);
   //   assertEquals(new Result<Void>(null, 200, "OK"), result1);
@@ -231,7 +231,7 @@ public class ClientIT {
   //   DataPoint dp1 = new DataPoint(new DateTime(2012, 1, 2, 0, 0 ,0, 0, timezone), 23.45);
   //   DataPoint dp2 = new DataPoint(new DateTime(2012, 1, 2, 1, 0 ,0, 0, timezone), 34.56);
 
-  //   Result<Void> result = client.writeDataPoints(new Series("key1"), Arrays.asList(dp1, dp2));
+  //   Result<Void> result = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp1, dp2));
   //   assertEquals(State.SUCCESS, result.getState());
   //   Thread.sleep(SLEEP);
 
@@ -239,7 +239,7 @@ public class ClientIT {
   //   DateTime end = new DateTime(2012, 1, 3, 0, 0, 0, 0, timezone);
   //   MultiRollup rollup = new MultiRollup(Period.days(1), new Fold[] { Fold.MAX, Fold.MIN });
 
-  //   Cursor<MultiDataPoint> cursor = client.readMultiRollupDataPoints(new Series("key1"), new Interval(start, end), timezone, rollup);
+  //   Cursor<MultiDataPoint> cursor = client.readMultiRollupDataPoints(new Sensor("key1"), new Interval(start, end), timezone, rollup);
 
   //   Map<String, Number> data1 = new HashMap<String, Number>();
   //   data1.put("max", 34.56);
@@ -254,10 +254,10 @@ public class ClientIT {
   // @Test
   // public void testWriteDataPoints() throws InterruptedException {
   //   WriteRequest wr = new WriteRequest()
-  //     .add(new Series("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 5.0))
-  //     .add(new Series("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 6.0))
-  //     .add(new Series("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 7.0))
-  //     .add(new Series("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 2, 0, 0, timezone), 8.0));
+  //     .add(new Sensor("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 5.0))
+  //     .add(new Sensor("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 6.0))
+  //     .add(new Sensor("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 7.0))
+  //     .add(new Sensor("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 2, 0, 0, timezone), 8.0));
 
   //   Thread.sleep(SLEEP);
 
@@ -268,10 +268,10 @@ public class ClientIT {
   // @Test
   // public void testReadDataPoints() throws InterruptedException {
   //   WriteRequest wr = new WriteRequest()
-  //     .add(new Series("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 5.0))
-  //     .add(new Series("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 6.0))
-  //     .add(new Series("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 7.0))
-  //     .add(new Series("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 8.0));
+  //     .add(new Sensor("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 5.0))
+  //     .add(new Sensor("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 6.0))
+  //     .add(new Sensor("key1"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 7.0))
+  //     .add(new Sensor("key2"), new DataPoint(new DateTime(2012, 1, 1, 0, 1, 0, 0, timezone), 8.0));
 
   //   Result<Void> result1 = client.writeDataPoints(wr);
   //   assertEquals(new Result<Void>(null, 200, "OK"), result1);
@@ -291,98 +291,98 @@ public class ClientIT {
   // }
 
   // @Test
-  // public void testGetSeriesByKey() {
-  //   // Create a series
+  // public void testGetSensorByKey() {
+  //   // Create a sensor
   //   HashMap<String, String> attributes = new HashMap<String, String>();
   //   attributes.put("appidÜ", "1234");
   //   attributes.put("txn", "/def ault");
 
-  //   Series series = new Series("appidÜ:1234.txn:/def ault.cou+()+={}nt", "name", new HashSet<String>(), attributes);
-  //   Result<Series> result1 = client.createSeries(series);
+  //   Sensor sensor = new Sensor("appidÜ:1234.txn:/def ault.cou+()+={}nt", "name", new HashSet<String>(), attributes);
+  //   Result<Sensor> result1 = client.createSensor(sensor);
 
-  //   // Get the series
-  //   Result<Series> result2 = client.getSeries("appidÜ:1234.txn:/def ault.cou+()+={}nt");
-  //   Result<Series> expected = new Result<Series>(series, 200, "OK");
+  //   // Get the sensor
+  //   Result<Sensor> result2 = client.getSensor("appidÜ:1234.txn:/def ault.cou+()+={}nt");
+  //   Result<Sensor> expected = new Result<Sensor>(sensor, 200, "OK");
   //   assertEquals(expected, result2);
   // }
 
   // @Test
-  // public void testGetSeriesByFilter() {
-  //   // Create a series
+  // public void testGetSensorByFilter() {
+  //   // Create a sensor
   //   HashSet<String> tags = new HashSet<String>();
   //   tags.add("get-filter");
-  //   Series series = new Series("create-series", "name", tags, new HashMap<String, String>());
-  //   Result<Series> result1 = client.createSeries(series);
+  //   Sensor sensor = new Sensor("create-sensor", "name", tags, new HashMap<String, String>());
+  //   Result<Sensor> result1 = client.createSensor(sensor);
 
-  //   // Get the series by filter
+  //   // Get the sensor by filter
   //   Filter filter = new Filter();
   //   filter.addTag("get-filter");
-  //   Cursor<Series> cursor = client.getSeries(filter);
-  //   List<Series> expected = Arrays.asList(series);
+  //   Cursor<Sensor> cursor = client.getSensor(filter);
+  //   List<Sensor> expected = Arrays.asList(sensor);
   //   assertEquals(expected, toList(cursor));
   // }
 
   // @Test
-  // public void testUpdateSeries() {
-  //   // Create a series
+  // public void testUpdateSensor() {
+  //   // Create a sensor
   //   HashSet<String> tags = new HashSet<String>();
   //   tags.add("update");
-  //   Series series = new Series("update-series", "name", tags, new HashMap<String, String>());
-  //   Result<Series> result1 = client.createSeries(series);
+  //   Sensor sensor = new Sensor("update-sensor", "name", tags, new HashMap<String, String>());
+  //   Result<Sensor> result1 = client.createSensor(sensor);
 
-  //   // Update the series
-  //   series.getTags().add("update2");
-  //   Result<Series> result2 = client.updateSeries(series);
-  //   assertEquals(new Result<Series>(series, 200, "OK"), result2);
+  //   // Update the sensor
+  //   sensor.getTags().add("update2");
+  //   Result<Sensor> result2 = client.updateSensor(sensor);
+  //   assertEquals(new Result<Sensor>(sensor, 200, "OK"), result2);
 
-  //   // Get the series
-  //   Result<Series> result3 = client.getSeries("update-series");
-  //   Result<Series> expected = new Result<Series>(series, 200, "OK");
+  //   // Get the sensor
+  //   Result<Sensor> result3 = client.getSensor("update-sensor");
+  //   Result<Sensor> expected = new Result<Sensor>(sensor, 200, "OK");
   //   assertEquals(expected, result3);
   // }
 
   // @Test
-  // public void testDeleteSeries() {
-  //   // Create a series
+  // public void testDeleteSensor() {
+  //   // Create a sensor
   //   HashSet<String> tags = new HashSet<String>();
   //   tags.add("delete");
-  //   Series series = new Series("delete-series", "name", tags, new HashMap<String, String>());
-  //   Result<Series> result1 = client.createSeries(series);
+  //   Sensor sensor = new Sensor("delete-sensor", "name", tags, new HashMap<String, String>());
+  //   Result<Sensor> result1 = client.createSensor(sensor);
 
-  //   // Delete the series
-  //   Result<Void> result2 = client.deleteSeries(series);
+  //   // Delete the sensor
+  //   Result<Void> result2 = client.deleteSensor(sensor);
   //   assertEquals(new Result<Void>(null, 200, "OK"), result2);
 
-  //   // Get the series
-  //   Result<Series> result3 = client.getSeries("delete-series");
-  //   Result<Series> expected = new Result<Series>(null, 403, "Forbidden");
+  //   // Get the sensor
+  //   Result<Sensor> result3 = client.getSensor("delete-sensor");
+  //   Result<Sensor> expected = new Result<Sensor>(null, 403, "Forbidden");
   //   assertEquals(expected, result3);
   // }
 
   // @Test
-  // public void testDeleteSeriesByFilter() {
-  //   // Create a series
+  // public void testDeleteSensorByFilter() {
+  //   // Create a sensor
   //   HashSet<String> tags = new HashSet<String>();
   //   tags.add("delete-filter");
-  //   Series series1 = new Series("delete-series", "name", tags, new HashMap<String, String>());
-  //   Series series2 = new Series("delete-series2", "name", new HashSet<String>(), new HashMap<String, String>());
-  //   Result<Series> result1 = client.createSeries(series1);
-  //   Result<Series> result2 = client.createSeries(series2);
+  //   Sensor sensor1 = new Sensor("delete-sensor", "name", tags, new HashMap<String, String>());
+  //   Sensor sensor2 = new Sensor("delete-sensor2", "name", new HashSet<String>(), new HashMap<String, String>());
+  //   Result<Sensor> result1 = client.createSensor(sensor1);
+  //   Result<Sensor> result2 = client.createSensor(sensor2);
 
-  //   // Get the series by filter
+  //   // Get the sensor by filter
   //   Filter filter = new Filter();
   //   filter.addTag("delete-filter");
-  //   Cursor<Series> cursor = client.getSeries(filter);
-  //   List<Series> expected1 = Arrays.asList(series1);
+  //   Cursor<Sensor> cursor = client.getSensor(filter);
+  //   List<Sensor> expected1 = Arrays.asList(sensor1);
   //   assertEquals(expected1, toList(cursor));
 
-  //   // Delete the series by filter
-  //   Result<DeleteSummary> result3 = client.deleteSeries(filter);
+  //   // Delete the sensor by filter
+  //   Result<DeleteSummary> result3 = client.deleteSensor(filter);
   //   assertEquals(new Result<DeleteSummary>(new DeleteSummary(1), 200, "OK"), result3);
 
-  //   // Get the series by filter again
-  //   Cursor<Series> cursor2 = client.getSeries(filter);
-  //   List<Series> expected2 = Arrays.asList();
+  //   // Get the sensor by filter again
+  //   Cursor<Sensor> cursor2 = client.getSensor(filter);
+  //   List<Sensor> expected2 = Arrays.asList();
   //   assertEquals(expected2, toList(cursor2));
   // }
 

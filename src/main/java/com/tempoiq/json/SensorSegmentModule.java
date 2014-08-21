@@ -15,24 +15,24 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
-import com.tempoiq.Series;
-import com.tempoiq.SeriesSegment;
+import com.tempoiq.Sensor;
+import com.tempoiq.SensorSegment;
 
 
-public class SeriesSegmentModule extends SimpleModule {
+public class SensorSegmentModule extends SimpleModule {
 
-  public SeriesSegmentModule() {
-    addDeserializer(SeriesSegment.class, new SeriesSegmentDeserializer());
+  public SensorSegmentModule() {
+    addDeserializer(SensorSegment.class, new SensorSegmentDeserializer());
   }
 
-  private static class SeriesSegmentDeserializer extends StdScalarDeserializer<SeriesSegment> {
-    public SeriesSegmentDeserializer() { super(SeriesSegment.class); }
+  private static class SensorSegmentDeserializer extends StdScalarDeserializer<SensorSegment> {
+    public SensorSegmentDeserializer() { super(SensorSegment.class); }
 
     @Override
-    public SeriesSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+    public SensorSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
       if(parser.getCurrentToken() == JsonToken.START_ARRAY) {
-        List<Series> series = parser.readValueAs(new TypeReference<List<Series>>() {});
-        return new SeriesSegment(series);
+        List<Sensor> sensor = parser.readValueAs(new TypeReference<List<Sensor>>() {});
+        return new SensorSegment(sensor);
       }
       throw context.mappingException("Expected JSON array");
     }
@@ -40,7 +40,7 @@ public class SeriesSegmentModule extends SimpleModule {
 
   @Override
   public String getModuleName() {
-    return "series-segment";
+    return "sensor-segment";
   }
 
   @Override

@@ -14,7 +14,7 @@ import static com.tempoiq.util.Preconditions.*;
 /**
  *  A timestamp/multi-value pair.
  *  Represents a timestamp with multi-values. This is used for cursoring
- *  over multiple series at once or querying multiple rollups for a series.
+ *  over multiple sensor at once or querying multiple rollups for a sensor.
  *  @since 1.1.0
  */
 public class MultiDataPoint implements Serializable {
@@ -71,7 +71,7 @@ public class MultiDataPoint implements Serializable {
   public void setData(Map<String, Number> data) { this.data = checkNotNull(data); }
 
   /**
-   *  Gets the number for this key (series key or rollup fold).
+   *  Gets the number for this key (sensor key or rollup fold).
    *  @param key The key to get
    *  @return the value
    *  @since 1.1.0

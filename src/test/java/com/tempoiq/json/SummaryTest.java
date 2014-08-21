@@ -10,7 +10,7 @@ import org.joda.time.Interval;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import com.tempoiq.Series;
+import com.tempoiq.Sensor;
 import com.tempoiq.Summary;
 
 
@@ -26,7 +26,7 @@ public class SummaryTest {
       "\"tz\":\"UTC\"," +
       "\"start\":\"2012-01-01T00:00:00.000Z\"," +
       "\"end\":\"2012-01-02T00:00:00.000Z\"," +
-      "\"series\":{" +
+      "\"sensor\":{" +
         "\"id\":\"id1\"," +
         "\"key\":\"key1\"," +
         "\"name\":\"\"," +
@@ -43,10 +43,10 @@ public class SummaryTest {
     data.put("max", 12.34);
     data.put("min", 23.45);
 
-    Series series = new Series("key1");
+    Sensor sensor = new Sensor("key1");
 
     Summary summary = Json.loads(json, Summary.class);
-    Summary expected = new Summary(series, new Interval(start, end), data);
+    Summary expected = new Summary(sensor, new Interval(start, end), data);
     assertEquals(expected, summary);
   }
 
@@ -60,7 +60,7 @@ public class SummaryTest {
       "\"tz\":\"America/Chicago\"," +
       "\"start\":\"2012-01-01T00:00:00.000-06:00\"," +
       "\"end\":\"2012-01-02T00:00:00.000-06:00\"," +
-      "\"series\":{" +
+      "\"sensor\":{" +
         "\"id\":\"id1\"," +
         "\"key\":\"key1\"," +
         "\"name\":\"\"," +
@@ -77,10 +77,10 @@ public class SummaryTest {
     data.put("max", 12.34);
     data.put("min", 23.45);
 
-    Series series = new Series("key1");
+    Sensor sensor = new Sensor("key1");
 
     Summary summary = Json.loads(json, Summary.class);
-    Summary expected = new Summary(series, new Interval(start, end), data);
+    Summary expected = new Summary(sensor, new Interval(start, end), data);
     assertEquals(expected, summary);
   }
 }

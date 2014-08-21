@@ -48,15 +48,15 @@ import static com.tempoiq.util.Preconditions.*;
  *
  *  <p>Using the client, you can:
  *  <ul>
- *    <li>Retrieve a filtered list of Series</li>
- *    <li>Retrieve a Series by key</li>
- *    <li>Retrieve datapoints for a single series in a specific time interval</li>
- *    <li>Write datapoints for a single series</li>
- *    <li>Retrieve datapoints aggregated across multiple Series</li>
- *    <li>Write datapoints to multiple Series</li>
+ *    <li>Retrieve a filtered list of Sensor</li>
+ *    <li>Retrieve a Sensor by key</li>
+ *    <li>Retrieve datapoints for a single sensor in a specific time interval</li>
+ *    <li>Write datapoints for a single sensor</li>
+ *    <li>Retrieve datapoints aggregated across multiple Sensor</li>
+ *    <li>Write datapoints to multiple Sensor</li>
  *  </ul>
  *
- *  <p>The following example initializes a Client object and retrieves datapoints for a Series referenced by the key "my-key"
+ *  <p>The following example initializes a Client object and retrieves datapoints for a Sensor referenced by the key "my-key"
  *  for the time period <tt>2012-01-01</tt> to <tt>2010-01-02</tt>, returning the hourly average. This calls returns a <tt>Cursor&lt;DataPoint&gt;</tt>
  *  which provides a lazily loaded iterable of DataPoints.
  *
@@ -76,7 +76,7 @@ import static com.tempoiq.util.Preconditions.*;
  *    DateTime end = new DateTime(2012, 1, 2, 0, 0, 0, 0);
  *    Rollup rollup = new Rollup(Period.hours(1), Fold.MEAN);
  *
- *    Cursor&lt;DataPoint&gt; datapoints = client.readDataPoints(new Series("my-key"), new Interval(start, end), DateTimeZone.UTC, rollup);
+ *    Cursor&lt;DataPoint&gt; datapoints = client.readDataPoints(new Sensor("my-key"), new Interval(start, end), DateTimeZone.UTC, rollup);
  *  </pre>
  *
  *  <p>The TempoIQ Rest API supports http keep-alive, and the Client object is designed to be thread-safe. It is recommended
@@ -204,7 +204,7 @@ public class Client {
    *  @param device The device to update
    *  @return The updated Device
    *
-   *  @see Series
+   *  @see Sensor
    *  @since 1.1.0
    */
   public Result<Device> updateDevice(Device device) {
@@ -263,7 +263,7 @@ public class Client {
     WriteRequest wr = new WriteRequest();
     for (MultiDataPoint point : data) {
       for(Map.Entry<String, Number> entry : point.getData().entrySet()) {
-	wr.add(device, new Series(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
+	wr.add(device, new Sensor(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
       }
     }
 
@@ -271,7 +271,7 @@ public class Client {
   }
 
   /**
-   *  Writes datapoints to multiple Devices and Series.
+   *  Writes datapoints to multiple Devices and Sensor.
    *
    *  <p>This request can partially succeed. You should check the {@link Result#getState()} to check if the request was
    *  successful. If the request was partially successful, the result's {@link MultiStatus} can be inspected to determine

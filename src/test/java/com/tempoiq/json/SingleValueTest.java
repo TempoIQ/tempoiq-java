@@ -8,18 +8,18 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import com.tempoiq.DataPoint;
-import com.tempoiq.Series;
+import com.tempoiq.Sensor;
 import com.tempoiq.SingleValue;
 
 
 public class SingleValueTest {
 
-  private static final Series series = new Series("key1");
+  private static final Sensor sensor = new Sensor("key1");
 
   @Test
   public void testDeserializeUTC() throws IOException {
     String json = "{" +
-      "\"series\":{" +
+      "\"sensor\":{" +
         "\"id\":\"id1\"," +
         "\"key\":\"key1\"," +
         "\"name\":\"\"," +
@@ -37,14 +37,14 @@ public class SingleValueTest {
     SingleValue value = Json.loads(json, SingleValue.class);
 
     DataPoint datapoint = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 1, 0, zone), 12.34);
-    SingleValue expected = new SingleValue(series, datapoint);
+    SingleValue expected = new SingleValue(sensor, datapoint);
     assertEquals(expected, value);
   }
 
   @Test
   public void testDeserializeTZ() throws IOException {
     String json = "{" +
-      "\"series\":{" +
+      "\"sensor\":{" +
         "\"id\":\"id1\"," +
         "\"key\":\"key1\"," +
         "\"name\":\"\"," +
@@ -62,7 +62,7 @@ public class SingleValueTest {
     SingleValue value = Json.loads(json, SingleValue.class);
 
     DataPoint datapoint = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 1, 0, zone), 12.34);
-    SingleValue expected = new SingleValue(series, datapoint);
+    SingleValue expected = new SingleValue(sensor, datapoint);
     assertEquals(expected, value);
   }
 }

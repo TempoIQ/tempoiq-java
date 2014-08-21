@@ -13,8 +13,8 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  A request for writing multiple DataPoints to multiple Series.
- *  <p>The request is created and datapoints are added for a Series.
+ *  A request for writing multiple DataPoints to multiple Sensor.
+ *  <p>The request is created and datapoints are added for a Sensor.
  *  @since 1.0.0
  */
 public class WriteRequest implements Iterable<WritableDataPoint> {
@@ -30,28 +30,28 @@ public class WriteRequest implements Iterable<WritableDataPoint> {
   }
 
   /**
-   *  Adds a DataPoint to the request for a Device and Series.
-   *  @param series The Series to write to.
+   *  Adds a DataPoint to the request for a Device and Sensor.
+   *  @param sensor The Sensor to write to.
    *  @param datapoint The DataPoint to write.
    *  @return The updated request.
    *  @since 1.0.0
    */
-  public WriteRequest add(Device device, Series series, DataPoint datapoint) {
-    WritableDataPoint mdp = new WritableDataPoint(device, series, datapoint.getTimestamp(), datapoint.getValue());
+  public WriteRequest add(Device device, Sensor sensor, DataPoint datapoint) {
+    WritableDataPoint mdp = new WritableDataPoint(device, sensor, datapoint.getTimestamp(), datapoint.getValue());
     data.add(mdp);
     return this;
   }
 
   /**
-   *  Adds a list of DataPoints to the request for a Series.
-   *  @param series The Series to write to.
+   *  Adds a list of DataPoints to the request for a Sensor.
+   *  @param sensor The Sensor to write to.
    *  @param datapoints The list of DataPoints to write.
    *  @return The updated request.
    *  @since 1.0.0
    */
-  public WriteRequest add(Device device, Series series, List<DataPoint> datapoints) {
+  public WriteRequest add(Device device, Sensor sensor, List<DataPoint> datapoints) {
     for(DataPoint datapoint : datapoints) {
-      WritableDataPoint mdp = new WritableDataPoint(device, series, datapoint.getTimestamp(), datapoint.getValue());
+      WritableDataPoint mdp = new WritableDataPoint(device, sensor, datapoint.getTimestamp(), datapoint.getValue());
       data.add(mdp);
     }
     return this;
@@ -65,10 +65,10 @@ public class WriteRequest implements Iterable<WritableDataPoint> {
 	sensorMap = new HashMap<String, List<DataPoint>>();
 	devices.put(dp.getDevice().getKey(), sensorMap);
       }
-      List<DataPoint> points = sensorMap.get(dp.getSeries().getKey());
+      List<DataPoint> points = sensorMap.get(dp.getSensor().getKey());
       if (points == null) {
 	points = new ArrayList<DataPoint>();
-	sensorMap.put(dp.getSeries().getKey(), points);
+	sensorMap.put(dp.getSensor().getKey(), points);
       }
       points.add(new DataPoint(dp.getTimestamp(), dp.getValue()));
     }

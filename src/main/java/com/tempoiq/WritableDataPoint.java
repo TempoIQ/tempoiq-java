@@ -10,14 +10,14 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  DataPoint for a Series, used for bulk writing of DataPoints.
- *  <p>Allows you to specify a timestamp/value pair, as well as the {@link Series}
+ *  DataPoint for a Sensor, used for bulk writing of DataPoints.
+ *  <p>Allows you to specify a timestamp/value pair, as well as the {@link Sensor}
  *  that it is associated with.
  *  @since 1.0.0
  */
 public class WritableDataPoint implements Serializable {
   private Device device;
-  private Series series;
+  private Sensor sensor;
   private DateTime timestamp;
   private Number value;
 
@@ -25,19 +25,19 @@ public class WritableDataPoint implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public WritableDataPoint() {
-    this(new Device(""), new Series(""), new DateTime(), 0.0);
+    this(new Device(""), new Sensor(""), new DateTime(), 0.0);
   }
 
   /**
    *  Base constructor
-   *  @param series {@link Series} for the DataPoint
+   *  @param sensor {@link Sensor} for the DataPoint
    *  @param timestamp Timestamp for the DataPoint
    *  @param value Value for the DataPoint
    *  @since 1.0.0
    */
-  public WritableDataPoint(Device device, Series series, DateTime timestamp, Number value) {
+  public WritableDataPoint(Device device, Sensor sensor, DateTime timestamp, Number value) {
     this.device = checkNotNull(device);
-    this.series = checkNotNull(series);
+    this.sensor = checkNotNull(sensor);
     this.timestamp = checkNotNull(timestamp);
     this.value = checkNotNull(value);
   }
@@ -51,24 +51,24 @@ public class WritableDataPoint implements Serializable {
 
   /**
    *  Sets the {@link Device} of this WritableDataPoint.
-   *  @param series The {@link Device}
+   *  @param sensor The {@link Device}
    *  @since 1.1.0
    */
   public void setDevice(Device device) { this.device = checkNotNull(device); }
 
   /**
-   *  Returns the {@link Series} of this WritableDataPoint.
-   *  @return the {@link Series}
+   *  Returns the {@link Sensor} of this WritableDataPoint.
+   *  @return the {@link Sensor}
    *  @since 1.0.0
    */
-  public Series getSeries() { return series; }
+  public Sensor getSensor() { return sensor; }
 
   /**
-   *  Sets the {@link Series} of this WritableDataPoint.
-   *  @param series The {@link Series}
+   *  Sets the {@link Sensor} of this WritableDataPoint.
+   *  @param sensor The {@link Sensor}
    *  @since 1.0.0
    */
-  public void setSeries(Series series) { this.series = checkNotNull(series); }
+  public void setSensor(Sensor sensor) { this.sensor = checkNotNull(sensor); }
 
   /**
    *  Returns the timestamp of this WritableDataPoint.
@@ -100,13 +100,13 @@ public class WritableDataPoint implements Serializable {
 
   @Override
   public String toString() {
-    return String.format("WritableDataPoint(series=%s, timestamp=%s, value=%s", series, timestamp, value);
+    return String.format("WritableDataPoint(sensor=%s, timestamp=%s, value=%s", sensor, timestamp, value);
   }
 
   @Override
   public int hashCode() {
     return new HashCodeBuilder(137, 139)
-      .append(series)
+      .append(sensor)
       .append(timestamp)
       .append(value)
       .toHashCode();
@@ -120,7 +120,7 @@ public class WritableDataPoint implements Serializable {
 
     WritableDataPoint rhs = (WritableDataPoint)obj;
     return new EqualsBuilder()
-      .append(series, rhs.series)
+      .append(sensor, rhs.sensor)
       .append(timestamp, rhs.timestamp)
       .append(value, rhs.value)
       .isEquals();

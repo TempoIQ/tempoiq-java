@@ -21,13 +21,13 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  A set of summary statistics for a series.
+ *  A set of summary statistics for a sensor.
  *
  *  @since 1.1.0
  */
 public class Summary implements Map<String, Number>, Serializable {
 
-  private Series series;
+  private Sensor sensor;
   private Interval interval;
   private Map<String, Number> summary;
 
@@ -37,36 +37,36 @@ public class Summary implements Map<String, Number>, Serializable {
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
   public Summary() {
-    this(new Series(""), new Interval(new DateTime(), new DateTime()), new HashMap<String, Number>());
+    this(new Sensor(""), new Interval(new DateTime(), new DateTime()), new HashMap<String, Number>());
   }
 
   /**
    *  Base constructor
    *
-   *  @param series Series
+   *  @param sensor Sensor
    *  @param interval Interval of data to calculate the statistics
    *  @param summary Map of statistic string to value
    *  @since 1.1.0
    */
-  public Summary(Series series, Interval interval, Map<String, Number> summary) {
-    this.series = checkNotNull(series);
+  public Summary(Sensor sensor, Interval interval, Map<String, Number> summary) {
+    this.sensor = checkNotNull(sensor);
     this.interval = checkNotNull(interval);
     this.summary = checkNotNull(summary);
   }
 
   /**
-   *  Returns the series of this Summary
-   *  @return Summary series.
+   *  Returns the sensor of this Summary
+   *  @return Summary sensor.
    *  @since 1.1.0
    */
-  public Series getSeries() { return series; }
+  public Sensor getSensor() { return sensor; }
 
   /**
-   *  Sets the series of this Summary.
-   *  @param series Summary series.
+   *  Sets the sensor of this Summary.
+   *  @param sensor Summary sensor.
    *  @since 1.1.0
    */
-  public void setSeries(Series series) { this.series = checkNotNull(series); }
+  public void setSensor(Sensor sensor) { this.sensor = checkNotNull(sensor); }
 
   /**
    *  Returns the interval of this Summary.
@@ -114,13 +114,13 @@ public class Summary implements Map<String, Number>, Serializable {
 
   @Override
   public String toString() {
-    return String.format("Summary(series=%s, interval=%s, summary=%s)", series, interval, summary);
+    return String.format("Summary(sensor=%s, interval=%s, summary=%s)", sensor, interval, summary);
   }
 
   @Override
   public int hashCode() {
     return new HashCodeBuilder(119, 123)
-      .append(series)
+      .append(sensor)
       .append(interval)
       .append(summary)
       .toHashCode();
@@ -134,7 +134,7 @@ public class Summary implements Map<String, Number>, Serializable {
 
     Summary rhs = (Summary)obj;
     return new EqualsBuilder()
-      .append(series, rhs.series)
+      .append(sensor, rhs.sensor)
       .append(interval, rhs.interval)
       .append(summary, rhs.summary)
       .isEquals();

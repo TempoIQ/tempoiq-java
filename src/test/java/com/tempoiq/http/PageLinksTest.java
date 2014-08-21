@@ -11,12 +11,12 @@ public class PageLinksTest {
 
   @Test
   public void testLinkHeader() {
-    String header = "</v1/series/id/id1/data/segment/?start=2012-03-27T00:02:00.000-05:00&end=2012-03-28>; rel=\"next\"";
+    String header = "</v1/sensor/id/id1/data/segment/?start=2012-03-27T00:02:00.000-05:00&end=2012-03-28>; rel=\"next\"";
     HttpResponse response = Util.getResponse(200, "");
     response.setHeader("Link", header);
 
     PageLinks pageLinks = new PageLinks(response);
-    String expected = "/v1/series/id/id1/data/segment/?start=2012-03-27T00:02:00.000-05:00&end=2012-03-28";
+    String expected = "/v1/sensor/id/id1/data/segment/?start=2012-03-27T00:02:00.000-05:00&end=2012-03-28";
     assertEquals(expected, pageLinks.getNext());
   }
 
@@ -31,7 +31,7 @@ public class PageLinksTest {
 
   @Test
   public void testLinkNext() {
-    String header = "</v1/series/id/id1/data/segment/?start=2012-03-27T00:02:00.000-05:00&end=2012-03-28>; rel=\"last\"";
+    String header = "</v1/sensor/id/id1/data/segment/?start=2012-03-27T00:02:00.000-05:00&end=2012-03-28>; rel=\"last\"";
     HttpResponse response = Util.getResponse(200, "");
     response.setHeader("Link", header);
 

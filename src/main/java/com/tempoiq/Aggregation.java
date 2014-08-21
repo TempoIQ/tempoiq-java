@@ -9,11 +9,11 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  The representation of an aggregation between multiple Series.
+ *  The representation of an aggregation between multiple Sensor.
  *
- *  An Aggregation allows you to specify a new Series that is a mathematical
- *  operation across multiple Series. For instance, the following Aggregation
- *  specifies the sum of multiple Series:
+ *  An Aggregation allows you to specify a new Sensor that is a mathematical
+ *  operation across multiple Sensor. For instance, the following Aggregation
+ *  specifies the sum of multiple Sensor:
  *
  *  <p><pre>
  *  Aggregation aggregation = new Aggregation(Fold.SUM);

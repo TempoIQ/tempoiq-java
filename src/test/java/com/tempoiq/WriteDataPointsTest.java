@@ -29,7 +29,7 @@ public class WriteDataPointsTest {
 
   private static final DateTimeZone timezone = DateTimeZone.UTC;
   private static final WriteRequest wr = new WriteRequest()
-    .add(new Device("key1"), new Series("key1"), new DataPoint(new DateTime(2012, 3, 27, 5, 0, 0, 0, timezone), 12.34));
+    .add(new Device("key1"), new Sensor("key1"), new DataPoint(new DateTime(2012, 3, 27, 5, 0, 0, 0, timezone), 12.34));
 
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 

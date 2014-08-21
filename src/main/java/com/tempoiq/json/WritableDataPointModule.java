@@ -23,7 +23,7 @@ public class WritableDataPointModule extends SimpleModule {
     @Override
     public void serialize(WritableDataPoint value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeStringField("key", value.getSeries().getKey());
+      jgen.writeStringField("key", value.getSensor().getKey());
       jgen.writeObjectField("t", value.getTimestamp());
       jgen.writeObjectField("v", value.getValue());
       jgen.writeEndObject();

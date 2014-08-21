@@ -31,8 +31,8 @@ public class SingleValueSegmentModule extends SimpleModule {
     @Override
     public SingleValueSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
       if(parser.getCurrentToken() == JsonToken.START_ARRAY) {
-        List<SingleValue> series = parser.readValueAs(new TypeReference<List<SingleValue>>() {});
-        return new SingleValueSegment(series);
+        List<SingleValue> sensor = parser.readValueAs(new TypeReference<List<SingleValue>>() {});
+        return new SingleValueSegment(sensor);
       }
       throw context.mappingException("Expected JSON array");
     }

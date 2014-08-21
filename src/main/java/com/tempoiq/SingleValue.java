@@ -15,12 +15,12 @@ import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 
 /**
- *  A Series/DataPoint pair for use with the getSingleValue calls
+ *  A Sensor/DataPoint pair for use with the getSingleValue calls
  *  @since 1.1.0
  */
 public class SingleValue implements Serializable {
 
-  private Series series;
+  private Sensor sensor;
   private DataPoint datapoint;
 
   /** Serialization lock */
@@ -29,34 +29,34 @@ public class SingleValue implements Serializable {
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
   public SingleValue() {
-    this(new Series(), new DataPoint());
+    this(new Sensor(), new DataPoint());
   }
 
   /**
    *  Base constructor
-   *  @param series The Series associated with the datapoint
+   *  @param sensor The Sensor associated with the datapoint
    *  @param datapoint The datapoint
    *  @since 1.1.0
    */
-  public SingleValue(@JsonProperty("series") Series series, @JsonProperty("data") DataPoint datapoint) {
-    this.series = checkNotNull(series);
+  public SingleValue(@JsonProperty("sensor") Sensor sensor, @JsonProperty("data") DataPoint datapoint) {
+    this.sensor = checkNotNull(sensor);
     this.datapoint = checkNotNull(datapoint);
   }
 
   /**
-   *  Returns the series of this SingleValue.
-   *  @return the series
+   *  Returns the sensor of this SingleValue.
+   *  @return the sensor
    *  @since 1.1.0
    */
-  @JsonProperty("series")
-  public Series getSeries() { return series; }
+  @JsonProperty("sensor")
+  public Sensor getSensor() { return sensor; }
 
   /**
-   *  Sets the series of this SingleValue.
-   *  @param series The series of this SingleValue
+   *  Sets the sensor of this SingleValue.
+   *  @param sensor The sensor of this SingleValue
    *  @since 1.1.0
    */
-  public void setSeries(Series series) { this.series = checkNotNull(series); }
+  public void setSensor(Sensor sensor) { this.sensor = checkNotNull(sensor); }
 
   /**
    *  Returns the datapoint of this SingleValue.
@@ -81,13 +81,13 @@ public class SingleValue implements Serializable {
 
   @Override
   public String toString() {
-    return String.format("SingleValue(series=%s, datapoint=%s)", series.toString(), datapoint.toString());
+    return String.format("SingleValue(sensor=%s, datapoint=%s)", sensor.toString(), datapoint.toString());
   }
 
   @Override
   public int hashCode() {
     return new HashCodeBuilder(19, 31)
-      .append(series)
+      .append(sensor)
       .append(datapoint)
       .toHashCode();
   }
@@ -100,7 +100,7 @@ public class SingleValue implements Serializable {
 
     SingleValue rhs = (SingleValue)obj;
     return new EqualsBuilder()
-      .append(series, rhs.series)
+      .append(sensor, rhs.sensor)
       .append(datapoint, rhs.datapoint)
       .isEquals();
   }

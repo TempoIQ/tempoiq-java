@@ -11,7 +11,7 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  The representation of a rollup of a single {@link Series}.
+ *  The representation of a rollup of a single {@link Sensor}.
  *
  *  A Rollup allows you to specify a time period and folding function for a
  *  {@link DataPoint} query. A Rollup represents a reduction in the amount of data

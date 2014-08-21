@@ -17,26 +17,26 @@ import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 
 
-public class SeriesSegment extends Segment<Series> {
+public class SensorSegment extends Segment<Sensor> {
 
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-  public SeriesSegment() {
-    this(new ArrayList<Series>(), "");
+  public SensorSegment() {
+    this(new ArrayList<Sensor>(), "");
   }
 
   @JsonCreator
-  public SeriesSegment(@JsonProperty("data") List<Series> data) {
+  public SensorSegment(@JsonProperty("data") List<Sensor> data) {
     super(data, null);
   }
 
-  public SeriesSegment(List<Series> data, String next) {
+  public SensorSegment(List<Sensor> data, String next) {
     super(data, next);
   }
 
-  static SeriesSegment make(HttpResponse response) throws IOException {
+  static SensorSegment make(HttpResponse response) throws IOException {
     String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
-    SeriesSegment segment = Json.loads(body, SeriesSegment.class);
+    SensorSegment segment = Json.loads(body, SensorSegment.class);
     PageLinks links = new PageLinks(response);
     segment.next = links.getNext();
     return segment;
@@ -44,7 +44,7 @@ public class SeriesSegment extends Segment<Series> {
 
   @Override
   public String toString() {
-    return String.format("SeriesSegment(data=%s, next=%s)", data, next);
+    return String.format("SensorSegment(data=%s, next=%s)", data, next);
   }
 
   @Override
@@ -59,9 +59,9 @@ public class SeriesSegment extends Segment<Series> {
   public boolean equals(Object obj) {
     if(obj == null) return false;
     if(obj == this) return true;
-    if(!(obj instanceof SeriesSegment)) return false;
+    if(!(obj instanceof SensorSegment)) return false;
 
-    SeriesSegment rhs = (SeriesSegment)obj;
+    SensorSegment rhs = (SensorSegment)obj;
     return new EqualsBuilder()
       .append(data, rhs.data)
       .append(next, rhs.next)

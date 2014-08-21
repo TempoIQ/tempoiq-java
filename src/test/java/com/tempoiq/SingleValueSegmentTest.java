@@ -16,9 +16,9 @@ public class SingleValueSegmentTest {
   private static final DataPoint dp2 = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0), 12.34);
   private static final DataPoint dp3 = new DataPoint(new DateTime(2012, 1, 2, 0, 0, 0, 0), 10.34);
 
-  private static final List<SingleValue> data1 = Arrays.asList(new SingleValue(new Series("key"), dp1));
-  private static final List<SingleValue> data2 = Arrays.asList(new SingleValue(new Series("key"), dp2));
-  private static final List<SingleValue> data3 = Arrays.asList(new SingleValue(new Series("key3"), dp3));
+  private static final List<SingleValue> data1 = Arrays.asList(new SingleValue(new Sensor("key"), dp1));
+  private static final List<SingleValue> data2 = Arrays.asList(new SingleValue(new Sensor("key"), dp2));
+  private static final List<SingleValue> data3 = Arrays.asList(new SingleValue(new Sensor("key3"), dp3));
 
   @Test
   public void testEquals() {

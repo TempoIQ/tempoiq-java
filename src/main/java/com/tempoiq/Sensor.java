@@ -19,7 +19,7 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  A data series and it's metadata.
+ *  A data sensor and it's metadata.
  *
  *  @since 1.0.0
  */
@@ -108,8 +108,8 @@ public class Sensor implements Serializable {
 
   static Sensor make(HttpResponse response) throws IOException {
     String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
-    Sensor series = Json.loads(body, Sensor.class);
-    return series;
+    Sensor sensor = Json.loads(body, Sensor.class);
+    return sensor;
   }
 
   @Override
