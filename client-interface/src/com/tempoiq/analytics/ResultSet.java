@@ -5,17 +5,7 @@ import java.util.Set;
 import com.tempoiq.DataPoint;
 import com.tempoiq.SelectorType;
 
-/*
- *       ResultSet
- *			 |       
- *          \|/
- * 		Cursor
- * 
- * 
- * 
- * 
- * 
- */
+
 public class ResultSet {
 	
 	public Stream first() {
@@ -24,7 +14,7 @@ public class ResultSet {
 	
 	public Stream fromDevice(String key) {
 		for (Stream s : this.getAllStreams()) {
-			if (s.getMetadata().getKey(SelectorType.DEVICE) == key) {
+			if (s.getMetadata().getDevice().getKey() == key) {
 				return s;
 			}
 		}
@@ -33,7 +23,7 @@ public class ResultSet {
 	
 	public Stream fromSensor(String key) {
 		for (Stream s : this.getAllStreams()) {
-			if (s.getMetadata().getKey(SelectorType.SENSOR) == key) {
+			if (s.getMetadata().getSensor().getKey() == key) {
 				return s;
 			}
 		}

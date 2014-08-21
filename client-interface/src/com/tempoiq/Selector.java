@@ -26,6 +26,7 @@ public class Selector {
 		return null;
 	}
 	
+	/*
 	public static Selector attributeLt(SelectorType type, String key, double b) {
 		return null;
 	}
@@ -34,6 +35,7 @@ public class Selector {
 		return null;
 	}
 	
+	*/
 	public static Selector all(SelectorType type) {
 		return null;
 	}
