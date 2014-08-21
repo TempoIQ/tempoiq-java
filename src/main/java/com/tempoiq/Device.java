@@ -62,10 +62,10 @@ public class Device implements Serializable {
 
   static Device make(HttpResponse response) throws IOException {
     String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
+    System.out.println(body);
     Device device = Json.loads(body, Device.class);
     return device;
   }
-
 
   @Override
   public int hashCode() {

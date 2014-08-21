@@ -20,7 +20,7 @@ public class Util {
 
   public static Client getClient(HttpClient httpClient) {
     InetSocketAddress host = new InetSocketAddress("example.com", 80);
-    Client client = new Client(new Database("id"), new Credentials("key", "secret"), host, "http");
+    Client client = new Client(new Credentials("key", "secret"), host, "http");
     client.setHttpClient(httpClient);
     return client;
   }

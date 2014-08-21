@@ -17,13 +17,13 @@ public class ClientTest {
 
   @Test
   public void testConstructor() {
-    Client client = new Client(new Database("id"), new Credentials("key", "secret"), new InetSocketAddress("example.com", 10), "http");
+    Client client = new Client(new Credentials("key", "secret"), new InetSocketAddress("example.com", 10), "http");
     assertNotNull(client);
   }
 
   @Test
   public void testInvalidScheme() {
     thrown.expect(IllegalArgumentException.class);
-    Client client = new Client(new Database("id"), new Credentials("key", "secret"), new InetSocketAddress("example.com", 10), "scheme");
+    Client client = new Client(new Credentials("key", "secret"), new InetSocketAddress("example.com", 10), "scheme");
   }
 }

@@ -14,7 +14,6 @@ public class ClientBuilderTest {
   @Test
   public void testDefaults() {
     Client client = new ClientBuilder()
-                      .database(database)
                       .credentials(credentials)
                       .build();
     assertEquals("api.tempo-db.com", client.getHost().getHostName());

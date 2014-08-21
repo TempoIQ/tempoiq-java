@@ -85,7 +85,6 @@ import static com.tempoiq.util.Preconditions.*;
  */
 public class Client {
 
-  private final Database database;
   private final Credentials credentials;
   private final InetSocketAddress host;
   private final String scheme;
@@ -108,25 +107,16 @@ public class Client {
   /**
    *  Base constructor for a Client object.
    *
-   *  @param database Database to connect to
    *  @param credentials Api credentials
    *  @param host Api server host address
    *  @param scheme Scheme for requests. "http" and "https" are supported.
    */
-  public Client(Database database, Credentials credentials, InetSocketAddress host, String scheme) {
+  public Client(Credentials credentials, InetSocketAddress host, String scheme) {
     checkArgument(scheme.equals("http") || scheme.equals("https"), "Scheme must be either \"http\" or \"https\".");
-    this.database = checkNotNull(database, "Database cannot be null.");
     this.credentials = checkNotNull(credentials, "Credentials cannot be null.");
     this.host = checkNotNull(host, "Host cannot be null.");
     this.scheme = checkNotNull(scheme, "Scheme cannot be null.");
   }
-
-  /**
-   *  Returns the database the client is connected to.
-   *  @return Client database
-   *  @since 1.0.0
-   */
-  public Database getDatabase() { return database; }
 
   /**
    *  Returns the client's credentials.
@@ -181,6 +171,88 @@ public class Client {
 
     HttpRequest request = buildRequest(uri.toString(), HttpMethod.POST, body);
     result = execute(request, Device.class);
+    return result;
+  }
+
+  /**
+   *  Returns a Device referenced by key.
+   *
+   *  @param key The Device key to retrieve
+   *  @return The requested Device.
+   *  @since 1.1.0
+   */
+  public Result<Device> getDevice(String key) {
+    checkNotNull(key);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/", API_VERSION2, urlencode(key)));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = String.format("Could not build URI with inputs: key: %s", key);
+      throw new IllegalArgumentException(message, e);
+    }
+
+    HttpRequest request = buildRequest(uri.toString());
+    Result<Device> result = execute(request, Device.class);
+    return result;
+  }
+
+  /**
+   *  Updates all of a Device metadata
+   *
+   *  @param device The device to update
+   *  @return The updated Device
+   *
+   *  @see Series
+   *  @since 1.1.0
+   */
+  public Result<Device> updateDevice(Device device) {
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/", API_VERSION2, urlencode(device.getKey())));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Result<Device> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(device);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<Device>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.PUT, body);
+    result = execute(request, Device.class);
+    return result;
+  }
+
+  /**
+   *  Deletes a Device.
+   *
+   *  @param device The Device to delete
+   *  @return {@link Void}
+   *  @since 1.1.0
+   */
+  public Result<Void> deleteDevice(Device device) {
+    checkNotNull(device);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/", API_VERSION2, urlencode(device.getKey())));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = String.format("Could not build URI with inputs: key: %s", device.getKey());
+      throw new IllegalArgumentException(message, e);
+    }
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE);
+    Result<Void> result = execute(request, Void.class);
     return result;
   }
 
