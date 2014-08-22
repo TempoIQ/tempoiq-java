@@ -1,6 +1,11 @@
 package com.tempoiq;
 
 public abstract class Selector {
+  public enum Type {
+    DEVICES,
+    SENSORS
+  }
+
   public static AttributeKeySelector attributeKey(String key) {
     return new AttributeKeySelector(key);
   }
