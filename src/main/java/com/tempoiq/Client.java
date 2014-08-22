@@ -311,6 +311,39 @@ public class Client {
     return result;
   }
 
+  public Result<Void> read(Selection selection, DateTime start, DateTime stop) {
+    checkNotNull(selection);
+    checkNotNull(start);
+    checkNotNull(stop);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/read/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Result<Void> result = null;
+    String body = null;
+    try {
+      Query query = new Query(
+	new QuerySearch(Selector.Type.DEVICES, selection),
+	new Pipeline(),
+	new ReadAction(start, stop));
+      body = Json.dumps(query);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<Void>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    HttpRequest httpRequest = buildRequest(uri.toString(), HttpMethod.GET, body);
+    result = execute(httpRequest, Void.class);
+    return result;
+  }
+
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
     if(aggregation != null) {
       builder.addParameter("aggregation.fold", aggregation.getFold().toString().toLowerCase());
