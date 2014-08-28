@@ -45,7 +45,7 @@ public class QueryModule extends SimpleModule {
 
     public void serialize(QuerySearch qs, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeObjectField("select", "devices");
+      jgen.writeObjectField("select", qs.getType());
       jgen.writeObjectField("filters", qs.getSelection());
       jgen.writeEndObject();
     }
