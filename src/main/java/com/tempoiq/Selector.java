@@ -1,5 +1,9 @@
 package com.tempoiq;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import com.tempoiq.json.QueryModule;
+
 public abstract class Selector {
   public enum Type {
     DEVICES,

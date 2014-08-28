@@ -16,7 +16,7 @@ public class SelectionTest {
       addSelector(Selector.Type.DEVICES, Selector.or(
 		    Selector.key("building-1234"), Selector.key("building-4321"))).
       addSelector(Selector.Type.SENSORS, Selector.key("temp-1"));
-    String expected = "{\"filters\":{\"devices\":{\"or\":[{\"key\":\"building-1234\"},{\"key\":\"building-4321\"}]},\"sensors\":{\"key\":\"temp-1\"}}}";
+    String expected = "{\"devices\":{\"or\":[{\"key\":\"building-1234\"},{\"key\":\"building-4321\"}]},\"sensors\":{\"key\":\"temp-1\"}}";
     assertEquals(expected, Json.dumps(sel));
   }
 }

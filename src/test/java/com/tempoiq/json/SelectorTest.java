@@ -22,6 +22,12 @@ public class SelectorTest {
   }
 
   @Test
+  public void testSelectorType() throws IOException {
+    String expected = "\"devices\"";
+    assertEquals(expected, Json.dumps(Selector.Type.DEVICES));
+  }
+
+  @Test
   public void testAttributesSelector() throws IOException {
     Selector attributesSelector = new AttributesSelector("building", "445 W Erie");
     String expected = "{\"attributes\":{\"building\":\"445 W Erie\"}}";

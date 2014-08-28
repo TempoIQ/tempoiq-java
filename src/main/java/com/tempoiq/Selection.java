@@ -1,23 +1,21 @@
 package com.tempoiq;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TreeMap;
+import java.util.Map;
 
 public class Selection {
-  private final List<ImmutablePair<Selector.Type, Selector>> selectors;
+  private final Map<Selector.Type, Selector> selectors;
 
   public Selection() {
-    this.selectors = new ArrayList<ImmutablePair<Selector.Type, Selector>>();
+    this.selectors = new TreeMap<Selector.Type, Selector>();
   }
 
   public Selection addSelector(Selector.Type type, Selector selector) {
-    this.selectors.add(ImmutablePair.of(type, selector));
+    this.selectors.put(type, selector);
     return this;
   }
 
-  public List<ImmutablePair<Selector.Type, Selector>> getSelectors() {
+  public Map<Selector.Type, Selector> getSelectors() {
     return selectors;
   }
 }

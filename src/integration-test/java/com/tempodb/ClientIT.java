@@ -77,16 +77,9 @@ public class ClientIT {
   }
 
   static public void cleanup() {
-    /* Delete all datapoints all sensor */
-    // Cursor<Sensor> cursor = client.getSensor(new Filter());
-    // for(Sensor sensor : cursor) {
-    //   Result<Void> result = client.deleteDataPoints(sensor, interval);
-    //   assertEquals(State.SUCCESS, result.getState());
-    // }
-
-    // /* Delete all sensor */
-    // Result<DeleteSummary> result = client.deleteAllSensor();
-    // assertEquals(State.SUCCESS, result.getState());
+    // /* Delete all devices */
+    Result<DeleteSummary> result = client.deleteAllDevices();
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @After

@@ -256,6 +256,52 @@ public class Client {
     return result;
   }
 
+  /**
+   *  Deletes set of devices by a selection.
+   *
+   *  @param selection The device selection @see Selection
+   *  @return A DeleteSummary providing information about the series deleted.
+   *
+   *  @see DeleteSummary
+   *  @see Selection
+   *  @since 1.1.0
+   */
+  public Result<DeleteSummary> deleteDevices(Selection selection) {
+    checkNotNull(selection);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = String.format("Could not build URI with input - selection: %s", selection);
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Result<DeleteSummary> result = null;
+    String body = null;
+    try {
+      Query query = new Query(
+	new QuerySearch(Selector.Type.DEVICES, selection),
+	null,
+	new FindAction());
+      body = Json.dumps(query);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<DeleteSummary>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE, body);
+    result = execute(request, DeleteSummary.class);
+    return result;
+  }
+
+  public Result<DeleteSummary> deleteAllDevices() {
+    Selection selection = new Selection();
+    return deleteDevices(selection);
+  }
+
   public Result<Void> writeDataPoints(Device device, List<MultiDataPoint> data) {
     checkNotNull(device);
     checkNotNull(data);
