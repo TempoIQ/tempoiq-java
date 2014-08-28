@@ -43,7 +43,6 @@ public class ClientIT {
         "  port=<port>\n" +
         "  scheme=<scheme>\n";
 
-      System.out.println(message);
       System.exit(1);
     }
 

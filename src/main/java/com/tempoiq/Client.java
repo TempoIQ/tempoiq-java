@@ -298,7 +298,8 @@ public class Client {
   }
 
   public Result<DeleteSummary> deleteAllDevices() {
-    Selection selection = new Selection();
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.all());
     return deleteDevices(selection);
   }
 
@@ -504,7 +505,11 @@ public class Client {
         request = put;
         break;
       case DELETE:
-        request = new HttpDelete(uri);
+        HttpDeleteWithBody delete = new HttpDeleteWithBody(uri);
+	if(body != null) {
+	  delete.setEntity(new StringEntity(body, DEFAULT_CHARSET));
+	}
+	request = delete;
         break;
       case GET:
       default:

@@ -29,4 +29,8 @@ public abstract class Selector {
   public static AndSelector and(Selector... children) {
     return new AndSelector(children);
   }
+
+  public static AllSelector all() {
+    return new AllSelector();
+  }
 }
