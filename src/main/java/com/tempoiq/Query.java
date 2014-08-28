@@ -1,6 +1,6 @@
 package com.tempoiq;
 
-class Query {
+public class Query {
   private QuerySearch search;
   private Pipeline pipeline;
   private QueryAction action;

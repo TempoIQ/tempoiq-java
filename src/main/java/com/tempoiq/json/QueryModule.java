@@ -18,14 +18,33 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
 import com.tempoiq.Selection;
 import com.tempoiq.Selector;
+import com.tempoiq.Query;
+import com.tempoiq.QueryAction;
 import com.tempoiq.QuerySearch;
+
 
 
 public class QueryModule extends SimpleModule {
   public QueryModule() {
-    addSerializer(Selector.Type.class, new SelectorTypeSerializer());
-    addSerializer(Selection.class, new SelectionSerializer());
+    addSerializer(Query.class, new QuerySerializer());
     addSerializer(QuerySearch.class, new QuerySearchSerializer());
+    addSerializer(Selection.class, new SelectionSerializer());
+    addSerializer(Selector.Type.class, new SelectorTypeSerializer());
+  }
+
+  private static class QuerySerializer extends StdScalarSerializer<Query> {
+    public QuerySerializer() { super(Query.class); }
+
+    public void serialize(Query query, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+      jgen.writeStartObject();
+      jgen.writeObjectField("search", query.getSearch());
+      if (query.getPipeline() != null) {
+	jgen.writeObjectField("fold", query.getPipeline());
+      }
+      QueryAction action = query.getAction();
+      jgen.writeObjectField(action.getName(), action);
+      jgen.writeEndObject();
+    }
   }
 
   private static class SelectionSerializer extends StdScalarSerializer<Selection> {
