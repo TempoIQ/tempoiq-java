@@ -513,7 +513,11 @@ public class Client {
         break;
       case GET:
       default:
-        request = new HttpGet(uri);
+	HttpGetWithBody get = new HttpGetWithBody(uri);
+	if(body != null) {
+	  get.setEntity(new StringEntity(body, DEFAULT_CHARSET));
+	}
+        request = get;
         break;
     }
 
