@@ -81,6 +81,15 @@ public class ClientIT {
     assertEquals(State.SUCCESS, result.getState());
   }
 
+  static public Device createDevice() {
+    List<Sensor> sensors = new ArrayList<Sensor>();
+    sensors.add(new Sensor("key1"));
+    sensors.add(new Sensor("key2"));
+    Device device = new Device("create-device", "name", new HashMap<String, String>(), sensors);
+    Result<Device> result = client.createDevice(device);
+    return result.getValue();
+  }
+
   @After
   public void tearDown() { cleanup(); }
 
@@ -104,18 +113,13 @@ public class ClientIT {
 
   @Test
   public void testWriteDataPointBySensor() {
-    List<Sensor> sensors = new ArrayList<Sensor>();
-    sensors.add(new Sensor("key1"));
-    sensors.add(new Sensor("key2"));
-    Device device = new Device("create-device", "name", new HashMap<String, String>(), sensors);
-    Result<Device> result = client.createDevice(device);
+    Device device = createDevice();
 
     Map<String, Number> points = new HashMap<String, Number>();
     points.put("key1", 1.23);
     points.put("key2", 1.67);
     MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
     Result<Void> result2 = client.writeDataPoints(device, mp);
-    System.out.println(result2.getMessage());
     assertEquals(State.SUCCESS, result2.getState());
   }
 
