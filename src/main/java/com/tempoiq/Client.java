@@ -303,15 +303,13 @@ public class Client {
     return deleteDevices(selection);
   }
 
-  public Result<Void> writeDataPoints(Device device, List<MultiDataPoint> data) {
+  public Result<Void> writeDataPoints(Device device, MultiDataPoint data) {
     checkNotNull(device);
     checkNotNull(data);
 
     WriteRequest wr = new WriteRequest();
-    for (MultiDataPoint point : data) {
-      for(Map.Entry<String, Number> entry : point.getData().entrySet()) {
-	wr.add(device, new Sensor(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
-      }
+    for(Map.Entry<String, Number> entry : data.getData().entrySet()) {
+      wr.add(device, new Sensor(entry.getKey()), new DataPoint(data.getTimestamp(), entry.getValue()));
     }
 
     return writeDataPoints(wr);

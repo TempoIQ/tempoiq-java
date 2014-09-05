@@ -102,6 +102,24 @@ public class ClientIT {
     assertEquals(expected, result);
   }
 
+  @Test
+  public void testWriteDataPointBySensor() {
+    List<Sensor> sensors = new ArrayList<Sensor>();
+    sensors.add(new Sensor("key1"));
+    sensors.add(new Sensor("key2"));
+    Device device = new Device("create-device", "name", new HashMap<String, String>(), sensors);
+    Result<Device> result = client.createDevice(device);
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("key1", 1.23);
+    points.put("key2", 1.67);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
+    Result<Void> result2 = client.writeDataPoints(device, mp);
+    System.out.println(result2.getMessage());
+    assertEquals(State.SUCCESS, result2.getState());
+  }
+
+
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
   //   // Write datapoints
@@ -123,13 +141,6 @@ public class ClientIT {
   //   List<DataPoint> expected2 = new ArrayList<DataPoint>();
   //   Cursor<DataPoint> cursor2 = client.readDataPoints(new Sensor("key1"), interval, timezone);
   //   assertEquals(expected2, toList(cursor2));
-  // }
-
-  // @Test
-  // public void testWriteDataPointBySensor() {
-  //   DataPoint dp = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 12.34);
-  //   Result<Void> result = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp));
-  //   assertEquals(State.SUCCESS, result.getState());
   // }
 
   // @Test
