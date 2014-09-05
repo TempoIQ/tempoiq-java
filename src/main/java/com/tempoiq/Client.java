@@ -358,7 +358,7 @@ public class Client {
     return result;
   }
 
-  public Result<Void> read(Selection selection, DateTime start, DateTime stop) {
+  public Cursor<Row> read(Selection selection, DateTime start, DateTime stop) {
     checkNotNull(selection);
     checkNotNull(start);
     checkNotNull(stop);
@@ -372,23 +372,13 @@ public class Client {
       throw new IllegalArgumentException(message, e);
     }
 
-    Result<Void> result = null;
-    String body = null;
-    try {
-      Query query = new Query(
-	new QuerySearch(Selector.Type.DEVICES, selection),
-	new Pipeline(),
-	new ReadAction(start, stop));
-      body = Json.dumps(query);
-    } catch (JsonProcessingException e) {
-      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
-      result = new Result<Void>(null, GENERIC_ERROR_CODE, message);
-      return result;
-    }
+    Query query = new Query(
+      new QuerySearch(Selector.Type.DEVICES, selection),
+      new Pipeline(),
+      new ReadAction(start, stop));
 
-    HttpRequest httpRequest = buildRequest(uri.toString(), HttpMethod.GET, body);
-    result = execute(httpRequest, Void.class);
-    return result;
+    Cursor<Row> cursor = new DataPointCursor(uri, this, query);
+    return cursor;
   }
 
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
@@ -484,6 +474,10 @@ public class Client {
 
   HttpRequest buildRequest(String uri, HttpMethod method) {
     return buildRequest(uri, method, null);
+  }
+
+  HttpRequest buildRequest(String uri, String body) {
+    return buildRequest(uri, HttpMethod.GET, body);
   }
 
   HttpRequest buildRequest(String uri, HttpMethod method, String body) {
