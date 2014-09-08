@@ -34,7 +34,8 @@ class DataPointCursor implements Cursor<Row> {
 
     Iterator<Row> iterator = null;
     if(result.getState() == State.SUCCESS) {
-      iterator = new SegmentIterator(client, result.getValue(), Row.class);
+      SegmentIterator<Segment<Row>> segments = new SegmentIterator(client, result.getValue(), RowSegment.class);
+      iterator = new SegmentInnerIterator<Row>(segments);
     } else {
       throw new TempoIQException(result.getMessage(), result.getCode());
     }

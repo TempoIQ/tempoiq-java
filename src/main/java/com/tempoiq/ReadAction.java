@@ -1,5 +1,6 @@
 package com.tempoiq;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.joda.time.DateTime;
@@ -13,6 +14,7 @@ class ReadAction implements QueryAction {
     this.stop = stop;
   }
 
+  @JsonIgnore
   public final String getName() {
     return "read";
   }

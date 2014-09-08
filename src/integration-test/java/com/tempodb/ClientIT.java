@@ -120,6 +120,7 @@ public class ClientIT {
     points.put("sensor2", 1.67);
     MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
     Result<Void> result = client.writeDataPoints(device, mp);
+    System.out.println(result.getMessage());
     assertEquals(State.SUCCESS, result.getState());
   }
 
