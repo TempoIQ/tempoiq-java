@@ -51,6 +51,7 @@ public class DataPointReadTest {
     DataPointRowCursor cursor = client.read(sel, start, stop);
     assert(cursor.iterator().hasNext());
     DataPointCursor sensor1 = cursor.getSensorCursor(device.getKey(), "sensor1");
+    assert(sensor1.iterator().hasNext());
     for (DataPoint dp : sensor1) {
       assertEquals(1.23, dp.getValue());
     }
