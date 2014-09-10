@@ -23,7 +23,7 @@ public class DataPointReadTest {
            "\"sensor2\":1.677}}}]}";
 
   @Test
-  public void smokeTest() throws IOException {
+  public void testSimpleRowReads() throws IOException {
     HttpResponse response = Util.getResponse(200, json1);
     Client client = Util.getClient(response);
     DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
@@ -43,6 +43,30 @@ public class DataPointReadTest {
     for (Row row : cursor) {
       assertEquals(1.23, row.getValue(device.getKey(), "sensor1"));
       assertEquals(1.677, row.getValue(device.getKey(), "sensor2"));
+    }
+  }
+
+  @Test
+  public void testSensorStreamReads() throws IOException {
+    HttpResponse response = Util.getResponse(200, json1);
+    Client client = Util.getClient(response);
+    DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 1.23);
+    points.put("sensor2", 1.677);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+    Result<Void> result = client.writeDataPoints(device, mp);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+    DataPointRowCursor cursor = client.read(sel, start, stop);
+    assert(cursor.iterator().hasNext());
+    DataPointCursor sensor1 = cursor.getSensorCursor(device.getKey(), "sensor1");
+    for (DataPoint dp : sensor1) {
+      assertEquals(1.23, dp.getValue());
     }
   }
 }

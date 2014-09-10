@@ -370,7 +370,7 @@ public class Client {
     return result;
   }
 
-  public Cursor<Row> read(Selection selection, DateTime start, DateTime stop) {
+  public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
     checkNotNull(selection);
     checkNotNull(start);
     checkNotNull(stop);
@@ -389,8 +389,7 @@ public class Client {
       new Pipeline(),
       new ReadAction(start, stop));
 
-    Cursor<Row> cursor = new DataPointCursor(uri, this, query);
-    return cursor;
+    return new DataPointRowCursor(uri, this, query);
   }
 
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
