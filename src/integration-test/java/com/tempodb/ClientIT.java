@@ -141,8 +141,8 @@ public class ClientIT {
     Cursor<Row> cursor = client.read(sel, start, stop);
     assert(cursor.iterator().hasNext());
     for (Row row : cursor) {
-      assertEquals(1.23, row.getKey(device.getKey(), "sensor1"));
-      assertEquals(1.677, row.getKey(device.getKey(), "sensor2"));
+      assertEquals(1.23, row.getValue(device.getKey(), "sensor1"));
+      assertEquals(1.677, row.getValue(device.getKey(), "sensor2"));
     }
   }
 

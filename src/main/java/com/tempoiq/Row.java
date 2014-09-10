@@ -17,7 +17,7 @@ public class Row {
     this.values = checkNotNull(values);
   }
 
-  public Number getKey(String deviceKey, String sensorKey) {
+  public Number getValue(String deviceKey, String sensorKey) {
     Map<String, Number> sensors = values.get(deviceKey);
     if (sensors == null) {
       return null;
