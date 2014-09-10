@@ -1,6 +1,10 @@
 package com.tempoiq;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -21,7 +25,7 @@ import static com.tempoiq.util.Preconditions.*;
  *  @see Fold
  *  @since 1.0.0
  */
-public class Aggregation implements Serializable {
+public class Aggregation implements Serializable, PipelineFunction {
   private Fold fold;
 
   /** Serialization lock */
@@ -45,6 +49,7 @@ public class Aggregation implements Serializable {
    *  @return The aggregation's folding function.
    *  @since 1.0.0
    */
+  @JsonIgnore
   public Fold getFold() { return fold; }
 
   /**
@@ -53,6 +58,14 @@ public class Aggregation implements Serializable {
    *  @since 1.0.0
    */
   public void setFold(Fold fold) { this.fold = checkNotNull(fold); }
+
+  public String getName() {
+    return "aggregation";
+  }
+
+  public List<String> getArguments() {
+    return Arrays.asList(new String[] { fold.name().toLowerCase() });
+  }
 
   @Override
   public String toString() {

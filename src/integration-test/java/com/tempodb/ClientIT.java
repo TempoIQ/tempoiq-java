@@ -146,6 +146,39 @@ public class ClientIT {
     }
   }
 
+  @Test
+  public void testReadWithPipeline() {
+    Device device = createDevice();
+    DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 4.0);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+
+    Map<String, Number> points2 = new HashMap<String, Number>();
+    points2.put("sensor2", 2.0);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points2);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Pipeline pipeline = new Pipeline()
+      .aggregate(Fold.MEAN);
+    Cursor<Row> cursor = client.read(sel, pipeline, start, stop);
+    assert(cursor.iterator().hasNext());
+    for (Row row : cursor) {
+      assertEquals(3.0, row.getValue(device.getKey(), "mean"));
+    }
+  }
+
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
   //   // Write datapoints

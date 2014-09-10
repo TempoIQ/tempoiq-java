@@ -9,8 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Pipeline implements Serializable {
   private List<PipelineFunction> functions = new ArrayList<PipelineFunction>();
 
-  public void addFunction(PipelineFunction function) {
+  private void addFunction(PipelineFunction function) {
     functions.add(function);
+  }
+
+  public Pipeline aggregate(Fold fold) {
+    addFunction(new Aggregation(fold));
+    return this;
   }
 
   @JsonProperty("functions")
