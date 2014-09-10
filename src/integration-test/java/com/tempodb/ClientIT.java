@@ -93,35 +93,35 @@ public class ClientIT {
   @After
   public void tearDown() { cleanup(); }
 
-  // @Test
-  // public void testInvalidCredentials() {
-  //   Device device = new Device();
-  //   Result<Device> result = invalidClient.createDevice(device);
-  //   Result<Device> expected = new Result<Device>(null, 403, "Forbidden");
-  //   assertEquals(expected, result);
-  // }
+  @Test
+  public void testInvalidCredentials() {
+    Device device = new Device();
+    Result<Device> result = invalidClient.createDevice(device);
+    Result<Device> expected = new Result<Device>(null, 403, "Forbidden");
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void testCreateDevices() {
-  //   Device device = new Device("create-device", "name", new HashMap<String, String>(), new ArrayList<Sensor>());
+  @Test
+  public void testCreateDevices() {
+    Device device = new Device("create-device", "name", new HashMap<String, String>(), new ArrayList<Sensor>());
 
-  //   Result<Device> result = client.createDevice(device);
-  //   Result<Device> expected = new Result<Device>(device, 200, "OK");
+    Result<Device> result = client.createDevice(device);
+    Result<Device> expected = new Result<Device>(device, 200, "OK");
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void testWriteDataPointBySensor() {
-  //   Device device = createDevice();
+  @Test
+  public void testWriteDataPointBySensor() {
+    Device device = createDevice();
 
-  //   Map<String, Number> points = new HashMap<String, Number>();
-  //   points.put("sensor1", 1.23);
-  //   points.put("sensor2", 1.67);
-  //   MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
-  //   Result<Void> result = client.writeDataPoints(device, mp);
-  //   assertEquals(State.SUCCESS, result.getState());
-  // }
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 1.23);
+    points.put("sensor2", 1.67);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
+    Result<Void> result = client.writeDataPoints(device, mp);
+    assertEquals(State.SUCCESS, result.getState());
+  }
 
   @Test
   public void testReadDataPoints() {
