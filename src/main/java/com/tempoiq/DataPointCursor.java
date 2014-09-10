@@ -34,6 +34,7 @@ class DataPointCursor implements Cursor<Row> {
 
     Iterator<Row> iterator = null;
     if(result.getState() == State.SUCCESS) {
+      @SuppressWarnings("unchecked") // This cast is always ok
       SegmentIterator<Segment<Row>> segments = new SegmentIterator(client, result.getValue(), RowSegment.class);
       iterator = new SegmentInnerIterator<Row>(segments);
     } else {
