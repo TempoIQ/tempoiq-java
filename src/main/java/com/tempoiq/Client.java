@@ -315,6 +315,20 @@ public class Client {
     return writeDataPoints(wr);
   }
 
+  public Result<Void> writeDataPoints(Device device, List<MultiDataPoint> data) {
+    checkNotNull(device);
+    checkNotNull(data);
+
+    WriteRequest wr = new WriteRequest();
+    for (MultiDataPoint point : data) {
+      for(Map.Entry<String, Number> entry : point.getData().entrySet()) {
+	wr.add(device, new Sensor(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
+      }
+    }
+
+    return writeDataPoints(wr);
+  }
+
   /**
    *  Writes datapoints to multiple Devices and Sensor.
    *
