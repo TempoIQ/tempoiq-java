@@ -29,13 +29,6 @@ public class DataPointReadTest {
     DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
     DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
 
-    Map<String, Number> points = new HashMap<String, Number>();
-    points.put("sensor1", 1.23);
-    points.put("sensor2", 1.677);
-    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
-    Result<Void> result = client.writeDataPoints(device, mp);
-    assertEquals(State.SUCCESS, result.getState());
-
     Selection sel = new Selection().
       addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
     Cursor<Row> cursor = client.read(sel, start, stop);
@@ -52,13 +45,6 @@ public class DataPointReadTest {
     Client client = Util.getClient(response);
     DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
     DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
-
-    Map<String, Number> points = new HashMap<String, Number>();
-    points.put("sensor1", 1.23);
-    points.put("sensor2", 1.677);
-    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
-    Result<Void> result = client.writeDataPoints(device, mp);
-    assertEquals(State.SUCCESS, result.getState());
 
     Selection sel = new Selection().
       addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
