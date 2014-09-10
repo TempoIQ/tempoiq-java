@@ -8,20 +8,21 @@ import org.joda.time.DateTime;
 import static com.tempoiq.util.Preconditions.*;
 
 public class Row {
-  private DateTime timezone;
-  private Map<String, Map<String, DataPoint>> values;
+  private DateTime timestamp;
+  private Map<String, Map<String, Number>> values;
 
   public Row(@JsonProperty("t") DateTime timestamp,
-	     @JsonProperty("data") Map<String, Map<String, DataPoint>> values) {
-    this.timezone = checkNotNull(timezone);
+	     @JsonProperty("data") Map<String, Map<String, Number>> values) {
+    this.timestamp = checkNotNull(timestamp);
     this.values = checkNotNull(values);
   }
 
-  public DataPoint getKey(String deviceKey, String sensorKey) {
-    Map<String, DataPoint> sensors = values.get(deviceKey);
+  public Number getKey(String deviceKey, String sensorKey) {
+    Map<String, Number> sensors = values.get(deviceKey);
     if (sensors == null) {
       return null;
     }
+
     return sensors.get(sensorKey);
   }
 }

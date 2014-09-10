@@ -83,9 +83,9 @@ public class ClientIT {
 
   static public Device createDevice() {
     List<Sensor> sensors = new ArrayList<Sensor>();
-    sensors.add(new Sensor("key1"));
-    sensors.add(new Sensor("key2"));
-    Device device = new Device("create-device", "name", new HashMap<String, String>(), sensors);
+    sensors.add(new Sensor("sensor1"));
+    sensors.add(new Sensor("sensor2"));
+    Device device = new Device("device1", "name", new HashMap<String, String>(), sensors);
     Result<Device> result = client.createDevice(device);
     return result.getValue();
   }
@@ -93,36 +93,35 @@ public class ClientIT {
   @After
   public void tearDown() { cleanup(); }
 
-  @Test
-  public void testInvalidCredentials() {
-    Device device = new Device();
-    Result<Device> result = invalidClient.createDevice(device);
-    Result<Device> expected = new Result<Device>(null, 403, "Forbidden");
-    assertEquals(expected, result);
-  }
+  // @Test
+  // public void testInvalidCredentials() {
+  //   Device device = new Device();
+  //   Result<Device> result = invalidClient.createDevice(device);
+  //   Result<Device> expected = new Result<Device>(null, 403, "Forbidden");
+  //   assertEquals(expected, result);
+  // }
 
-  @Test
-  public void testCreateDevices() {
-    Device device = new Device("create-device", "name", new HashMap<String, String>(), new ArrayList<Sensor>());
+  // @Test
+  // public void testCreateDevices() {
+  //   Device device = new Device("create-device", "name", new HashMap<String, String>(), new ArrayList<Sensor>());
 
-    Result<Device> result = client.createDevice(device);
-    Result<Device> expected = new Result<Device>(device, 200, "OK");
+  //   Result<Device> result = client.createDevice(device);
+  //   Result<Device> expected = new Result<Device>(device, 200, "OK");
 
-    assertEquals(expected, result);
-  }
+  //   assertEquals(expected, result);
+  // }
 
-  @Test
-  public void testWriteDataPointBySensor() {
-    Device device = createDevice();
+  // @Test
+  // public void testWriteDataPointBySensor() {
+  //   Device device = createDevice();
 
-    Map<String, Number> points = new HashMap<String, Number>();
-    points.put("sensor1", 1.23);
-    points.put("sensor2", 1.67);
-    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
-    Result<Void> result = client.writeDataPoints(device, mp);
-    System.out.println(result.getMessage());
-    assertEquals(State.SUCCESS, result.getState());
-  }
+  //   Map<String, Number> points = new HashMap<String, Number>();
+  //   points.put("sensor1", 1.23);
+  //   points.put("sensor2", 1.67);
+  //   MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
+  //   Result<Void> result = client.writeDataPoints(device, mp);
+  //   assertEquals(State.SUCCESS, result.getState());
+  // }
 
   @Test
   public void testReadDataPoints() {
@@ -132,16 +131,18 @@ public class ClientIT {
 
     Map<String, Number> points = new HashMap<String, Number>();
     points.put("sensor1", 1.23);
-    points.put("sensor2", 1.67);
-    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
+    points.put("sensor2", 1.677);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
     Result<Void> result = client.writeDataPoints(device, mp);
+    assertEquals(State.SUCCESS, result.getState());
 
     Selection sel = new Selection().
-      addSelector(Selector.Type.DEVICES, Selector.key("key1"));
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
     Cursor<Row> cursor = client.read(sel, start, stop);
+    assert(cursor.iterator().hasNext());
     for (Row row : cursor) {
-      assertEquals(1.23, row.getKey("key1", "sensor1").getValue());
-      assertEquals(1.67, row.getKey("key2", "sensor2").getValue());
+      assertEquals(1.23, row.getKey(device.getKey(), "sensor1"));
+      assertEquals(1.677, row.getKey(device.getKey(), "sensor2"));
     }
   }
 
