@@ -1,26 +1,19 @@
 package com.tempoiq.json;
 
 import java.io.IOException;
-
 import java.util.Map;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
-
-import com.tempoiq.Selection;
-import com.tempoiq.Selector;
 import com.tempoiq.Query;
 import com.tempoiq.QueryAction;
 import com.tempoiq.QuerySearch;
+import com.tempoiq.Selection;
+import com.tempoiq.Selector;
 
 
 
@@ -46,7 +39,7 @@ public class QueryModule extends SimpleModule {
       jgen.writeEndObject();
     }
   }
-
+  
   private static class SelectionSerializer extends StdScalarSerializer<Selection> {
     public SelectionSerializer() { super(Selection.class); }
 

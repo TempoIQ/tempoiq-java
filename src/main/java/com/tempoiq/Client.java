@@ -369,6 +369,26 @@ public class Client {
     result = execute(httpRequest, Void.class);
     return result;
   }
+  
+  public DeviceCursor listDevices(Selection selection) {
+    checkNotNull(selection);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Query query = new Query(
+        new QuerySearch(Selector.Type.DEVICES, selection),
+        null,
+        new FindAction());
+
+    return new DeviceCursor(uri, this, query);
+  }
 
   public DataPointRowCursor read(Selection selection,
 				 Pipeline pipeline,

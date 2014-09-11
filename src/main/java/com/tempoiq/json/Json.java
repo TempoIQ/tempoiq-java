@@ -25,6 +25,7 @@ public class Json {
       _mapper.registerModule(new DateTimeZoneModule());
       _mapper.registerModule(new FoldModule());
       _mapper.registerModule(new DataPointFoundSegmentModule());
+      _mapper.registerModule(new DeviceSegmentModule());
       _mapper.registerModule(new IntervalModule());
       _mapper.registerModule(new QueryModule());
       _mapper.registerModule(new SelectorModule());
