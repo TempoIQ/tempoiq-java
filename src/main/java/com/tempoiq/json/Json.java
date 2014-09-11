@@ -24,11 +24,8 @@ public class Json {
       _mapper.registerModule(new JodaModule());
       _mapper.registerModule(new DateTimeZoneModule());
       _mapper.registerModule(new FoldModule());
-      _mapper.registerModule(new DataPointSegmentModule());
       _mapper.registerModule(new DataPointFoundSegmentModule());
       _mapper.registerModule(new IntervalModule());
-      _mapper.registerModule(new MultiDataPointSegmentModule());
-      _mapper.registerModule(new MultiRollupDataPointSegmentModule());
       _mapper.registerModule(new QueryModule());
       _mapper.registerModule(new SelectorModule());
       _mapper.registerModule(new SensorSegmentModule());
