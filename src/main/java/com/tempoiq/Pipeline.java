@@ -6,6 +6,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+
 public class Pipeline implements Serializable {
   private List<PipelineFunction> functions = new ArrayList<PipelineFunction>();
 
@@ -15,6 +18,11 @@ public class Pipeline implements Serializable {
 
   public Pipeline aggregate(Fold fold) {
     addFunction(new Aggregation(fold));
+    return this;
+  }
+
+  public Pipeline rollup(Period period, Fold fold, DateTime start) {
+    addFunction(new Rollup(period, fold, start));
     return this;
   }
 

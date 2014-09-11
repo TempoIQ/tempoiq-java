@@ -37,7 +37,6 @@ public class Rollup implements Serializable, PipelineFunction {
   private Period period;
   private Fold fold;
   private DateTime start;
-  private DateTime stop;
   private final static PeriodFormatter periodFormat = ISOPeriodFormat.standard();
   private final static DateTimeFormatter dateFormat = ISODateTimeFormat.dateTime().withZoneUTC();
 
@@ -45,7 +44,7 @@ public class Rollup implements Serializable, PipelineFunction {
   private static final long serialVersionUID = 1L;
 
   public Rollup() {
-    this(Period.minutes(1), Fold.SUM, DateTime.now(), DateTime.now().plusHours(1));
+    this(Period.minutes(1), Fold.SUM, DateTime.now());
   }
 
   /**
@@ -57,11 +56,10 @@ public class Rollup implements Serializable, PipelineFunction {
    *  @param stop The rollup stop time
    *  @since 1.1.0
    */
-  public Rollup(Period period, Fold fold, DateTime start, DateTime stop) {
+  public Rollup(Period period, Fold fold, DateTime start) {
     this.period = period;
     this.fold = fold;
     this.start = start;
-    this.stop = stop;
   }
 
   public String getName() {
@@ -73,7 +71,6 @@ public class Rollup implements Serializable, PipelineFunction {
       fold.name().toLowerCase(),
       periodFormat.print(period),
       dateFormat.print(start),
-      dateFormat.print(stop)
     };
 
     return Arrays.asList(args);
@@ -123,25 +120,9 @@ public class Rollup implements Serializable, PipelineFunction {
    */
   public void setStart(DateTime start) { this.start = checkNotNull(start); }
 
-  /**
-   *  Returns the rollup stop time.
-   *  @return The rollup stop datetime.
-   *  @since 1.1.0
-   */
-  @JsonIgnore
-  public DateTime getStop() { return stop; }
-
-  /**
-   *  Sets the rollup start time.
-   *  @param start The start datetime.
-   *  @since 1.1.0
-   */
-  public void setStop(DateTime stop) { this.stop = checkNotNull(stop); }
-
-
   @Override
   public String toString() {
-    return String.format("Rollup(period=%s,fold=%s,start=%s,stop=%s)", period.toString(), fold.toString().toLowerCase(), start.toString(), stop.toString());
+    return String.format("Rollup(period=%s,fold=%s,start=%s,stop=%s)", period.toString(), fold.toString().toLowerCase(), start.toString());
   }
 
   @Override
@@ -150,7 +131,6 @@ public class Rollup implements Serializable, PipelineFunction {
       .append(period)
       .append(fold)
       .append(start)
-      .append(stop)
       .toHashCode();
   }
 
@@ -165,7 +145,6 @@ public class Rollup implements Serializable, PipelineFunction {
       .append(period, rhs.period)
       .append(fold, rhs.fold)
       .append(start, rhs.start)
-      .append(stop, rhs.stop)
       .isEquals();
   }
 }
