@@ -32,21 +32,4 @@ public class DeviceReadTest {
     
   }
 
-  /*
-  @Test
-  public void testSensorStreamReads() throws IOException {
-    HttpResponse response = Util.getResponse(200, json1);
-    Client client = Util.getClient(response);
-
-    Selection sel = new Selection().
-      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
-    DataPointRowCursor cursor = client.read(sel, start, stop);
-    assert(cursor.iterator().hasNext());
-    DataPointCursor sensor1 = cursor.getSensorCursor(device.getKey(), "sensor1");
-    assert(sensor1.iterator().hasNext());
-    for (DataPoint dp : sensor1) {
-      assertEquals(1.23, dp.getValue());
-    }
-  }
-  */
 }

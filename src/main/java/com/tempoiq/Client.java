@@ -371,24 +371,24 @@ public class Client {
   }
   
   public DeviceCursor listDevices(Selection selection) {
-	    checkNotNull(selection);
+    checkNotNull(selection);
 
-	    URI uri = null;
-	    try {
-	      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
-	      uri = builder.build();
-	    } catch (URISyntaxException e) {
-	      String message = "Could not build URI.";
-	      throw new IllegalArgumentException(message, e);
-	    }
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
 
-	    Query query = new Query(
-	            new QuerySearch(Selector.Type.DEVICES, selection), 
-	            null, 
-	            new FindAction());
+    Query query = new Query(
+        new QuerySearch(Selector.Type.DEVICES, selection),
+        null,
+        new FindAction());
 
-	    return new DeviceCursor(uri, this, query);
-	  }
+    return new DeviceCursor(uri, this, query);
+  }
 
   public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
     checkNotNull(selection);
