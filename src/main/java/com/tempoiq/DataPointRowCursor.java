@@ -11,7 +11,7 @@ import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 
 
-class DataPointRowCursor implements Cursor<Row> {
+public class DataPointRowCursor implements Cursor<Row> {
   private final URI uri;
   private final Client client;
   private Query query;
