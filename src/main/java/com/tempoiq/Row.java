@@ -38,4 +38,8 @@ public class Row {
 
     return sensors.containsKey(sensorKey);
   }
+  
+  public Map<String, Map<String, Number>> getValues() {
+	  return values;
+  }
 }
