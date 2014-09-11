@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.tempoiq.DataPointSegment;
 import com.tempoiq.Device;
 import com.tempoiq.DeviceSegment;
 import com.tempoiq.Rollup;
