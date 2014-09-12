@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.junit.*;
 import static org.junit.Assert.*;
 
+import com.tempoiq.AllSelector;
 import com.tempoiq.AndSelector;
 import com.tempoiq.AttributesSelector;
 import com.tempoiq.AttributeKeySelector;
@@ -13,12 +14,24 @@ import com.tempoiq.Selector;
 import com.tempoiq.KeySelector;
 
 public class SelectorTest {
+
+  @Test
+  public void testAllSelector() throws IOException {
+    String expected = "\"all\"";
+    assertEquals(expected, Json.dumps(new AllSelector()));
+  }
   
   @Test
   public void testSerializeKeySelector() throws IOException {
     Selector keySelector = new KeySelector("key-1234");
     String expected = "{\"key\":\"key-1234\"}";
     assertEquals(expected, Json.dumps(keySelector));
+  }
+
+  @Test
+  public void testSelectorType() throws IOException {
+    String expected = "\"devices\"";
+    assertEquals(expected, Json.dumps(Selector.Type.DEVICES));
   }
 
   @Test

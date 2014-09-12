@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
+import com.tempoiq.AllSelector;
 import com.tempoiq.AndSelector;
 import com.tempoiq.AttributesSelector;
 import com.tempoiq.AttributeKeySelector;
@@ -21,6 +22,7 @@ import com.tempoiq.Selector;
 
 public class SelectorModule extends SimpleModule {
   public SelectorModule() {
+    addSerializer(AllSelector.class, new AllSelectorSerializer());
     addSerializer(AndSelector.class, new AndSelectorSerializer());
     addSerializer(AttributesSelector.class, new AttributesSelectorSerializer());
     addSerializer(AttributeKeySelector.class, new AttributeKeySelectorSerializer());
@@ -95,6 +97,14 @@ public class SelectorModule extends SimpleModule {
       }
       jgen.writeEndArray();
       jgen.writeEndObject();
+    }
+  }
+
+  private static class AllSelectorSerializer extends StdScalarSerializer<AllSelector> {
+    public AllSelectorSerializer() { super(AllSelector.class); }
+
+    public void serialize(AllSelector selector, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+      jgen.writeString("all");
     }
   }
 }

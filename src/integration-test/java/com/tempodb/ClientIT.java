@@ -43,7 +43,6 @@ public class ClientIT {
         "  port=<port>\n" +
         "  scheme=<scheme>\n";
 
-      System.out.println(message);
       System.exit(1);
     }
 
@@ -77,16 +76,18 @@ public class ClientIT {
   }
 
   static public void cleanup() {
-    /* Delete all datapoints all sensor */
-    // Cursor<Sensor> cursor = client.getSensor(new Filter());
-    // for(Sensor sensor : cursor) {
-    //   Result<Void> result = client.deleteDataPoints(sensor, interval);
-    //   assertEquals(State.SUCCESS, result.getState());
-    // }
+    // /* Delete all devices */
+    Result<DeleteSummary> result = client.deleteAllDevices();
+    assertEquals(State.SUCCESS, result.getState());
+  }
 
-    // /* Delete all sensor */
-    // Result<DeleteSummary> result = client.deleteAllSensor();
-    // assertEquals(State.SUCCESS, result.getState());
+  static public Device createDevice() {
+    List<Sensor> sensors = new ArrayList<Sensor>();
+    sensors.add(new Sensor("sensor1"));
+    sensors.add(new Sensor("sensor2"));
+    Device device = new Device("device1", "name", new HashMap<String, String>(), sensors);
+    Result<Device> result = client.createDevice(device);
+    return result.getValue();
   }
 
   @After
@@ -110,6 +111,73 @@ public class ClientIT {
     assertEquals(expected, result);
   }
 
+  @Test
+  public void testWriteDataPointBySensor() {
+    Device device = createDevice();
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 1.23);
+    points.put("sensor2", 1.67);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
+    Result<Void> result = client.writeDataPoints(device, mp);
+    assertEquals(State.SUCCESS, result.getState());
+  }
+
+  @Test
+  public void testReadDataPoints() {
+    Device device = createDevice();
+    DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 1.23);
+    points.put("sensor2", 1.677);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+    Result<Void> result = client.writeDataPoints(device, mp);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+    Cursor<Row> cursor = client.read(sel, start, stop);
+    assert(cursor.iterator().hasNext());
+    for (Row row : cursor) {
+      assertEquals(1.23, row.getValue(device.getKey(), "sensor1"));
+      assertEquals(1.677, row.getValue(device.getKey(), "sensor2"));
+    }
+  }
+
+  @Test
+  public void testReadWithPipeline() {
+    Device device = createDevice();
+    DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 4.0);
+    points.put("sensor2", 2.0);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone), points);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Pipeline pipeline = new Pipeline()
+      .rollup(Period.days(1), Fold.SUM, start)
+      .aggregate(Fold.MEAN);
+    Cursor<Row> cursor = client.read(sel, pipeline, start, stop);
+    assert(cursor.iterator().hasNext());
+    for (Row row : cursor) {
+      assertEquals(6.0, row.getValue(device.getKey(), "mean"));
+    }
+  }
+
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
   //   // Write datapoints
@@ -131,13 +199,6 @@ public class ClientIT {
   //   List<DataPoint> expected2 = new ArrayList<DataPoint>();
   //   Cursor<DataPoint> cursor2 = client.readDataPoints(new Sensor("key1"), interval, timezone);
   //   assertEquals(expected2, toList(cursor2));
-  // }
-
-  // @Test
-  // public void testWriteDataPointBySensor() {
-  //   DataPoint dp = new DataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), 12.34);
-  //   Result<Void> result = client.writeDataPoints(new Sensor("key1"), Arrays.asList(dp));
-  //   assertEquals(State.SUCCESS, result.getState());
   // }
 
   // @Test

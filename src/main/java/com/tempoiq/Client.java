@@ -256,6 +256,65 @@ public class Client {
     return result;
   }
 
+  /**
+   *  Deletes set of devices by a selection.
+   *
+   *  @param selection The device selection @see Selection
+   *  @return A DeleteSummary providing information about the series deleted.
+   *
+   *  @see DeleteSummary
+   *  @see Selection
+   *  @since 1.1.0
+   */
+  public Result<DeleteSummary> deleteDevices(Selection selection) {
+    checkNotNull(selection);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = String.format("Could not build URI with input - selection: %s", selection);
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Result<DeleteSummary> result = null;
+    String body = null;
+    try {
+      Query query = new Query(
+	new QuerySearch(Selector.Type.DEVICES, selection),
+	null,
+	new FindAction());
+      body = Json.dumps(query);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<DeleteSummary>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE, body);
+    result = execute(request, DeleteSummary.class);
+    return result;
+  }
+
+  public Result<DeleteSummary> deleteAllDevices() {
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.all());
+    return deleteDevices(selection);
+  }
+
+  public Result<Void> writeDataPoints(Device device, MultiDataPoint data) {
+    checkNotNull(device);
+    checkNotNull(data);
+
+    WriteRequest wr = new WriteRequest();
+    for(Map.Entry<String, Number> entry : data.getData().entrySet()) {
+      wr.add(device, new Sensor(entry.getKey()), new DataPoint(data.getTimestamp(), entry.getValue()));
+    }
+
+    return writeDataPoints(wr);
+  }
+
   public Result<Void> writeDataPoints(Device device, List<MultiDataPoint> data) {
     checkNotNull(device);
     checkNotNull(data);
@@ -309,6 +368,55 @@ public class Client {
     HttpRequest httpRequest = buildRequest(uri.toString(), HttpMethod.POST, body);
     result = execute(httpRequest, Void.class);
     return result;
+  }
+  
+  public DeviceCursor listDevices(Selection selection) {
+    checkNotNull(selection);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Query query = new Query(
+        new QuerySearch(Selector.Type.DEVICES, selection),
+        null,
+        new FindAction());
+
+    return new DeviceCursor(uri, this, query);
+  }
+
+  public DataPointRowCursor read(Selection selection,
+				 Pipeline pipeline,
+				 DateTime start,
+				 DateTime stop) {
+    checkNotNull(selection);
+    checkNotNull(start);
+    checkNotNull(stop);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/read/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Query query = new Query(
+      new QuerySearch(Selector.Type.DEVICES, selection),
+      pipeline,
+      new ReadAction(start, stop));
+
+    return new DataPointRowCursor(uri, this, query);
+  }
+
+  public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
+    return read(selection, new Pipeline(), start, stop);
   }
 
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
@@ -406,6 +514,10 @@ public class Client {
     return buildRequest(uri, method, null);
   }
 
+  HttpRequest buildRequest(String uri, String body) {
+    return buildRequest(uri, HttpMethod.GET, body);
+  }
+
   HttpRequest buildRequest(String uri, HttpMethod method, String body) {
     HttpRequest request = null;
 
@@ -425,11 +537,19 @@ public class Client {
         request = put;
         break;
       case DELETE:
-        request = new HttpDelete(uri);
+        HttpDeleteWithBody delete = new HttpDeleteWithBody(uri);
+	if(body != null) {
+	  delete.setEntity(new StringEntity(body, DEFAULT_CHARSET));
+	}
+	request = delete;
         break;
       case GET:
       default:
-        request = new HttpGet(uri);
+	HttpGetWithBody get = new HttpGetWithBody(uri);
+	if(body != null) {
+	  get.setEntity(new StringEntity(body, DEFAULT_CHARSET));
+	}
+        request = get;
         break;
     }
 

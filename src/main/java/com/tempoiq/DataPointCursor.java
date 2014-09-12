@@ -1,34 +1,54 @@
 package com.tempoiq;
 
-import java.net.URI;
 import java.util.Iterator;
 
-import org.apache.http.HttpRequest;
+public class DataPointCursor implements Cursor<DataPoint> {
+  private class DataPointIterator implements Iterator<DataPoint> {
+    private final Iterator<Row> rowIterator;
+    private final String deviceKey;
+    private final String sensorKey;
+    private Row nextRow;
+    
+    public DataPointIterator(DataPointRowCursor rowCursor, String deviceKey, String sensorKey) {
+      this.rowIterator = rowCursor.iterator();
+      this.deviceKey = deviceKey;
+      this.sensorKey = sensorKey;
+    }
 
-import static com.tempoiq.util.Preconditions.*;
+    @Override
+    public boolean hasNext() {
+      while (rowIterator.hasNext()) {
+	nextRow = rowIterator.next();
+	if (nextRow.hasSensor(deviceKey, sensorKey)) {
+	  return true;
+	}
+      }
 
+      return false;
+    }
 
-class DataPointCursor implements Cursor<DataPoint> {
-  private final URI uri;
-  private final Client client;
+    @Override
+    public DataPoint next() {
+      return new DataPoint(nextRow.getTimestamp(), nextRow.getValue(deviceKey, sensorKey));
+    }
 
-  public DataPointCursor(URI uri, Client client) {
-    this.uri = checkNotNull(uri);
-    this.client = checkNotNull(client);
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  private final String deviceKey;
+  private final String sensorKey;
+  private final DataPointRowCursor rowCursor;
+
+  public DataPointCursor(DataPointRowCursor rowCursor, String deviceKey, String sensorKey) {
+    this.rowCursor = rowCursor;
+    this.deviceKey = deviceKey;
+    this.sensorKey = sensorKey;
   }
 
   public Iterator<DataPoint> iterator() {
-    HttpRequest request = client.buildRequest(uri.toString());
-    Result<DataPointSegment> result = client.execute(request, DataPointSegment.class);
-
-    Iterator<DataPoint> iterator = null;
-    if(result.getState() == State.SUCCESS) {
-      @SuppressWarnings("unchecked") // This cast is always ok
-      SegmentIterator<Segment<DataPoint>> segments = new SegmentIterator(client, result.getValue(), DataPointSegment.class);
-      iterator = new SegmentInnerIterator<DataPoint>(segments);
-    } else {
-      throw new TempoIQException(result.getMessage(), result.getCode());
-    }
-    return iterator;
+    return new DataPointIterator(rowCursor, deviceKey, sensorKey);
   }
 }

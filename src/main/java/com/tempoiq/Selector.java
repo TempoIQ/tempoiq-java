@@ -1,6 +1,15 @@
 package com.tempoiq;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import com.tempoiq.json.QueryModule;
+
 public abstract class Selector {
+  public enum Type {
+    DEVICES,
+    SENSORS
+  }
+
   public static AttributeKeySelector attributeKey(String key) {
     return new AttributeKeySelector(key);
   }
@@ -19,5 +28,9 @@ public abstract class Selector {
 
   public static AndSelector and(Selector... children) {
     return new AndSelector(children);
+  }
+
+  public static AllSelector all() {
+    return new AllSelector();
   }
 }
