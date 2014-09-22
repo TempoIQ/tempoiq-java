@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import org.joda.time.DateTimeZone;
 import com.tempoiq.DataPoint;
 import com.tempoiq.SingleValue;
-import com.tempoiq.Series;
+import com.tempoiq.Sensor;
 
 
 public class SingleValueModule extends SimpleModule {
@@ -35,7 +35,7 @@ public class SingleValueModule extends SimpleModule {
       JsonNode root = parser.readValueAsTree();
       JsonNode tzNode = root.get("tz");
       JsonNode dataNode = root.get("data");
-      JsonNode seriesNode = root.get("series");
+      JsonNode sensorNode = root.get("sensor");
 
       if(tzNode == null) {
         throw context.mappingException("Missing 'tz' field in SingleValue.");
@@ -43,8 +43,8 @@ public class SingleValueModule extends SimpleModule {
       if(dataNode == null) {
         throw context.mappingException("Missing 'data' field in SingleValue.");
       }
-      if(seriesNode == null) {
-        throw context.mappingException("Missing 'series' field in SingleValue.");
+      if(sensorNode == null) {
+        throw context.mappingException("Missing 'sensor' field in SingleValue.");
       }
 
       DateTimeZone timezone = Json.getObjectMapper()
@@ -57,12 +57,12 @@ public class SingleValueModule extends SimpleModule {
                                 .withType(DataPoint.class)
                                 .readValue(dataNode);
 
-      Series series = Json.getObjectMapper()
+      Sensor sensor = Json.getObjectMapper()
                           .reader()
-                          .withType(Series.class)
-                          .readValue(seriesNode);
+                          .withType(Sensor.class)
+                          .readValue(sensorNode);
 
-      return new SingleValue(series, datapoint);
+      return new SingleValue(sensor, datapoint);
     }
   }
 

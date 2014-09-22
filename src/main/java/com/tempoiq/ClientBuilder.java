@@ -33,7 +33,6 @@ import static com.tempoiq.util.Preconditions.*;
  */
 public class ClientBuilder {
 
-  private Database database;
   private Credentials credentials;
   private InetSocketAddress host;
   private String scheme;
@@ -46,23 +45,12 @@ public class ClientBuilder {
    *  @since 1.0.0
    */
   public ClientBuilder() {
-    this.database = null;
     this.credentials = null;
     this.host = DEFAULT_HOST;
     this.scheme = DEFAULT_SCHEME;
   }
 
-  /**
-   *  Sets the database to connect to. This is required.
-   *  @param database Database to connect to
-   *  @since 1.0.0
-   */
-  public ClientBuilder database(Database database) {
-    this.database = checkNotNull(database);
-    return this;
-  }
-
-  /**
+ /**
    *  Sets the credentials to use for the specified database.
    *  This is required.
    *  @param credentials Database credentials
@@ -101,12 +89,11 @@ public class ClientBuilder {
    */
   public Client build() {
     validate();
-    Client client = new Client(database, credentials, host, scheme);
+    Client client = new Client(credentials, host, scheme);
     return client;
   }
 
   private void validate() {
-    checkNotNull(database, "Database must not be null.");
     checkNotNull(credentials, "Credentials must not be null.");
   }
 }

@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
-import com.tempoiq.Series;
+import com.tempoiq.Sensor;
 import com.tempoiq.Summary;
 
 
@@ -39,7 +39,7 @@ public class SummaryModule extends SimpleModule {
       JsonNode dataNode = root.get("summary");
       JsonNode startNode = root.get("start");
       JsonNode endNode = root.get("end");
-      JsonNode seriesNode = root.get("series");
+      JsonNode sensorNode = root.get("sensor");
 
       if(tzNode == null) {
         throw context.mappingException("Missing 'tz' field in Summary.");
@@ -53,8 +53,8 @@ public class SummaryModule extends SimpleModule {
       if(endNode == null) {
         throw context.mappingException("Missing 'end' field in Summary.");
       }
-      if(seriesNode == null) {
-        throw context.mappingException("Missing 'series' field in Summary.");
+      if(sensorNode == null) {
+        throw context.mappingException("Missing 'sensor' field in Summary.");
       }
 
       DateTimeZone timezone = Json.getObjectMapper()
@@ -68,12 +68,12 @@ public class SummaryModule extends SimpleModule {
                                      .reader()
                                      .withType(new TypeReference<Map<String, Number>>() {})
                                      .readValue(dataNode);
-      Series series = Json.getObjectMapper()
+      Sensor sensor = Json.getObjectMapper()
                           .reader()
-                          .withType(Series.class)
-                          .readValue(seriesNode);
+                          .withType(Sensor.class)
+                          .readValue(sensorNode);
 
-      Summary summary = new Summary(series, new Interval(start, end), data);
+      Summary summary = new Summary(sensor, new Interval(start, end), data);
       return summary;
     }
   }

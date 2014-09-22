@@ -12,7 +12,7 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  The representation of a rollup with multiple folding function of a single {@link Series}.
+ *  The representation of a rollup with multiple folding function of a single {@link Sensor}.
  *
  *  A MultiRollup allows you to specify a time period and an an array of folding functions for a
  *  {@link DataPoint} query. A MultiRollup represents a reduction in the amount of data

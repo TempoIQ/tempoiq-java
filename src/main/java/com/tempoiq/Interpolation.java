@@ -17,7 +17,7 @@ import static com.tempoiq.util.Preconditions.*;
  *  {@link DataPoint} query. An Interpolation will compute values for datapoints at
  *  regular intervals. This is useful for filling in missing data or aligning timestamps
  *  to a period.
- *  <p>Timestamps in the interpolated series are calculated as:
+ *  <p>Timestamps in the interpolated sensor are calculated as:
  *  <p><pre>ts_n = interval.start + interpolation.period * n;</pre>
  *  @see InterpolationFunction
  *  @since 1.1.0

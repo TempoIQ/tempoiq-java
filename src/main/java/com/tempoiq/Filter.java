@@ -10,9 +10,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
- *  Represents a filter on the set of Series. This is used to query a set of series with specific
+ *  Represents a filter on the set of Sensor. This is used to query a set of sensor with specific
  *  properties. A filter can include keys, tags and attributes. An empty filter is created
- *  and filter predicates are added. For example a filter to return series with keys myagley-1 and
+ *  and filter predicates are added. For example a filter to return sensor with keys myagley-1 and
  *  myagley-2 looks like this:
  *
  *  <p><pre>

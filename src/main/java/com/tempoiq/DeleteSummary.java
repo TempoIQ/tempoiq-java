@@ -14,7 +14,7 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  Information about a delete series operation.
+ *  Information about a delete sensor operation.
  *  @since 1.0.0
  */
 public class DeleteSummary implements Serializable {
@@ -32,8 +32,8 @@ public class DeleteSummary implements Serializable {
 
   /**
    *  Base constructor.
-   *  @param deleted The number of Series deleted.
-   *  @see Series
+   *  @param deleted The number of Sensor deleted.
+   *  @see Sensor
    *  @since 1.0.0
    */
   public DeleteSummary(int deleted) {
@@ -41,17 +41,17 @@ public class DeleteSummary implements Serializable {
   }
 
   /**
-   *  Returns the number of Series deleted.
-   *  @return Number of Series deleted.
-   *  @see Series
+   *  Returns the number of Sensor deleted.
+   *  @return Number of Sensor deleted.
+   *  @see Sensor
    *  @since 1.0.0
    */
   public int getDeleted() { return deleted; }
 
   /**
-   *  Sets the number of Series deleted.
-   *  @param deleted The number of Series deleted.
-   *  @see Series
+   *  Sets the number of Sensor deleted.
+   *  @param deleted The number of Sensor deleted.
+   *  @see Sensor
    *  @since 1.0.0
    */
   public void setDeleted(int deleted) { this.deleted = deleted; }

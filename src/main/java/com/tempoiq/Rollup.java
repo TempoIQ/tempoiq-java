@@ -1,17 +1,24 @@
 package com.tempoiq;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.ISOPeriodFormat;
+import org.joda.time.format.PeriodFormatter;
 
 import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  The representation of a rollup of a single {@link Series}.
+ *  The representation of a rollup of a single {@link Sensor}.
  *
  *  A Rollup allows you to specify a time period and folding function for a
  *  {@link DataPoint} query. A Rollup represents a reduction in the amount of data
@@ -26,15 +33,18 @@ import static com.tempoiq.util.Preconditions.*;
  *  @see Fold
  *  @since 1.0.0
  */
-public class Rollup implements Serializable {
+public class Rollup implements Serializable, PipelineFunction {
   private Period period;
   private Fold fold;
+  private DateTime start;
+  private final static PeriodFormatter periodFormat = ISOPeriodFormat.standard();
+  private final static DateTimeFormatter dateFormat = ISODateTimeFormat.dateTime().withZoneUTC();
 
   /** Serialization lock */
   private static final long serialVersionUID = 1L;
 
   public Rollup() {
-    this(Period.minutes(1), Fold.SUM);
+    this(Period.minutes(1), Fold.SUM, DateTime.now());
   }
 
   /**
@@ -42,11 +52,28 @@ public class Rollup implements Serializable {
    *
    *  @param period The rollup period.
    *  @param fold The rollup folding function.
-   *  @since 1.0.0
+   *  @param start The rollup start time
+   *  @param stop The rollup stop time
+   *  @since 1.1.0
    */
-  public Rollup(@JsonProperty("period") Period period, @JsonProperty("fold") Fold fold) {
-    this.period = checkNotNull(period);
-    this.fold = checkNotNull(fold);
+  public Rollup(Period period, Fold fold, DateTime start) {
+    this.period = period;
+    this.fold = fold;
+    this.start = start;
+  }
+
+  public String getName() {
+    return "rollup";
+  }
+
+  public List<String> getArguments() {
+    String[] args = new String[] {
+      fold.name().toLowerCase(),
+      periodFormat.print(period),
+      dateFormat.print(start),
+    };
+
+    return Arrays.asList(args);
   }
 
   /**
@@ -54,7 +81,7 @@ public class Rollup implements Serializable {
    *  @return The rollup period.
    *  @since 1.0.0
    */
-  @JsonProperty("period")
+  @JsonIgnore
   public Period getPeriod() { return period; }
 
   /**
@@ -69,7 +96,7 @@ public class Rollup implements Serializable {
    * @return The rollup folding function.
    * @since 1.0.0
    */
-  @JsonProperty("fold")
+  @JsonIgnore
   public Fold getFold() { return fold; }
 
   /** Sets the rollup folding function.
@@ -78,9 +105,24 @@ public class Rollup implements Serializable {
    */
   public void setFold(Fold fold) { this.fold = checkNotNull(fold); }
 
+  /**
+   *  Returns the rollup start time.
+   *  @return The rollup start datetime.
+   *  @since 1.1.0
+   */
+  @JsonIgnore
+  public DateTime getStart() { return start; }
+
+  /**
+   *  Sets the rollup start time.
+   *  @param start The start datetime.
+   *  @since 1.1.0
+   */
+  public void setStart(DateTime start) { this.start = checkNotNull(start); }
+
   @Override
   public String toString() {
-    return String.format("Rollup(period=%s,fold=%s)", period.toString(), fold.toString().toLowerCase());
+    return String.format("Rollup(period=%s,fold=%s,start=%s,stop=%s)", period.toString(), fold.toString().toLowerCase(), start.toString());
   }
 
   @Override
@@ -88,6 +130,7 @@ public class Rollup implements Serializable {
     return new HashCodeBuilder(13, 41)
       .append(period)
       .append(fold)
+      .append(start)
       .toHashCode();
   }
 
@@ -101,6 +144,7 @@ public class Rollup implements Serializable {
     return new EqualsBuilder()
       .append(period, rhs.period)
       .append(fold, rhs.fold)
+      .append(start, rhs.start)
       .isEquals();
   }
 }
