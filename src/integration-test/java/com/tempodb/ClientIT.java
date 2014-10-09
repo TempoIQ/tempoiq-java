@@ -36,14 +36,13 @@ public class ClientIT {
     if(!credentials.exists()) {
       String message = "Missing credentials file for integration test.\n" +
         "Please supply a file 'integration-credentials.properties' with the following format:\n" +
-        "  database.id=<id>\n" +
         "  credentials.key=<key>\n" +
         "  credentials.secret=<secret>\n" +
         "  hostname=<hostname>\n" +
         "  port=<port>\n" +
         "  scheme=<scheme>\n";
 
-      System.exit(1);
+      System.err.print(message);
     }
 
     client = getClient(credentials);
