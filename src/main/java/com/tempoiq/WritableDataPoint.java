@@ -51,7 +51,7 @@ public class WritableDataPoint implements Serializable {
 
   /**
    *  Sets the {@link Device} of this WritableDataPoint.
-   *  @param sensor The {@link Device}
+   *  @param device The {@link Device}
    *  @since 1.1.0
    */
   public void setDevice(Device device) { this.device = checkNotNull(device); }

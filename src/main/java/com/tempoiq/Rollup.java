@@ -53,7 +53,6 @@ public class Rollup implements Serializable, PipelineFunction {
    *  @param period The rollup period.
    *  @param fold The rollup folding function.
    *  @param start The rollup start time
-   *  @param stop The rollup stop time
    *  @since 1.1.0
    */
   public Rollup(Period period, Fold fold, DateTime start) {
@@ -122,7 +121,7 @@ public class Rollup implements Serializable, PipelineFunction {
 
   @Override
   public String toString() {
-    return String.format("Rollup(period=%s,fold=%s,start=%s,stop=%s)", period.toString(), fold.toString().toLowerCase(), start.toString());
+    return String.format("Rollup(period=%s,fold=%s,start=%s)", period.toString(), fold.toString().toLowerCase(), start.toString());
   }
 
   @Override
