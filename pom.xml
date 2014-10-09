@@ -231,10 +231,13 @@
           <effort>Max</effort>
           <threshold>Default</threshold>
           <xmlOutput>true</xmlOutput>
+          <failOnError>false</failOnError>
           <!-- <excludeFilterFile>${basedir}/../findbugs-exclude.xml</excludeFilterFile> -->
         </configuration>
         <executions>
           <execution>
+            <id>analyze-compile</id>
+            <phase>compile</phase>
             <goals>
               <goal>check</goal>
             </goals>
