@@ -3,3 +3,5 @@ integration-credentials.properties
 /.settings
 .classpath
 .project
+.idea/
+*.iml

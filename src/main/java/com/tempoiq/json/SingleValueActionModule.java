@@ -21,9 +21,9 @@ import com.tempoiq.SingleValue;
 import com.tempoiq.Sensor;
 
 
-public class SingleValueModule extends SimpleModule {
+public class SingleValueActionModule extends SimpleModule {
 
-  public SingleValueModule() {
+  public SingleValueActionModule() {
     addDeserializer(SingleValue.class, new SingleValueDeserializer());
   }
 

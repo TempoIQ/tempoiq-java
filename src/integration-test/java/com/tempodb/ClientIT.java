@@ -177,6 +177,34 @@ public class ClientIT {
     }
   }
 
+  @Test
+  public void testSingleValue() {
+    Device device = createDevice();
+
+    Map<String, Number> newPoints = new HashMap<String, Number>();
+    newPoints.put("sensor1", 4.0);
+    
+    Map<String, Number> oldPoints = new HashMap<String, Number>();
+    oldPoints.put("sensor1", 3.0);
+   
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2013, 1, 1, 0, 0, 0, 0, timezone), newPoints);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), oldPoints);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+    Cursor<Row> cursor = client.singleValue(sel);
+    assert(cursor.iterator().hasNext());
+    for (Row row : cursor) {
+      assertEquals(4.0, row.getValue(device.getKey(), "sensor1"));
+    }
+  }
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
   //   // Write datapoints

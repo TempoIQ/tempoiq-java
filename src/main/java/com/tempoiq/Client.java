@@ -419,6 +419,30 @@ public class Client {
     return read(selection, new Pipeline(), start, stop);
   }
 
+  public DataPointRowCursor singleValue(Selection selection, Pipeline pipeline) {
+    checkNotNull(selection);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/single/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Query query = new Query(
+      new QuerySearch(Selector.Type.DEVICES, selection),
+      pipeline,
+      new SingleValueAction());
+
+    return new DataPointRowCursor(uri, this, query);
+  }
+
+  public DataPointRowCursor singleValue(Selection selection) {
+    return singleValue(selection, new Pipeline());
+  }
+
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
     if(aggregation != null) {
       builder.addParameter("aggregation.fold", aggregation.getFold().toString().toLowerCase());
