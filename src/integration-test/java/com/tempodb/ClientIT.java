@@ -31,6 +31,10 @@ public class ClientIT {
 
   private static final int SLEEP = 5000;
 
+  // Tag test devices with a unique-ish attribute and key prefix so they're 
+  // unlikely to conflict with existing devices in the backend
+  private static final String DEVICE_PREFIX = "b90467087145fd06";
+
   static {
     File credentials = new File("integration-credentials.properties");
     if(!credentials.exists()) {
@@ -75,16 +79,22 @@ public class ClientIT {
   }
 
   static public void cleanup() {
-    // /* Delete all devices */
-    Result<DeleteSummary> result = client.deleteAllDevices();
+    // /* Delete devices that are tagged from this integration test */
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.attributes(DEVICE_PREFIX, DEVICE_PREFIX));
+
+    Result<DeleteSummary> result = client.deleteDevices(sel);
     assertEquals(State.SUCCESS, result.getState());
+    
   }
 
   static public Device createDevice() {
     List<Sensor> sensors = new ArrayList<Sensor>();
+    HashMap<String, String> attributes = new HashMap<String, String>();
+    attributes.put(DEVICE_PREFIX, DEVICE_PREFIX);
     sensors.add(new Sensor("sensor1"));
     sensors.add(new Sensor("sensor2"));
-    Device device = new Device("device1", "name", new HashMap<String, String>(), sensors);
+    Device device = new Device(DEVICE_PREFIX+"-1", "name", attributes, sensors);
     Result<Device> result = client.createDevice(device);
     return result.getValue();
   }
@@ -102,7 +112,10 @@ public class ClientIT {
 
   @Test
   public void testCreateDevices() {
-    Device device = new Device("create-device", "name", new HashMap<String, String>(), new ArrayList<Sensor>());
+    HashMap<String, String> attributes = new HashMap<String, String>();
+    attributes.put(DEVICE_PREFIX, DEVICE_PREFIX);
+
+    Device device = new Device(DEVICE_PREFIX+"create", "name", attributes, new ArrayList<Sensor>());
 
     Result<Device> result = client.createDevice(device);
     Result<Device> expected = new Result<Device>(device, 200, "OK");
