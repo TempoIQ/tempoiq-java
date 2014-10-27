@@ -224,27 +224,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.2</version>
-        <configuration>
-          <effort>Max</effort>
-          <threshold>Default</threshold>
-          <xmlOutput>true</xmlOutput>
-          <failOnError>false</failOnError>
-          <!-- <excludeFilterFile>${basedir}/../findbugs-exclude.xml</excludeFilterFile> -->
-        </configuration>
-        <executions>
-          <execution>
-            <id>analyze-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.4.1</version>
