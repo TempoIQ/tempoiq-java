@@ -28,10 +28,10 @@ public class DeviceSegmentModule extends SimpleModule {
     @Override
     public DeviceSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
       JsonNode root = parser.readValueAsTree();
-      JsonNode devicesNode = root.get("items");
+      JsonNode devicesNode = root.get("data");
 
       if(devicesNode == null) {
-        throw context.mappingException("Missing 'items' field in DeviceSegment.");
+        throw context.mappingException("Missing 'data' field in DeviceSegment.");
       }
 
       List<Device> items = Json.getObjectMapper()
