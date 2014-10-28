@@ -193,15 +193,14 @@ public class ClientIT {
   @Test
   public void testSingleValue() {
     Device device = createDevice();
+    DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
 
-    Map<String, Number> newPoints = new HashMap<String, Number>();
-    newPoints.put("sensor1", 4.0);
-    
-    Map<String, Number> oldPoints = new HashMap<String, Number>();
-    oldPoints.put("sensor1", 3.0);
-   
-    MultiDataPoint mp = new MultiDataPoint(new DateTime(2013, 1, 1, 0, 0, 0, 0, timezone), newPoints);
-    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), oldPoints);
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 4.0);
+    points.put("sensor2", 2.0);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone), points);
 
     List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
     allPoints.add(mp);
@@ -212,7 +211,10 @@ public class ClientIT {
 
     Selection sel = new Selection().
       addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
     Cursor<Row> cursor = client.singleValue(sel);
+    System.out.println("CURSOR: " + cursor.toString());
+    System.out.println("CURSOR ROWS: " + cursor.iterator().toString());
     assert(cursor.iterator().hasNext());
     for (Row row : cursor) {
       assertEquals(4.0, row.getValue(device.getKey(), "sensor1"));

@@ -11,6 +11,10 @@ public class DataPointCursor implements Cursor<DataPoint> {
     
     public DataPointIterator(DataPointRowCursor rowCursor, String deviceKey, String sensorKey) {
       this.rowIterator = rowCursor.iterator();
+      System.out.println("ROW ITERATOR: ");
+      for(Row r : rowCursor) {
+        System.out.println(r.toString());
+      }
       this.deviceKey = deviceKey;
       this.sensorKey = sensorKey;
     }
