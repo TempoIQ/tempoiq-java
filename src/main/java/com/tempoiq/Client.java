@@ -419,7 +419,7 @@ public class Client {
     return read(selection, new Pipeline(), start, stop);
   }
 
-  public DataPointRowCursor singleValue(Selection selection, Pipeline pipeline) {
+  public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
     checkNotNull(selection);
 
     URI uri = null;
@@ -439,8 +439,8 @@ public class Client {
     return new DataPointRowCursor(uri, this, query);
   }
 
-  public DataPointRowCursor singleValue(Selection selection) {
-    return singleValue(selection, new Pipeline());
+  public DataPointRowCursor latest(Selection selection) {
+    return latest(selection, new Pipeline());
   }
 
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {

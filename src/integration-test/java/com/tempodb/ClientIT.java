@@ -212,7 +212,7 @@ public class ClientIT {
     Selection sel = new Selection().
       addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
 
-    Cursor<Row> cursor = client.singleValue(sel);
+    Cursor<Row> cursor = client.latest(sel);
     System.out.println("CURSOR: " + cursor.toString());
     System.out.println("CURSOR ROWS: " + cursor.iterator().toString());
     assert(cursor.iterator().hasNext());
