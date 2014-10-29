@@ -443,6 +443,39 @@ public class Client {
     return latest(selection, new Pipeline());
   }
 
+  public Result<Void> delete(Device device, Sensor sensor, DateTime start, DateTime stop) {
+    checkNotNull(device);
+    checkNotNull(sensor);
+    checkNotNull(start);
+    checkNotNull(stop);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/sensors/%s/datapoints", API_VERSION2, device.getKey(), sensor.getKey()));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Delete delete = new Delete(start, stop);
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE);
+
+    Result<Void> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(device);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<Void>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    result = execute(request, Void.class);
+    return result;
+  }
+
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
     if(aggregation != null) {
       builder.addParameter("aggregation.fold", aggregation.getFold().toString().toLowerCase());
