@@ -193,8 +193,6 @@ public class ClientIT {
   @Test
   public void testSingleValue() {
     Device device = createDevice();
-    DateTime start = new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone);
-    DateTime stop = new DateTime(2012, 1, 2, 0, 0, 0, 0, timezone);
 
     Map<String, Number> points = new HashMap<String, Number>();
     points.put("sensor1", 4.0);
@@ -209,17 +207,66 @@ public class ClientIT {
     Result<Void> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
-    Selection sel = new Selection().
-      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+    Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
 
     Cursor<Row> cursor = client.latest(sel);
-    System.out.println("CURSOR: " + cursor.toString());
-    System.out.println("CURSOR ROWS: " + cursor.iterator().toString());
     assert(cursor.iterator().hasNext());
     for (Row row : cursor) {
       assertEquals(4.0, row.getValue(device.getKey(), "sensor1"));
     }
   }
+
+  @Test
+  public void testDeletePoints() {
+    Device device = createDevice();
+
+    Sensor sensor1 = new Sensor("sensor1");
+    Sensor sensor2 = new Sensor("sensor2");
+
+    Map<String, Number> points1 = new HashMap<String, Number>();
+    points1.put("sensor1", 1.0);
+    points1.put("sensor2", 10.0);
+
+    Map<String, Number> points2 = new HashMap<String, Number>();
+    points2.put("sensor1", 2.0);
+    points2.put("sensor2", 20.0);
+
+    Map<String, Number> points3 = new HashMap<String, Number>();
+    points3.put("sensor1", 3.0);
+    points3.put("sensor2", 30.0);
+
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points1);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone), points2);
+    MultiDataPoint mp3 = new MultiDataPoint(new DateTime(2012, 1, 1, 3, 0, 0, 0, timezone), points3);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+    allPoints.add(mp3);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+
+    DateTime start = new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 4, 0, 0, 0, 0, timezone);
+
+    Result<Void> deleteResult = client.delete(device, sensor1, start, stop);
+
+    Cursor<Row> cursor1 = client.latest(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor1")));
+    Cursor<Row> cursor2 = client.latest(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor2")));
+
+    assert(cursor1.iterator().hasNext());
+    for (Row row : cursor1) {
+      assertEquals(1.0, row.getValue(device.getKey(), "sensor1"));
+    }
+    assert(cursor2.iterator().hasNext());
+    assertEquals(30.0, cursor2.iterator().next().getValue(device.getKey(), "sensor2"));
+    }
+  }
+
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
   //   // Write datapoints
@@ -496,4 +543,3 @@ public class ClientIT {
   //   }
   //   return output;
   // }
-}
