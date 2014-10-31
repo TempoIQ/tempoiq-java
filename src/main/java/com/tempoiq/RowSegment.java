@@ -17,13 +17,12 @@ class RowSegment extends Segment<Row> {
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
   @JsonCreator
-  public RowSegment(@JsonProperty("data") List<Row> rows) {
-    super(rows, "");
+  public RowSegment(@JsonProperty("data") List<Row> rows, @JsonProperty("next_page") PageLink nextPage) {
+    super(rows, nextPage);
   }
 
   static RowSegment make(HttpResponse response) throws IOException {
     String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
-    RowSegment segment = Json.loads(body, RowSegment.class);
-    return segment;
+    return Json.loads(body, RowSegment.class);
   }
 }

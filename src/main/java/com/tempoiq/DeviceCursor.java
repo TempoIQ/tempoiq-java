@@ -22,24 +22,23 @@ public class DeviceCursor implements Cursor<Device> {
     this.query = checkNotNull(query);
   }
 
-  public Iterator<Device> iterator() {
-    String body = null;
+  private Segment<Device> firstSegment() {
+    String body;
     try {
       body = Json.dumps(query);
     } catch (JsonProcessingException e) {
-      throw new TempoIQException("Error serializing the body of the request. More detail: " + e.getMessage(), 0);
+      throw new TempoIQException(String.format("Error fetching first segment for iterator. More detail: %s", query), 0);
     }
     HttpRequest request = client.buildRequest(uri.toString(), body);
     Result<DeviceSegment> result = client.execute(request, DeviceSegment.class);
-
-    Iterator<Device> iterator = null;
-    if(result.getState() == State.SUCCESS) {
-      @SuppressWarnings("unchecked") // This cast is always ok
-      SegmentIterator<Segment<Device>> segments = new SegmentIterator(client, result.getValue(), DeviceSegment.class);
-      iterator = new SegmentInnerIterator<Device>(segments);
+    if (result.getState().equals(State.SUCCESS)) {
+      return result.getValue();
     } else {
-      throw new TempoIQException(result.getMessage(), result.getCode());
+      throw new TempoIQException(String.format("Error fetching first segment for iterator. More detail: Request to TempoIQ failed: %s", result.getMessage()), 0);
     }
-    return iterator;
+  }
+
+  public Iterator<Device> iterator() {
+    return new SegmentInnerIterator<Device>(client, uri, firstSegment(), Device.class);
   }
 }

@@ -3,13 +3,7 @@ package com.tempoiq;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -189,6 +183,107 @@ public class ClientIT {
       assertEquals(6.0, row.getValue(device.getKey(), "mean"));
     }
   }
+
+  @Test
+  public void testSingleValue() {
+    Device device = createDevice();
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 4.0);
+    points.put("sensor2", 2.0);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone), points);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Cursor<Row> cursor = client.latest(sel);
+    assert(cursor.iterator().hasNext());
+    for (Row row : cursor) {
+      assertEquals(4.0, row.getValue(device.getKey(), "sensor1"));
+    }
+  }
+
+  @Test
+  public void testDeletePoints() {
+    Device device = createDevice();
+
+    Sensor sensor1 = new Sensor("sensor1");
+    Sensor sensor2 = new Sensor("sensor2");
+
+    Map<String, Number> points1 = new HashMap<String, Number>();
+    points1.put("sensor1", 1.0);
+    points1.put("sensor2", 10.0);
+
+    Map<String, Number> points2 = new HashMap<String, Number>();
+    points2.put("sensor1", 2.0);
+    points2.put("sensor2", 20.0);
+
+    Map<String, Number> points3 = new HashMap<String, Number>();
+    points3.put("sensor1", 3.0);
+    points3.put("sensor2", 30.0);
+
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points1);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone), points2);
+    MultiDataPoint mp3 = new MultiDataPoint(new DateTime(2012, 1, 1, 3, 0, 0, 0, timezone), points3);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+    allPoints.add(mp3);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+
+    DateTime start = new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2012, 1, 4, 0, 0, 0, 0, timezone);
+
+    Result<Void> deleteResult = client.delete(device, sensor1, start, stop);
+
+    Cursor<Row> cursor1 = client.latest(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor1")));
+    Cursor<Row> cursor2 = client.latest(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor2")));
+
+    assert(cursor1.iterator().hasNext());
+    for (Row row : cursor1) {
+      assertEquals(1.0, row.getValue(device.getKey(), "sensor1"));
+    }
+    assert(cursor2.iterator().hasNext());
+    assertEquals(30.0, cursor2.iterator().next().getValue(device.getKey(), "sensor2"));
+    }
+
+
+  @Test
+  public void testPaginatedRead() {
+    Device device = createDevice();
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    DateTime start = new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone);
+
+    for(int i=0; i<5010; i++) {
+      points.put("sensor1", i + 0.1);
+      points.put("sensor2", i + 0.2);
+      MultiDataPoint mp = new MultiDataPoint(start.plusMinutes(i), points);
+      client.writeDataPoints(device, mp);
+    }
+    //read out 5010 points apiece from them
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Pipeline pipeline = new Pipeline()
+      .rollup(Period.days(1), Fold.SUM, start)
+      .aggregate(Fold.MEAN);
+    Cursor<Row> cursor = client.read(sel, pipeline, start, stop);
+  }
+}
 
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
@@ -466,4 +561,3 @@ public class ClientIT {
   //   }
   //   return output;
   // }
-}

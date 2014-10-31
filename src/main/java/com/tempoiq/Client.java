@@ -419,6 +419,63 @@ public class Client {
     return read(selection, new Pipeline(), start, stop);
   }
 
+  public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
+    checkNotNull(selection);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/single/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Query query = new Query(
+      new QuerySearch(Selector.Type.DEVICES, selection),
+      pipeline,
+      new SingleValueAction());
+
+    return new DataPointRowCursor(uri, this, query);
+  }
+
+  public DataPointRowCursor latest(Selection selection) {
+    return latest(selection, new Pipeline());
+  }
+
+  public Result<Void> delete(Device device, Sensor sensor, DateTime start, DateTime stop) {
+    checkNotNull(device);
+    checkNotNull(sensor);
+    checkNotNull(start);
+    checkNotNull(stop);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/sensors/%s/datapoints", API_VERSION2, device.getKey(), sensor.getKey()));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Delete delete = new Delete(start, stop);
+
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE);
+
+    Result<Void> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(device);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<Void>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+
+    result = execute(request, Void.class);
+    return result;
+  }
+
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
     if(aggregation != null) {
       builder.addParameter("aggregation.fold", aggregation.getFold().toString().toLowerCase());
@@ -444,55 +501,6 @@ public class Client {
       for(Map.Entry<String, String> attribute : filter.getAttributes().entrySet()) {
         builder.addParameter(String.format("attr[%s]", attribute.getKey()), attribute.getValue());
       }
-    }
-  }
-
-  private void addInterpolationToURI(URIBuilder builder, Interpolation interpolation) {
-    if(interpolation != null) {
-      builder.addParameter("interpolation.period", interpolation.getPeriod().toString());
-      builder.addParameter("interpolation.function", interpolation.getFunction().toString().toLowerCase());
-    }
-  }
-
-  private void addIntervalToURI(URIBuilder builder, Interval interval) {
-    if(interval != null) {
-      builder.addParameter("start", interval.getStart().toString(iso8601));
-      builder.addParameter("end", interval.getEnd().toString(iso8601));
-    }
-  }
-
-  private void addMultiRollupToURI(URIBuilder builder, MultiRollup rollup) {
-    if(rollup != null) {
-      builder.addParameter("rollup.period", rollup.getPeriod().toString());
-      for(Fold fold : rollup.getFolds()) {
-        builder.addParameter("rollup.fold", fold.toString().toLowerCase());
-      }
-    }
-  }
-
-  private void addPredicateToURI(URIBuilder builder, Predicate predicate) {
-    if(predicate != null) {
-      builder.addParameter("predicate.period", predicate.getPeriod().toString());
-      builder.addParameter("predicate.function", predicate.getFunction().toLowerCase());
-    }
-  }
-
-  private void addRollupToURI(URIBuilder builder, Rollup rollup) {
-    if(rollup != null) {
-      builder.addParameter("rollup.period", rollup.getPeriod().toString());
-      builder.addParameter("rollup.fold", rollup.getFold().toString().toLowerCase());
-    }
-  }
-
-  private void addTimestampToURI(URIBuilder builder, DateTime timestamp) {
-    if(timestamp != null) {
-      builder.addParameter("ts", timestamp.toString(iso8601));
-    }
-  }
-
-  private void addTimeZoneToURI(URIBuilder builder, DateTimeZone timezone) {
-    if(timezone != null) {
-      builder.addParameter("tz", timezone.toString());
     }
   }
 
