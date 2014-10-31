@@ -4,6 +4,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static com.tempoiq.util.Preconditions.*;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.tempoiq.json.Json;
 import org.apache.http.HttpRequest;
 
 
@@ -26,8 +30,15 @@ class SegmentIterator<T extends Segment<?>> implements Iterator<T> {
     }
     T rv = this.segment;
 
-    if(this.segment.getNext() != null && !this.segment.getNext().equals("")) {
-      HttpRequest request = client.buildRequest(this.segment.getNext());
+    if(this.segment.getNext() != null) {
+      String uri = Client.nextPageUriByQueryType(this.segment.getNext().getNextQuery());
+      String body;
+      try {
+        body = Json.dumps(this.segment.getNext().getNextQuery());
+      } catch (JsonProcessingException e) {
+        throw new TempoIQException("Error serializing the body of the request. More detail: " + e.getMessage(), 0);
+      }
+      HttpRequest request = client.buildRequest(uri, body);
       Result<T> result = client.execute(request, klass);
       if(result.getState() == State.SUCCESS) {
         this.segment = result.getValue();

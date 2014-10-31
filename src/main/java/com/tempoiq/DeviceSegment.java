@@ -14,14 +14,12 @@ import com.tempoiq.json.Json;
 public class DeviceSegment extends Segment<Device> {
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-  @JsonCreator
-  public DeviceSegment(@JsonProperty("items") List<Device> devices) {
-    super(devices, "");
+  public DeviceSegment(List<Device> devices, PageLink nextPage) {
+    super(devices, nextPage);
   }
 
   static DeviceSegment make(HttpResponse response) throws IOException {
     String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
-    DeviceSegment segment = Json.loads(body, DeviceSegment.class);
-    return segment;
+    return Json.loads(body, DeviceSegment.class);
   }
 }

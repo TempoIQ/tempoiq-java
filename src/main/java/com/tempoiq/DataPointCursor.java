@@ -22,10 +22,10 @@ public class DataPointCursor implements Cursor<DataPoint> {
     @Override
     public boolean hasNext() {
       while (rowIterator.hasNext()) {
-	nextRow = rowIterator.next();
-	if (nextRow.hasSensor(deviceKey, sensorKey)) {
-	  return true;
-	}
+        nextRow = rowIterator.next();
+        if (nextRow.hasSensor(deviceKey, sensorKey)) {
+          return true;
+        }
       }
 
       return false;

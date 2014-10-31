@@ -504,55 +504,6 @@ public class Client {
     }
   }
 
-  private void addInterpolationToURI(URIBuilder builder, Interpolation interpolation) {
-    if(interpolation != null) {
-      builder.addParameter("interpolation.period", interpolation.getPeriod().toString());
-      builder.addParameter("interpolation.function", interpolation.getFunction().toString().toLowerCase());
-    }
-  }
-
-  private void addIntervalToURI(URIBuilder builder, Interval interval) {
-    if(interval != null) {
-      builder.addParameter("start", interval.getStart().toString(iso8601));
-      builder.addParameter("end", interval.getEnd().toString(iso8601));
-    }
-  }
-
-  private void addMultiRollupToURI(URIBuilder builder, MultiRollup rollup) {
-    if(rollup != null) {
-      builder.addParameter("rollup.period", rollup.getPeriod().toString());
-      for(Fold fold : rollup.getFolds()) {
-        builder.addParameter("rollup.fold", fold.toString().toLowerCase());
-      }
-    }
-  }
-
-  private void addPredicateToURI(URIBuilder builder, Predicate predicate) {
-    if(predicate != null) {
-      builder.addParameter("predicate.period", predicate.getPeriod().toString());
-      builder.addParameter("predicate.function", predicate.getFunction().toLowerCase());
-    }
-  }
-
-  private void addRollupToURI(URIBuilder builder, Rollup rollup) {
-    if(rollup != null) {
-      builder.addParameter("rollup.period", rollup.getPeriod().toString());
-      builder.addParameter("rollup.fold", rollup.getFold().toString().toLowerCase());
-    }
-  }
-
-  private void addTimestampToURI(URIBuilder builder, DateTime timestamp) {
-    if(timestamp != null) {
-      builder.addParameter("ts", timestamp.toString(iso8601));
-    }
-  }
-
-  private void addTimeZoneToURI(URIBuilder builder, DateTimeZone timezone) {
-    if(timezone != null) {
-      builder.addParameter("tz", timezone.toString());
-    }
-  }
-
   private String urlencode(String key) {
     String encoded;
     try {
@@ -725,5 +676,18 @@ public class Client {
 
   private String getVersion() {
     return VERSION;
+  }
+
+  protected static String nextPageUriByQueryType(Query query) {
+    String actionName = query.getAction().getName();
+    if (actionName.equals("read")) {
+      return String.format("/%s/read/", API_VERSION2);
+    } else if (actionName.equals("single")) {
+      return String.format("/%s/single/", API_VERSION2);
+    } else if (actionName.equals("find")) {
+      return String.format("/%s/find/", API_VERSION2);
+    } else {
+      throw new TempoIQException(String.format("Error determining the endpoint for the next page: %s is not a valid action type", actionName), 0);
+    }
   }
 }

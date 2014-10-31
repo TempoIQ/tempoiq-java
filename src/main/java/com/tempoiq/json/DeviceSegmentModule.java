@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tempoiq.Device;
 import com.tempoiq.DeviceSegment;
-import com.tempoiq.Rollup;
+import com.tempoiq.PageLink;
 
 
 public class DeviceSegmentModule extends SimpleModule {
@@ -28,18 +28,29 @@ public class DeviceSegmentModule extends SimpleModule {
     @Override
     public DeviceSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
       JsonNode root = parser.readValueAsTree();
-      JsonNode devicesNode = root.get("items");
+      JsonNode devicesNode = root.get("data");
+      JsonNode nextPageNode = root.get("next_page");
 
       if(devicesNode == null) {
-        throw context.mappingException("Missing 'items' field in DeviceSegment.");
+        throw context.mappingException("Missing 'data' field in DeviceSegment.");
       }
 
-      List<Device> items = Json.getObjectMapper()
-                                 .reader()
-                                 .withType(new TypeReference<List<Device>>() {})
-                                 .readValue(devicesNode);
+      List<Device> data = Json.getObjectMapper()
+        .reader()
+        .withType(new TypeReference<List<Device>>() {})
+        .readValue(devicesNode);
 
-      return new DeviceSegment(items);
+      PageLink nextPage;
+      if(nextPageNode == null) {
+        nextPage = null;
+      } else{
+        nextPage = Json.getObjectMapper()
+          .reader()
+          .withType(new TypeReference<PageLink>(){})
+          .readValue(nextPageNode);
+      }
+
+      return new DeviceSegment(data, nextPage);
     }
   }
 
