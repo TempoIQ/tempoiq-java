@@ -1,42 +1,57 @@
 package com.tempoiq;
 
+import org.apache.http.HttpRequest;
+
+import java.net.URI;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
+import static com.tempoiq.util.Preconditions.*;
 
 class SegmentInnerIterator<T> implements Iterator<T> {
-  private Iterator<Segment<T>> segments;
-  private Iterator<T> currentSegment;
+  private final Client client;
+  private final URI endpoint;
+  private final Class<T> klass;
+  private Segment<T> currentSegment;
+  private Iterator<T> currentIterator;
 
-  public SegmentInnerIterator(SegmentIterator<Segment<T>> segments) {
-    this.segments = segments;
-    currentSegment = null;
+  public SegmentInnerIterator(Client client, URI endpoint, Segment<T> segment, Class<T> klass) {
+    this.client = checkNotNull(client);
+    this.endpoint = checkNotNull(endpoint);
+    this.klass = checkNotNull(klass);
+    this.currentSegment = segment;
+    this.currentIterator = segment.iterator();
   }
 
   public boolean hasNext() {
-    boolean hasNext = true;
-    if(currentSegment == null) {
-      if(segments.hasNext()) {
-        currentSegment = segments.next().iterator();
-      } else {
-        return false;
-      }
+    if (currentIterator.hasNext()) {
+      return true;
+    } else if (currentSegment.getNextPage() != null) {
+      this.currentSegment = nextSegment(currentSegment.getNextPage().getNextQuery());
+      this.loadNextIterator();
+      return currentIterator.hasNext();
+    } else {
+      return false;
     }
-
-    while(!currentSegment.hasNext() && segments.hasNext()) {
-      currentSegment = segments.next().iterator();
-    }
-    return currentSegment.hasNext();
   }
 
   public T next() {
     if(!hasNext()) {
       throw new NoSuchElementException();
     }
-    return currentSegment.next();
+    return currentIterator.next();
   }
 
   public final void remove() {
     throw new UnsupportedOperationException();
+  }
+
+  private Segment<T> nextSegment(String body) {
+    HttpRequest request = client.buildRequest(endpoint.toString(), body);
+    Result<Segment<T>> result = (Result<Segment<T>>)(client.execute(request, currentSegment.getClass()));
+    return result.getValue();
+  }
+
+  private void loadNextIterator() {
+    this.currentIterator = this.currentSegment.iterator();
   }
 }

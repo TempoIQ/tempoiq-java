@@ -4,17 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static com.tempoiq.util.Preconditions.*;
 
 public class PageLink {
-  private Query nextQuery;
+  private String nextQuery;
 
-  public Query getNextQuery() {
+  public String getNextQuery() {
     return nextQuery;
   }
 
-  public void setNextQuery(Query nextQuery) {
-    this.nextQuery = checkNotNull(nextQuery);
-  }
-
-  public PageLink(@JsonProperty("next_query") Query nextQuery) {
+  public PageLink(@JsonProperty("next_query") String nextQuery) {
     this.nextQuery = checkNotNull(nextQuery);
   }
 

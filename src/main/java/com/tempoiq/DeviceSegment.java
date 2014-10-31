@@ -14,7 +14,8 @@ import com.tempoiq.json.Json;
 public class DeviceSegment extends Segment<Device> {
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-  public DeviceSegment(List<Device> devices, PageLink nextPage) {
+  public DeviceSegment(@JsonProperty("data") List<Device> devices,
+                      @JsonProperty("next_page")  PageLink nextPage) {
     super(devices, nextPage);
   }
 

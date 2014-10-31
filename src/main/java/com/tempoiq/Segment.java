@@ -1,6 +1,5 @@
 package com.tempoiq;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,15 +8,15 @@ import static com.tempoiq.util.Preconditions.*;
 
 class Segment<T> implements Iterable<T> {
   protected List<T> data;
-  protected PageLink next;
+  protected PageLink nextPage;
 
-  public Segment(List<T> data, PageLink next) {
+  public Segment(List<T> data, PageLink nextPage) {
     this.data = checkNotNull(data);
-    this.next = next;
+    this.nextPage = nextPage;
   }
 
   public List<T> getData() { return  this.data; }
-  public PageLink getNext() { return this.next; }
+  public PageLink getNextPage() { return this.nextPage; }
 
   public Iterator<T> iterator() {
     return data.iterator();
@@ -31,7 +30,7 @@ class Segment<T> implements Iterable<T> {
     Segment segment = (Segment) o;
 
     if (!data.equals(segment.data)) return false;
-    if (next != null ? !next.equals(segment.next) : segment.next != null) return false;
+    if (nextPage != null ? !nextPage.equals(segment.nextPage) : segment.nextPage != null) return false;
 
     return true;
   }
@@ -39,7 +38,7 @@ class Segment<T> implements Iterable<T> {
   @Override
   public int hashCode() {
     int result = data.hashCode();
-    result = 31 * result + (next != null ? next.hashCode() : 0);
+    result = 31 * result + (nextPage != null ? nextPage.hashCode() : 0);
     return result;
   }
 
@@ -47,7 +46,7 @@ class Segment<T> implements Iterable<T> {
   public String toString() {
     return "Segment{" +
       "data=" + data +
-      ", next=" + next +
+      ", nextPage=" + nextPage +
       '}';
   }
 }

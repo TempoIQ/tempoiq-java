@@ -677,17 +677,4 @@ public class Client {
   private String getVersion() {
     return VERSION;
   }
-
-  protected static String nextPageUriByQueryType(Query query) {
-    String actionName = query.getAction().getName();
-    if (actionName.equals("read")) {
-      return String.format("/%s/read/", API_VERSION2);
-    } else if (actionName.equals("single")) {
-      return String.format("/%s/single/", API_VERSION2);
-    } else if (actionName.equals("find")) {
-      return String.format("/%s/find/", API_VERSION2);
-    } else {
-      throw new TempoIQException(String.format("Error determining the endpoint for the next page: %s is not a valid action type", actionName), 0);
-    }
-  }
 }

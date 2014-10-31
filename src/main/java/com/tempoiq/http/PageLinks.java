@@ -10,7 +10,7 @@ public class PageLinks {
 
   private static final String META_REL = "rel";
 
-  private static final String META_NEXT = "next";
+  private static final String META_NEXT = "nextPage";
 
   private static final String DELIM_LINKS = ",";
 

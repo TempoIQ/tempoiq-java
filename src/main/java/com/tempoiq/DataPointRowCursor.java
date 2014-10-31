@@ -26,24 +26,23 @@ public class DataPointRowCursor implements Cursor<Row> {
     return new DataPointCursor(this, deviceKey, sensorKey);
   }
 
-  public Iterator<Row> iterator() {
-    String body = null;
+  private Segment<Row> firstSegment() {
+    String body;
     try {
       body = Json.dumps(query);
     } catch (JsonProcessingException e) {
-      throw new TempoIQException("Error serializing the body of the request. More detail: " + e.getMessage(), 0);
+      throw new TempoIQException(String.format("Error fetching first segment for iterator. More detail: %s", query), 0);
     }
     HttpRequest request = client.buildRequest(uri.toString(), body);
     Result<RowSegment> result = client.execute(request, RowSegment.class);
-
-    Iterator<Row> iterator = null;
-    if(result.getState() == State.SUCCESS) {
-      @SuppressWarnings("unchecked") // This cast is always ok
-      SegmentIterator<Segment<Row>> segments = new SegmentIterator(client, result.getValue(), RowSegment.class);
-      iterator = new SegmentInnerIterator<Row>(segments);
+    if (result.getState().equals(State.SUCCESS)) {
+      return result.getValue();
     } else {
-      throw new TempoIQException(result.getMessage(), result.getCode());
+      throw new TempoIQException(String.format("Error fetching first segment for iterator. More detail: Request to TempoIQ failed: %s", result.getMessage()), 0);
     }
-    return iterator;
+  }
+
+  public Iterator<Row> iterator() {
+    return new SegmentInnerIterator<Row>(client, uri, firstSegment(), Row.class);
   }
 }
