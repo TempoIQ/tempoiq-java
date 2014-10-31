@@ -3,13 +3,7 @@ package com.tempoiq;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -265,7 +259,31 @@ public class ClientIT {
     assert(cursor2.iterator().hasNext());
     assertEquals(30.0, cursor2.iterator().next().getValue(device.getKey(), "sensor2"));
     }
+
+
+  @Test
+  public void testPaginatedRead() {
+    Device device = createDevice();
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    DateTime start = new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone);
+
+    for(int i=0; i<5010; i++) {
+      points.put("sensor1", i + 0.1);
+      points.put("sensor2", i + 0.2);
+      MultiDataPoint mp = new MultiDataPoint(start.plusMinutes(i), points);
+      client.writeDataPoints(device, mp);
+    }
+    //read out 5010 points apiece from them
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Pipeline pipeline = new Pipeline()
+      .rollup(Period.days(1), Fold.SUM, start)
+      .aggregate(Fold.MEAN);
+    Cursor<Row> cursor = client.read(sel, pipeline, start, stop);
   }
+}
 
   // @Test
   // public void testDeleteDataPointsBySensor() throws InterruptedException {
