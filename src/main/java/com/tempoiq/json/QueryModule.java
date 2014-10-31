@@ -32,7 +32,7 @@ public class QueryModule extends SimpleModule {
       jgen.writeStartObject();
       jgen.writeObjectField("search", query.getSearch());
       if (query.getPipeline() != null) {
-	jgen.writeObjectField("fold", query.getPipeline());
+        jgen.writeObjectField("fold", query.getPipeline());
       }
       QueryAction action = query.getAction();
       jgen.writeObjectField(action.getName(), action);

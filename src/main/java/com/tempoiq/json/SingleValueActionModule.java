@@ -13,25 +13,24 @@ import com.tempoiq.SingleValueAction;
 
 public class SingleValueActionModule extends SimpleModule {
 
-    private static class SingleValueActionDeserializer extends StdScalarSerializer<SingleValueAction> {
-        public SingleValueActionDeserializer() { super(SingleValueAction.class); }
+  private static class SingleValueActionDeserializer extends StdScalarSerializer<SingleValueAction> {
+    public SingleValueActionDeserializer() { super(SingleValueAction.class); }
 
     @Override
     public void serialize(SingleValueAction action, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException, JsonProcessingException {
-        jgen.writeStartObject();
-        jgen.writeEndObject();
+      throws IOException, JsonProcessingException {
+      jgen.writeStartObject();
+      jgen.writeEndObject();
     }
   }
 
-    @Override
-    public String getModuleName() {
-        return "singlevalue";
-    }
+  @Override
+  public String getModuleName() {
+    return "singlevalue";
+  }
 
-    @Override
-    public Version version() {
-        return Version.unknownVersion();
-    }
+  @Override
+  public Version version() {
+    return Version.unknownVersion();
+  }
 }
-

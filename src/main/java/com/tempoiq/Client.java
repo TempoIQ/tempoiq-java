@@ -421,6 +421,7 @@ public class Client {
 
   public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
     checkNotNull(selection);
+    checkNotNull(pipeline);
 
     URI uri = null;
     try {

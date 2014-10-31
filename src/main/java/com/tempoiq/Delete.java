@@ -47,22 +47,23 @@ public class Delete implements Serializable {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+  public boolean equals(Object obj) {
+    if(obj == null) return false;
+    if(obj == this) return true;
+    if(!(obj instanceof Delete)) return false;
 
-    Delete delete = (Delete) o;
-
-    if (!start.equals(delete.start)) return false;
-    if (!stop.equals(delete.stop)) return false;
-
-    return true;
+    Delete rhs = (Delete)obj;
+    return new EqualsBuilder()
+      .append(start, rhs.start)
+      .append(stop, rhs.stop)
+      .isEquals();
   }
 
   @Override
   public int hashCode() {
-    int result = start.hashCode();
-    result = 31 * result + stop.hashCode();
-    return result;
+    return new HashCodeBuilder(19, 31)
+      .append(start)
+      .append(stop)
+      .toHashCode();
   }
 }
