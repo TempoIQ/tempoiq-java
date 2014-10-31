@@ -235,7 +235,7 @@ public class Client {
   /**
    *  Deletes a Device.
    *
-   *  @param device The Device to delete
+   *  @param device The Device to deleteDataPoints
    *  @return {@link Void}
    *  @since 1.1.0
    */
@@ -417,6 +417,62 @@ public class Client {
 
   public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
     return read(selection, new Pipeline(), start, stop);
+  }
+
+  public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
+    checkNotNull(selection);
+    checkNotNull(pipeline);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/single/", API_VERSION2));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Query query = new Query(
+      new QuerySearch(Selector.Type.DEVICES, selection),
+      pipeline,
+      new SingleValueAction());
+
+    return new DataPointRowCursor(uri, this, query);
+  }
+
+  public DataPointRowCursor latest(Selection selection) {
+    return latest(selection, new Pipeline());
+  }
+
+  public Result<DeleteSummary> deleteDataPoints(Device device, Sensor sensor, DateTime start, DateTime stop) {
+    checkNotNull(device);
+    checkNotNull(sensor);
+    checkNotNull(start);
+    checkNotNull(stop);
+
+    URI uri = null;
+    try {
+      URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/sensors/%s/datapoints", API_VERSION2, device.getKey(), sensor.getKey()));
+      uri = builder.build();
+    } catch (URISyntaxException e) {
+      String message = "Could not build URI.";
+      throw new IllegalArgumentException(message, e);
+    }
+
+    Delete delete = new Delete(start, stop);
+    Result<DeleteSummary> result = null;
+    String body;
+
+    try {
+      body = Json.dumps(delete);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<DeleteSummary>(null, GENERIC_ERROR_CODE, message);
+      return result;
+    }
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE, body);
+    result = execute(request, DeleteSummary.class);
+    return result;
   }
 
   private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {

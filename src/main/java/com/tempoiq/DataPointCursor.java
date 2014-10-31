@@ -8,7 +8,7 @@ public class DataPointCursor implements Cursor<DataPoint> {
     private final String deviceKey;
     private final String sensorKey;
     private Row nextRow;
-    
+
     public DataPointIterator(DataPointRowCursor rowCursor, String deviceKey, String sensorKey) {
       this.rowIterator = rowCursor.iterator();
       this.deviceKey = deviceKey;
@@ -18,10 +18,10 @@ public class DataPointCursor implements Cursor<DataPoint> {
     @Override
     public boolean hasNext() {
       while (rowIterator.hasNext()) {
-	nextRow = rowIterator.next();
-	if (nextRow.hasSensor(deviceKey, sensorKey)) {
-	  return true;
-	}
+        nextRow = rowIterator.next();
+        if (nextRow.hasSensor(deviceKey, sensorKey)) {
+          return true;
+        }
       }
 
       return false;
