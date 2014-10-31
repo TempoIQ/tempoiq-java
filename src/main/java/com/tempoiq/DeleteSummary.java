@@ -14,7 +14,7 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 /**
- *  Information about a delete sensor operation.
+ *  Information about a deleteDataPoints sensor operation.
  *  @since 1.0.0
  */
 public class DeleteSummary implements Serializable {

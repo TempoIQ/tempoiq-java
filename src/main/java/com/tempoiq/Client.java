@@ -235,7 +235,7 @@ public class Client {
   /**
    *  Deletes a Device.
    *
-   *  @param device The Device to delete
+   *  @param device The Device to deleteDataPoints
    *  @return {@link Void}
    *  @since 1.1.0
    */
@@ -443,7 +443,7 @@ public class Client {
     return latest(selection, new Pipeline());
   }
 
-  public Result<Void> delete(Device device, Sensor sensor, DateTime start, DateTime stop) {
+  public Result<DeleteSummary> deleteDataPoints(Device device, Sensor sensor, DateTime start, DateTime stop) {
     checkNotNull(device);
     checkNotNull(sensor);
     checkNotNull(start);
@@ -459,20 +459,18 @@ public class Client {
     }
 
     Delete delete = new Delete(start, stop);
+    Result<DeleteSummary> result = null;
+    String body;
 
-    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE);
-
-    Result<Void> result = null;
-    String body = null;
     try {
-      body = Json.dumps(device);
+      body = Json.dumps(delete);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
-      result = new Result<Void>(null, GENERIC_ERROR_CODE, message);
+      result = new Result<DeleteSummary>(null, GENERIC_ERROR_CODE, message);
       return result;
     }
-
-    result = execute(request, Void.class);
+    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE, body);
+    result = execute(request, DeleteSummary.class);
     return result;
   }
 

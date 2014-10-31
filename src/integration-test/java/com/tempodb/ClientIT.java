@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -247,21 +245,22 @@ public class ClientIT {
     Result<Void> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
-    Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
-
-
-    DateTime start = new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone);
+    DateTime start = new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone);
     DateTime stop = new DateTime(2012, 1, 4, 0, 0, 0, 0, timezone);
 
-    Result<Void> deleteResult = client.delete(device, sensor1, start, stop);
+    Result<DeleteSummary> delResult = client.deleteDataPoints(device, sensor1, start, stop);
+    System.out.printf("DEL RESULT: %s\n", delResult);
+    assertEquals(State.SUCCESS, result.getState());
+    assertEquals(delResult.getValue().getDeleted(), 2);
 
-    Cursor<Row> cursor1 = client.latest(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor1")));
+    Cursor<Row> cursor1 = client.read(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor1")),
+      new DateTime(2011, 1, 1, 0, 0, 0, 0, timezone),
+      new DateTime(2013, 1, 1, 1, 0, 0, 0, timezone));
+
     Cursor<Row> cursor2 = client.latest(new Selection().addSelector(Selector.Type.SENSORS, Selector.key("sensor2")));
 
     assert(cursor1.iterator().hasNext());
-    for (Row row : cursor1) {
-      assertEquals(1.0, row.getValue(device.getKey(), "sensor1"));
-    }
+    assertEquals(1.0, cursor1.iterator().next().getValue(device.getKey(), "sensor1"));
     assert(cursor2.iterator().hasNext());
     assertEquals(30.0, cursor2.iterator().next().getValue(device.getKey(), "sensor2"));
     }
@@ -495,8 +494,8 @@ public class ClientIT {
   // public void testDeleteSensor() {
   //   // Create a sensor
   //   HashSet<String> tags = new HashSet<String>();
-  //   tags.add("delete");
-  //   Sensor sensor = new Sensor("delete-sensor", "name", tags, new HashMap<String, String>());
+  //   tags.add("deleteDataPoints");
+  //   Sensor sensor = new Sensor("deleteDataPoints-sensor", "name", tags, new HashMap<String, String>());
   //   Result<Sensor> result1 = client.createSensor(sensor);
 
   //   // Delete the sensor
@@ -504,7 +503,7 @@ public class ClientIT {
   //   assertEquals(new Result<Void>(null, 200, "OK"), result2);
 
   //   // Get the sensor
-  //   Result<Sensor> result3 = client.getSensor("delete-sensor");
+  //   Result<Sensor> result3 = client.getSensor("deleteDataPoints-sensor");
   //   Result<Sensor> expected = new Result<Sensor>(null, 403, "Forbidden");
   //   assertEquals(expected, result3);
   // }
@@ -513,15 +512,15 @@ public class ClientIT {
   // public void testDeleteSensorByFilter() {
   //   // Create a sensor
   //   HashSet<String> tags = new HashSet<String>();
-  //   tags.add("delete-filter");
-  //   Sensor sensor1 = new Sensor("delete-sensor", "name", tags, new HashMap<String, String>());
-  //   Sensor sensor2 = new Sensor("delete-sensor2", "name", new HashSet<String>(), new HashMap<String, String>());
+  //   tags.add("deleteDataPoints-filter");
+  //   Sensor sensor1 = new Sensor("deleteDataPoints-sensor", "name", tags, new HashMap<String, String>());
+  //   Sensor sensor2 = new Sensor("deleteDataPoints-sensor2", "name", new HashSet<String>(), new HashMap<String, String>());
   //   Result<Sensor> result1 = client.createSensor(sensor1);
   //   Result<Sensor> result2 = client.createSensor(sensor2);
 
   //   // Get the sensor by filter
   //   Filter filter = new Filter();
-  //   filter.addTag("delete-filter");
+  //   filter.addTag("deleteDataPoints-filter");
   //   Cursor<Sensor> cursor = client.getSensor(filter);
   //   List<Sensor> expected1 = Arrays.asList(sensor1);
   //   assertEquals(expected1, toList(cursor));

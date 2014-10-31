@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import static com.tempoiq.util.Preconditions.*;
 
 /**
- * this represents the range of time to delete for a sensor
+ * this represents the range of time to deleteDataPoints for a sensor
  */
 public class Delete implements Serializable {
   
