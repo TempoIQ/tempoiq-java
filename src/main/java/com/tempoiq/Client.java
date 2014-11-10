@@ -1,37 +1,17 @@
 package com.tempoiq;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.http.*;
-import org.apache.http.auth.*;
-import org.apache.http.client.*;
-import org.apache.http.client.entity.GzipDecompressingEntity;
-import org.apache.http.client.methods.*;
-import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.ConnectionKeepAliveStrategy;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.*;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.message.BasicHeaderElementIterator;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.*;
-import org.apache.http.protocol.*;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
@@ -85,24 +65,9 @@ import static com.tempoiq.util.Preconditions.*;
  */
 public class Client {
 
-  private final Credentials credentials;
-  private final InetSocketAddress host;
-  private final String scheme;
-
-  private HttpClient client = null;
-  private HttpHost target = null;
-
-  private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-  // Timeout on milliseconds
-  private static final int DEFAULT_TIMEOUT_MILLIS = 50000;  // 50 seconds
-  private static final long DEFAULT_KEEPALIVE_TIMEOUT_MILLIS = 50000;  // 50 seconds
-  private static final int GENERIC_ERROR_CODE = 600;
-  private static final String VERSION = "1.0-SNAPSHOT";
-  private static final String API_VERSION = "v1";
+  private Executor runner;
   private static final String API_VERSION2 = "v2";
-  private final DateTimeFormatter iso8601 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-  private enum HttpMethod { GET, POST, PUT, DELETE }
+  private static final int GENERIC_ERROR_CODE = 600;
 
   /**
    *  Base constructor for a Client object.
@@ -113,9 +78,7 @@ public class Client {
    */
   public Client(Credentials credentials, InetSocketAddress host, String scheme) {
     checkArgument(scheme.equals("http") || scheme.equals("https"), "Scheme must be either \"http\" or \"https\".");
-    this.credentials = checkNotNull(credentials, "Credentials cannot be null.");
-    this.host = checkNotNull(host, "Host cannot be null.");
-    this.scheme = checkNotNull(scheme, "Scheme cannot be null.");
+    this.runner = new Executor(credentials, host, scheme);
   }
 
   /**
@@ -123,21 +86,21 @@ public class Client {
    *  @return Api credentials
    *  @since 1.0.0
    */
-  public Credentials getCredentials() { return credentials; }
+  public Credentials getCredentials() { return runner.getCredentials(); }
 
   /**
    *  Returns client's api server host.
    *  @return Api server host address.
    *  @since 1.0.0
    */
-  public InetSocketAddress getHost() { return host; }
+  public InetSocketAddress getHost() { return runner.getHost(); }
 
   /**
    *  Returns client's api server scheme.
    *  @return Api server scheme.
    *  @since 1.0.0
    */
-  public String getScheme() { return scheme; }
+  public String getScheme() { return runner.getScheme(); }
 
   /**
    *  Create a Device
@@ -169,9 +132,7 @@ public class Client {
       return result;
     }
 
-    HttpRequest request = buildRequest(uri.toString(), HttpMethod.POST, body);
-    result = execute(request, Device.class);
-    return result;
+    return runner.post(uri, body, Device.class);
   }
 
   /**
@@ -193,9 +154,7 @@ public class Client {
       throw new IllegalArgumentException(message, e);
     }
 
-    HttpRequest request = buildRequest(uri.toString());
-    Result<Device> result = execute(request, Device.class);
-    return result;
+    return runner.get(uri, Device.class);
   }
 
   /**
@@ -227,9 +186,7 @@ public class Client {
       return result;
     }
 
-    HttpRequest request = buildRequest(uri.toString(), HttpMethod.PUT, body);
-    result = execute(request, Device.class);
-    return result;
+    return runner.put(uri, body, Device.class);
   }
 
   /**
@@ -239,7 +196,7 @@ public class Client {
    *  @return {@link Void}
    *  @since 1.1.0
    */
-  public Result<Void> deleteDevice(Device device) {
+  public Result<DeleteSummary> deleteDevice(Device device) {
     checkNotNull(device);
 
     URI uri = null;
@@ -251,9 +208,7 @@ public class Client {
       throw new IllegalArgumentException(message, e);
     }
 
-    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE);
-    Result<Void> result = execute(request, Void.class);
-    return result;
+    return runner.delete(uri);
   }
 
   /**
@@ -282,9 +237,9 @@ public class Client {
     String body = null;
     try {
       Query query = new Query(
-	new QuerySearch(Selector.Type.DEVICES, selection),
-	null,
-	new FindAction());
+        new QuerySearch(Selector.Type.DEVICES, selection),
+        null,
+        new FindAction());
       body = Json.dumps(query);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
@@ -292,15 +247,7 @@ public class Client {
       return result;
     }
 
-    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE, body);
-    result = execute(request, DeleteSummary.class);
-    return result;
-  }
-
-  public Result<DeleteSummary> deleteAllDevices() {
-    Selection selection = new Selection()
-      .addSelector(Selector.Type.DEVICES, Selector.all());
-    return deleteDevices(selection);
+    return runner.delete(uri, body);
   }
 
   public Result<Void> writeDataPoints(Device device, MultiDataPoint data) {
@@ -322,7 +269,7 @@ public class Client {
     WriteRequest wr = new WriteRequest();
     for (MultiDataPoint point : data) {
       for(Map.Entry<String, Number> entry : point.getData().entrySet()) {
-	wr.add(device, new Sensor(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
+        wr.add(device, new Sensor(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
       }
     }
 
@@ -365,11 +312,9 @@ public class Client {
       return result;
     }
 
-    HttpRequest httpRequest = buildRequest(uri.toString(), HttpMethod.POST, body);
-    result = execute(httpRequest, Void.class);
-    return result;
+    return runner.post(uri, body, Void.class);
   }
-  
+
   public DeviceCursor listDevices(Selection selection) {
     checkNotNull(selection);
 
@@ -383,17 +328,23 @@ public class Client {
     }
 
     Query query = new Query(
-        new QuerySearch(Selector.Type.DEVICES, selection),
-        null,
-        new FindAction());
+      new QuerySearch(Selector.Type.DEVICES, selection),
+      null,
+      new FindAction());
 
-    return new DeviceCursor(uri, this, query);
+    Result<DeviceSegment> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(query);
+      result = runner.get(uri, body, DeviceSegment.class);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<DeviceSegment>(null, GENERIC_ERROR_CODE, message);
+    }
+    return new DeviceCursor(result, this.runner, uri);
   }
 
-  public DataPointRowCursor read(Selection selection,
-				 Pipeline pipeline,
-				 DateTime start,
-				 DateTime stop) {
+  public DataPointRowCursor read(Selection selection, Pipeline pipeline, DateTime start, DateTime stop) {
     checkNotNull(selection);
     checkNotNull(start);
     checkNotNull(stop);
@@ -411,8 +362,16 @@ public class Client {
       new QuerySearch(Selector.Type.DEVICES, selection),
       pipeline,
       new ReadAction(start, stop));
-
-    return new DataPointRowCursor(uri, this, query);
+    Result<RowSegment> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(query);
+      result = runner.get(uri, body, RowSegment.class);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
+    }
+    return new DataPointRowCursor(result, this.runner, uri);
   }
 
   public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
@@ -437,7 +396,16 @@ public class Client {
       pipeline,
       new SingleValueAction());
 
-    return new DataPointRowCursor(uri, this, query);
+    Result<RowSegment> result = null;
+    String body = null;
+    try {
+      body = Json.dumps(query);
+      result = runner.get(uri, body, RowSegment.class);
+    } catch (JsonProcessingException e) {
+      String message = "Error serializing the body of the request. More detail: " + e.getMessage();
+      result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
+    }
+    return new DataPointRowCursor(result, this.runner, uri);
   }
 
   public DataPointRowCursor latest(Selection selection) {
@@ -470,87 +438,10 @@ public class Client {
       result = new Result<DeleteSummary>(null, GENERIC_ERROR_CODE, message);
       return result;
     }
-    HttpRequest request = buildRequest(uri.toString(), HttpMethod.DELETE, body);
-    result = execute(request, DeleteSummary.class);
-    return result;
+    return runner.delete(uri, body);
   }
 
-  private void addAggregationToURI(URIBuilder builder, Aggregation aggregation) {
-    if(aggregation != null) {
-      builder.addParameter("aggregation.fold", aggregation.getFold().toString().toLowerCase());
-    }
-  }
-
-  private void addDirectionToURI(URIBuilder builder, Direction direction) {
-    if(direction != null) {
-      builder.addParameter("direction", direction.toString().toLowerCase());
-    }
-  }
-
-  private void addFilterToURI(URIBuilder builder, Filter filter) {
-    if(filter != null) {
-      for(String key : filter.getKeys()) {
-        builder.addParameter("key", key);
-      }
-
-      for(String tag : filter.getTags()) {
-        builder.addParameter("tag", tag);
-      }
-
-      for(Map.Entry<String, String> attribute : filter.getAttributes().entrySet()) {
-        builder.addParameter(String.format("attr[%s]", attribute.getKey()), attribute.getValue());
-      }
-    }
-  }
-
-  private void addInterpolationToURI(URIBuilder builder, Interpolation interpolation) {
-    if(interpolation != null) {
-      builder.addParameter("interpolation.period", interpolation.getPeriod().toString());
-      builder.addParameter("interpolation.function", interpolation.getFunction().toString().toLowerCase());
-    }
-  }
-
-  private void addIntervalToURI(URIBuilder builder, Interval interval) {
-    if(interval != null) {
-      builder.addParameter("start", interval.getStart().toString(iso8601));
-      builder.addParameter("end", interval.getEnd().toString(iso8601));
-    }
-  }
-
-  private void addMultiRollupToURI(URIBuilder builder, MultiRollup rollup) {
-    if(rollup != null) {
-      builder.addParameter("rollup.period", rollup.getPeriod().toString());
-      for(Fold fold : rollup.getFolds()) {
-        builder.addParameter("rollup.fold", fold.toString().toLowerCase());
-      }
-    }
-  }
-
-  private void addPredicateToURI(URIBuilder builder, Predicate predicate) {
-    if(predicate != null) {
-      builder.addParameter("predicate.period", predicate.getPeriod().toString());
-      builder.addParameter("predicate.function", predicate.getFunction().toLowerCase());
-    }
-  }
-
-  private void addRollupToURI(URIBuilder builder, Rollup rollup) {
-    if(rollup != null) {
-      builder.addParameter("rollup.period", rollup.getPeriod().toString());
-      builder.addParameter("rollup.fold", rollup.getFold().toString().toLowerCase());
-    }
-  }
-
-  private void addTimestampToURI(URIBuilder builder, DateTime timestamp) {
-    if(timestamp != null) {
-      builder.addParameter("ts", timestamp.toString(iso8601));
-    }
-  }
-
-  private void addTimeZoneToURI(URIBuilder builder, DateTimeZone timezone) {
-    if(timezone != null) {
-      builder.addParameter("tz", timezone.toString());
-    }
-  }
+  public void setHttpClient(HttpClient client) { this.runner.setHttpClient(client); }
 
   private String urlencode(String key) {
     String encoded;
@@ -560,169 +451,5 @@ public class Client {
       encoded = key;
     }
     return encoded;
-  }
-
-  HttpRequest buildRequest(String uri) {
-    return buildRequest(uri, HttpMethod.GET, null);
-  }
-
-  HttpRequest buildRequest(String uri, HttpMethod method) {
-    return buildRequest(uri, method, null);
-  }
-
-  HttpRequest buildRequest(String uri, String body) {
-    return buildRequest(uri, HttpMethod.GET, body);
-  }
-
-  HttpRequest buildRequest(String uri, HttpMethod method, String body) {
-    HttpRequest request = null;
-
-    switch(method) {
-      case POST:
-        HttpPost post = new HttpPost(uri);
-        if(body != null) {
-          post.setEntity(new StringEntity(body, DEFAULT_CHARSET));
-        }
-        request = post;
-        break;
-      case PUT:
-        HttpPut put = new HttpPut(uri);
-        if(body != null) {
-          put.setEntity(new StringEntity(body, DEFAULT_CHARSET));
-        }
-        request = put;
-        break;
-      case DELETE:
-        HttpDeleteWithBody delete = new HttpDeleteWithBody(uri);
-	if(body != null) {
-	  delete.setEntity(new StringEntity(body, DEFAULT_CHARSET));
-	}
-	request = delete;
-        break;
-      case GET:
-      default:
-	HttpGetWithBody get = new HttpGetWithBody(uri);
-	if(body != null) {
-	  get.setEntity(new StringEntity(body, DEFAULT_CHARSET));
-	}
-        request = get;
-        break;
-    }
-
-    return request;
-  }
-
-  HttpResponse execute(HttpRequest request) throws IOException {
-    HttpClient client = getHttpClient();
-    HttpContext context = getContext();
-    HttpHost target = getTarget();
-    HttpResponse response = client.execute(target, request, context);
-    return response;
-  }
-
-  <T> Result<T> execute(HttpRequest request, Class<T> klass) {
-    Result<T> result = null;
-    try {
-      HttpResponse response = execute(request);
-      result = new Result<T>(response, klass);
-    } catch (IOException e) {
-      result = new Result<T>(null, GENERIC_ERROR_CODE, e.getMessage());
-    }
-    return result;
-  }
-
-  private synchronized HttpClient getHttpClient() {
-    if(client == null) {
-      HttpParams httpParams = new BasicHttpParams();
-      HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_TIMEOUT_MILLIS);
-      HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_TIMEOUT_MILLIS);
-      HttpProtocolParams.setUserAgent(httpParams, String.format("tempoiq-java/%s", getVersion()));
-
-      DefaultHttpClient defaultClient = new DefaultHttpClient(new PoolingClientConnectionManager(), httpParams);
-      defaultClient.getCredentialsProvider().setCredentials(
-          new AuthScope(getTarget()),
-          new UsernamePasswordCredentials(credentials.getKey(), credentials.getSecret()));
-
-      // Add gzip header to all requests
-      defaultClient.addRequestInterceptor(new HttpRequestInterceptor() {
-        public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
-          if (!request.containsHeader("Accept-Encoding")) {
-            request.addHeader("Accept-Encoding", "gzip");
-          }
-        }
-      });
-
-      defaultClient.addResponseInterceptor(new HttpResponseInterceptor() {
-        public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
-          HttpEntity entity = response.getEntity();
-          if (entity != null) {
-            Header ceheader = entity.getContentEncoding();
-            if (ceheader != null) {
-              HeaderElement[] codecs = ceheader.getElements();
-              for (int i = 0; i < codecs.length; i++) {
-                if (codecs[i].getName().equalsIgnoreCase("gzip")) {
-                  response.setEntity(new GzipDecompressingEntity(response.getEntity()));
-                  return;
-                }
-              }
-            }
-          }
-        }
-      });
-
-      defaultClient.setKeepAliveStrategy(new ConnectionKeepAliveStrategy() {
-        public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
-          HeaderElementIterator it = new BasicHeaderElementIterator(response.headerIterator(HTTP.CONN_KEEP_ALIVE));
-
-          while(it.hasNext()) {
-            HeaderElement he = it.nextElement();
-            String param = he.getName();
-            String value = he.getValue();
-            if(value != null && param.equalsIgnoreCase("timeout")) {
-              try {
-                return Long.parseLong(value) * 1000;
-              } catch (NumberFormatException ignore) {
-              }
-            }
-          }
-          return DEFAULT_KEEPALIVE_TIMEOUT_MILLIS;
-        }
-      });
-
-      client = defaultClient;
-    }
-    return client;
-  }
-
-  synchronized Client setHttpClient(HttpClient httpClient) {
-    this.client = httpClient;
-    return this;
-  }
-
-  private HttpContext getContext() {
-    HttpHost targetHost = getTarget();
-
-    // Create AuthCache instance
-    AuthCache authCache = new BasicAuthCache();
-    // Generate BASIC scheme object and add it to the local
-    // auth cache
-    BasicScheme basicAuth = new BasicScheme();
-    authCache.put(targetHost, basicAuth);
-
-    // Add AuthCache to the execution context
-    BasicHttpContext localcontext = new BasicHttpContext();
-    localcontext.setAttribute(ClientContext.AUTH_CACHE, authCache);
-    return localcontext;
-  }
-
-  private HttpHost getTarget() {
-    if(target == null) {
-      target = new HttpHost(host.getHostName(), host.getPort(), scheme);
-    }
-    return target;
-  }
-
-  private String getVersion() {
-    return VERSION;
   }
 }

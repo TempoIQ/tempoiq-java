@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-
+import com.tempoiq.DeleteSummary;
 import com.tempoiq.MultiStatus;
 import com.tempoiq.json.Json;
 
