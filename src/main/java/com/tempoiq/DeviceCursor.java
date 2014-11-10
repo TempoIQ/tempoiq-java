@@ -12,34 +12,33 @@ import static com.tempoiq.util.Preconditions.*;
 
 
 public class DeviceCursor implements Cursor<Device> {
-  private final URI uri;
-  private final Client client;
-  private Query query;
+  private DeviceSegment first;
+  private final Executor runner;
+  private final URI endpoint;
 
-  public DeviceCursor(URI uri, Client client, Query query) {
-    this.uri = checkNotNull(uri);
-    this.client = checkNotNull(client);
-    this.query = checkNotNull(query);
+  public DeviceCursor(DeviceSegment first, Executor runner, URI endpoint) {
+    this.endpoint = checkNotNull(endpoint);
+    this.runner = checkNotNull(runner);
+    this.first = checkNotNull(first);
   }
 
-  public Iterator<Device> iterator() {
-    String body = null;
-    try {
-      body = Json.dumps(query);
-    } catch (JsonProcessingException e) {
-      throw new TempoIQException("Error serializing the body of the request. More detail: " + e.getMessage(), 0);
-    }
-    HttpRequest request = client.buildRequest(uri.toString(), body);
-    Result<DeviceSegment> result = client.execute(request, DeviceSegment.class);
+  public DeviceCursor(DeviceSegment first) {
+    this.first = checkNotNull(first);
+    this.runner = null;
+    this.endpoint = null;
+  }
 
-    Iterator<Device> iterator = null;
-    if(result.getState() == State.SUCCESS) {
-      @SuppressWarnings("unchecked") // This cast is always ok
-      SegmentIterator<Segment<Device>> segments = new SegmentIterator(client, result.getValue(), DeviceSegment.class);
-      iterator = new SegmentInnerIterator<Device>(segments);
+  public DeviceCursor(Result<DeviceSegment> result, Executor runner, URI endpoint) {
+    if (result.getState().equals(State.SUCCESS)) {
+      this.first = checkNotNull(result.getValue());
+      this.runner = runner;
+      this.endpoint = endpoint;
     } else {
       throw new TempoIQException(result.getMessage(), result.getCode());
     }
-    return iterator;
+  }
+
+  public Iterator<Device> iterator() {
+    return first.iterator();
   }
 }

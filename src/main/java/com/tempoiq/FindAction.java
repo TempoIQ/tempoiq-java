@@ -8,6 +8,5 @@ public class FindAction implements QueryAction {
     return "find";
   }
 
-  // TODO: Is this really needed in the API? Will this ever be different?
   public final String quantifier = "all";
 }

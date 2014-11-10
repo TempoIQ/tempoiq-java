@@ -3,7 +3,7 @@ package com.tempoiq;
 import java.util.Iterator;
 
 public class DataPointCursor implements Cursor<DataPoint> {
-  private class DataPointIterator implements Iterator<DataPoint> {
+  private static class DataPointIterator implements Iterator<DataPoint> {
     private final Iterator<Row> rowIterator;
     private final String deviceKey;
     private final String sensorKey;
@@ -23,7 +23,6 @@ public class DataPointCursor implements Cursor<DataPoint> {
           return true;
         }
       }
-
       return false;
     }
 
