@@ -7,9 +7,10 @@ public class DevicePageLoader extends PageLoader<Device> {
   private Executor runner;
 
   public DevicePageLoader(DeviceSegment first, URI endpoint, Executor runner) {
+    super();
     this.first = first;
     this.current = first;
-    this.next = null;
+    this.onDeck = null;
     this.endpoint = endpoint;
     this.runner = runner;
   }

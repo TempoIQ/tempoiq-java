@@ -5,38 +5,57 @@ import java.util.Iterator;
 public abstract class PageLoader<T> implements Iterator<Segment<T>> {
   protected Segment<T> first;
   protected Segment<T> current;
-  protected Segment<T> next;
+  protected Segment<T> onDeck;
+  private boolean needsToFetch;
+  private boolean isExhausted;
+
+  public PageLoader() {
+    this.isExhausted = false;
+    this.needsToFetch = true;
+  }
 
   @Override
   public boolean hasNext() {
-    //if we already loaded the next segment, we have a next segment
-    if (next != null) {
+    if (this.isExhausted) {
+      return false;
+    }
+
+    if (onDeck != null) {
       return true;
     }
-    //if the current segment has no pointer, or there is no current segment, we cannot fetch the next segment
+
     boolean locallyExhausted = (current == null || current.getNext() == null || current.getNext().equals(""));
     if (locallyExhausted) {
+      this.isExhausted = true;
       return false;
     }
-    //if we fetch a segment, then there's a next segment, otherwise something has gone wrong
-    next = fetchNext();
-    if (next == null) {
-      return false;
-    } else {
+
+    refreshNext();
+    if (onDeck != null) {
       return true;
+    } else {
+      this.isExhausted = true;
+      return false;
     }
   }
 
   public abstract Segment<T> fetchNext();
 
+  private void refreshNext() {
+    if (needsToFetch || onDeck == null) {
+      onDeck = fetchNext();
+      needsToFetch = false;
+    }
+  }
+
   @Override
   public Segment<T> next() {
-    Segment<T> tmp = current;
-    if (next == null) {
-      next = fetchNext();
-    }
-    current = next;
-    return tmp;
+    refreshNext();
+    Segment<T> outbound = current;
+    current = onDeck;
+    onDeck = null;
+    needsToFetch = true;
+    return outbound;
   }
 
   @Override
@@ -46,6 +65,6 @@ public abstract class PageLoader<T> implements Iterator<Segment<T>> {
 
   public void reset() {
     current = first;
-    next = null;
+    onDeck = null;
   }
 }
