@@ -6,13 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
-
 import org.junit.*;
 import static org.junit.Assert.*;
-
 import com.tempoiq.Device;
 import com.tempoiq.Sensor;
-
 
 public class DeviceTest {
   private static final Map<String, String> attributes;

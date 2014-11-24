@@ -10,7 +10,7 @@ import org.junit.Test;
 public class DeviceReadTest {
   private static final Device device = new Device("device1");
   private static final String json1 = "{" +
-    "\"items\":[" +
+    "\"data\":[" +
        "{\"key\":\"device1\","
        + "\"name\":\"\"," +
          "\"attributes\":{}," +

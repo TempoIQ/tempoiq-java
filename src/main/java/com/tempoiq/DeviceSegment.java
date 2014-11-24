@@ -19,6 +19,10 @@ public class DeviceSegment extends Segment<Device> {
     super(devices, "");
   }
 
+  public DeviceSegment(List<Device> devices, String nextPage) {
+    super(devices, nextPage);
+  }
+
   static DeviceSegment make(HttpResponse response) throws IOException {
     String body = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET);
     DeviceSegment segment = Json.loads(body, DeviceSegment.class);

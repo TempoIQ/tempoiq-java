@@ -7,7 +7,7 @@ import java.util.List;
 import static com.tempoiq.util.Preconditions.*;
 
 
-class Segment<T> implements Iterable<T> {
+public class Segment<T> implements Iterable<T> {
   protected List<T> data;
   protected String next;
 

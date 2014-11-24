@@ -67,6 +67,10 @@ public class Client {
 
   private Executor runner;
   private static final String API_VERSION2 = "v2";
+  private static final String SIMPLE_READ_MEDIATYPE = "application/prs.tempoiq.datapoint-collection.v1";
+  private static final String PAGINATED_READ_MEDIATYPE = "application/prs.tempoiq.datapoint-collection.v2";
+  private static final String SIMPLE_SEARCH_MEDIATYPE = "application/prs.tempoiq.device-collection.v1";
+  private static final String PAGINATED_SEARCH_MEDIATYPE = "application/prs.tempoiq.device-collection.v2";
   private static final int GENERIC_ERROR_CODE = 600;
 
   /**
@@ -265,14 +269,12 @@ public class Client {
   public Result<Void> writeDataPoints(Device device, List<MultiDataPoint> data) {
     checkNotNull(device);
     checkNotNull(data);
-
     WriteRequest wr = new WriteRequest();
     for (MultiDataPoint point : data) {
       for(Map.Entry<String, Number> entry : point.getData().entrySet()) {
         wr.add(device, new Sensor(entry.getKey()), new DataPoint(point.getTimestamp(), entry.getValue()));
       }
     }
-
     return writeDataPoints(wr);
   }
 
@@ -316,7 +318,12 @@ public class Client {
   }
 
   public DeviceCursor listDevices(Selection selection) {
+    return listDevices(selection, null);
+  }
+
+  public DeviceCursor listDevices(Selection selection, Integer limit) {
     checkNotNull(selection);
+    String mediaType = mediaType("datapoint-collection", "v2");
 
     URI uri = null;
     try {
@@ -336,18 +343,19 @@ public class Client {
     String body = null;
     try {
       body = Json.dumps(query);
-      result = runner.get(uri, body, DeviceSegment.class);
+      result = runner.get(uri, body, DeviceSegment.class, mediaType);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<DeviceSegment>(null, GENERIC_ERROR_CODE, message);
     }
-    return new DeviceCursor(result, this.runner, uri);
+    return new DeviceCursor(result, this.runner, uri, mediaType);
   }
 
-  public DataPointRowCursor read(Selection selection, Pipeline pipeline, DateTime start, DateTime stop) {
+  public DataPointRowCursor read(Selection selection, Pipeline pipeline, DateTime start, DateTime stop, Integer limit) {
     checkNotNull(selection);
     checkNotNull(start);
     checkNotNull(stop);
+    String mediaType = mediaType("datapoint-collection", "v2");
 
     URI uri = null;
     try {
@@ -361,26 +369,35 @@ public class Client {
     Query query = new Query(
       new QuerySearch(Selector.Type.DEVICES, selection),
       pipeline,
-      new ReadAction(start, stop));
+      new ReadAction(start, stop, limit));
     Result<RowSegment> result = null;
     String body = null;
     try {
       body = Json.dumps(query);
-      result = runner.get(uri, body, RowSegment.class);
+      result = runner.get(uri, body, RowSegment.class, mediaType);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
     }
-    return new DataPointRowCursor(result, this.runner, uri);
+    return new DataPointRowCursor(result, this.runner, uri, mediaType);
   }
 
   public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
-    return read(selection, new Pipeline(), start, stop);
+    return read(selection, new Pipeline(), start, stop, null);
+  }
+  
+  public DataPointRowCursor read(Selection selection, Pipeline pipeline, DateTime start, DateTime stop) {
+    return read(selection, pipeline, start, stop, null);
+  }
+
+  public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop, Integer limit) {
+    return read(selection, new Pipeline(), start, stop, limit);
   }
 
   public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
     checkNotNull(selection);
     checkNotNull(pipeline);
+    String mediaType = mediaType("datapoint-collection", "v2");
 
     URI uri = null;
     try {
@@ -400,12 +417,12 @@ public class Client {
     String body = null;
     try {
       body = Json.dumps(query);
-      result = runner.get(uri, body, RowSegment.class);
+      result = runner.get(uri, body, RowSegment.class, mediaType);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
     }
-    return new DataPointRowCursor(result, this.runner, uri);
+    return new DataPointRowCursor(result, this.runner, uri, mediaType);
   }
 
   public DataPointRowCursor latest(Selection selection) {
@@ -451,5 +468,9 @@ public class Client {
       encoded = key;
     }
     return encoded;
+  }
+
+  private String mediaType(String entity, String version) {
+    return String.format("application/prs.tempoiq.%s.%s+json", entity, version);
   }
 }

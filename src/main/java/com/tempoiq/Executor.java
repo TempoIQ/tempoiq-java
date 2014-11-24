@@ -58,32 +58,53 @@ public class Executor {
   }
 
   public <T> Result<T> get(URI endpoint, Class<T> klass) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, null);
-    return execute(request, klass);
+    return get(endpoint, klass, "");
   }
 
+  public <T> Result<T> get(URI endpoint, Class<T> klass, String mediatype) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, null, mediatype);
+    return execute(request, klass);
+  }
+  
   public <T> Result<T> get(URI endpoint, String body, Class<T> klass) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, body);
+    return get(endpoint, body, klass, "");
+  }
+
+  public <T> Result<T> get(URI endpoint, String body, Class<T> klass, String mediatype) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, body, mediatype);
     return execute(request, klass);
   }
 
   public <T> Result<T> post(URI endpoint, String body, Class<T> klass) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.POST, body);
+    return post(endpoint, body, klass, "");
+  }
+
+  public <T> Result<T> post(URI endpoint, String body, Class<T> klass, String mediatype) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.POST, body, mediatype);
     return execute(request, klass);
   }
 
   public <T> Result<T> put(URI endpoint, String body, Class<T> klass) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.PUT, body);
+    return put(endpoint, body, klass, "");
+  }
+
+  public <T> Result<T> put(URI endpoint, String body, Class<T> klass, String mediatype) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.PUT, body, mediatype);
     return execute(request, klass);
   }
 
   public Result<DeleteSummary> delete(URI endpoint) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, null);
+    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, null, "");
     return execute(request, DeleteSummary.class);
   }
 
   public Result<DeleteSummary> delete(URI endpoint, String body) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body);
+    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body, "");
+    return execute(request, DeleteSummary.class);
+  }
+
+  public Result<DeleteSummary> delete(URI endpoint, String body, String mediatype) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body, mediatype);
     return execute(request, DeleteSummary.class);
   }
 
@@ -107,18 +128,26 @@ public class Executor {
   }
 
   HttpRequest buildRequest(URI uri) {
-    return buildRequest(uri, HttpMethod.GET, null);
+    return buildRequest(uri, HttpMethod.GET, null, "");
   }
 
   HttpRequest buildRequest(URI uri, HttpMethod method) {
-    return buildRequest(uri, method, null);
+    return buildRequest(uri, method, null, "");
   }
 
   HttpRequest buildRequest(URI uri, String body) {
-    return buildRequest(uri, HttpMethod.GET, body);
+    return buildRequest(uri, HttpMethod.GET, body, "");
   }
 
-  HttpRequest buildRequest(URI uri, HttpMethod method, String body) {
+  HttpRequest buildRequest(URI uri, HttpMethod method, String mediatype) {
+    return buildRequest(uri, method, null, mediatype);
+  }
+
+  HttpRequest buildRequest(URI uri, String body, String mediatype) {
+    return buildRequest(uri, HttpMethod.GET, null, mediatype);
+  }
+
+  HttpRequest buildRequest(URI uri, HttpMethod method, String body, String mediatype) {
     String endpoint = uri.toString();
     HttpRequest request = null;
     switch(method) {
@@ -152,6 +181,7 @@ public class Executor {
         request = get;
         break;
     }
+    request.setHeader("Accept", mediatype);
     return request;
   }
 

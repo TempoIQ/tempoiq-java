@@ -26,6 +26,7 @@ public class Json {
       _mapper.registerModule(new DeviceSegmentModule());
       _mapper.registerModule(new IntervalModule());
       _mapper.registerModule(new QueryModule());
+      _mapper.registerModule(new RowSegmentModule());
       _mapper.registerModule(new SelectorModule());
       _mapper.registerModule(new SingleValueActionModule());
       _mapper.registerModule(new SummaryModule());
