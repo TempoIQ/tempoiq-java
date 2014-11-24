@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -44,9 +46,6 @@ public class Executor {
   private static final long DEFAULT_KEEPALIVE_TIMEOUT_MILLIS = 50000;  // 50 seconds
   private static final int GENERIC_ERROR_CODE = 600;
   private static final String VERSION = "1.0-SNAPSHOT";
-  private static final String API_VERSION = "v1";
-  private static final String API_VERSION2 = "v2";
-  private final DateTimeFormatter iso8601 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
   private enum HttpMethod { GET, POST, PUT, DELETE }
 
@@ -58,53 +57,53 @@ public class Executor {
   }
 
   public <T> Result<T> get(URI endpoint, Class<T> klass) {
-    return get(endpoint, klass, "");
+    return get(endpoint, klass, "", new String[] {});
   }
 
-  public <T> Result<T> get(URI endpoint, Class<T> klass, String mediatype) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, null, mediatype);
+  public <T> Result<T> get(URI endpoint, Class<T> klass, String contentType, String[] mediaTypes) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, null, contentType, mediaTypes);
     return execute(request, klass);
   }
   
-  public <T> Result<T> get(URI endpoint, String body, Class<T> klass) {
-    return get(endpoint, body, klass, "");
+  public <T> Result<T> get(URI endpoint, String body, Class<T> klass, String contentType) {
+    return get(endpoint, body, klass, contentType, new String[] {});
   }
 
-  public <T> Result<T> get(URI endpoint, String body, Class<T> klass, String mediatype) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, body, mediatype);
+  public <T> Result<T> get(URI endpoint, String body, Class<T> klass, String contentType, String[] mediaTypes) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.GET, body, contentType, mediaTypes);
     return execute(request, klass);
   }
 
-  public <T> Result<T> post(URI endpoint, String body, Class<T> klass) {
-    return post(endpoint, body, klass, "");
+  public <T> Result<T> post(URI endpoint, String body, Class<T> klass, String contentType) {
+    return post(endpoint, body, klass, contentType, new String[] {});
   }
 
-  public <T> Result<T> post(URI endpoint, String body, Class<T> klass, String mediatype) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.POST, body, mediatype);
+  public <T> Result<T> post(URI endpoint, String body, Class<T> klass, String contentType, String[] mediaTypes) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.POST, body, contentType, mediaTypes);
     return execute(request, klass);
   }
 
-  public <T> Result<T> put(URI endpoint, String body, Class<T> klass) {
-    return put(endpoint, body, klass, "");
+  public <T> Result<T> put(URI endpoint, String body, String contentType, Class<T> klass) {
+    return put(endpoint, body, klass, contentType, new String[] {});
   }
 
-  public <T> Result<T> put(URI endpoint, String body, Class<T> klass, String mediatype) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.PUT, body, mediatype);
+  public <T> Result<T> put(URI endpoint, String body, Class<T> klass, String contentType, String[] mediaTypes) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.PUT, body, contentType, mediaTypes);
     return execute(request, klass);
   }
 
   public Result<DeleteSummary> delete(URI endpoint) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, null, "");
+    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, null, "", new String[] {});
     return execute(request, DeleteSummary.class);
   }
 
   public Result<DeleteSummary> delete(URI endpoint, String body) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body, "");
+    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body, "", new String[] {});
     return execute(request, DeleteSummary.class);
   }
 
-  public Result<DeleteSummary> delete(URI endpoint, String body, String mediatype) {
-    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body, mediatype);
+  public Result<DeleteSummary> delete(URI endpoint, String body, String contentType, String[] mediaTypes) {
+    HttpRequest request = buildRequest(endpoint, HttpMethod.DELETE, body, contentType, mediaTypes);
     return execute(request, DeleteSummary.class);
   }
 
@@ -127,27 +126,7 @@ public class Executor {
     return response;
   }
 
-  HttpRequest buildRequest(URI uri) {
-    return buildRequest(uri, HttpMethod.GET, null, "");
-  }
-
-  HttpRequest buildRequest(URI uri, HttpMethod method) {
-    return buildRequest(uri, method, null, "");
-  }
-
-  HttpRequest buildRequest(URI uri, String body) {
-    return buildRequest(uri, HttpMethod.GET, body, "");
-  }
-
-  HttpRequest buildRequest(URI uri, HttpMethod method, String mediatype) {
-    return buildRequest(uri, method, null, mediatype);
-  }
-
-  HttpRequest buildRequest(URI uri, String body, String mediatype) {
-    return buildRequest(uri, HttpMethod.GET, null, mediatype);
-  }
-
-  HttpRequest buildRequest(URI uri, HttpMethod method, String body, String mediatype) {
+  HttpRequest buildRequest(URI uri, HttpMethod method, String body, String contentType, String[] mediaTypes) {
     String endpoint = uri.toString();
     HttpRequest request = null;
     switch(method) {
@@ -181,7 +160,12 @@ public class Executor {
         request = get;
         break;
     }
-    request.setHeader("Accept", mediatype);
+    if (contentType != null && (! contentType.equals(""))) {
+      request.setHeader("Content-Type", contentType);
+    }
+    if (mediaTypes != null && mediaTypes.length > 0) {
+      request.setHeader("Accept", StringUtils.join(mediaTypes, ","));
+    }
     return request;
   }
 

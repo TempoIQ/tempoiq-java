@@ -8,7 +8,6 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.utils.URIBuilder;
 import org.joda.time.DateTime;
@@ -116,6 +115,8 @@ public class Client {
    */
   public Result<Device> createDevice(Device device) {
     checkNotNull(device);
+    String contentType = mediaType("device", "v1");
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("device", "v1") };
 
     URI uri = null;
     try {
@@ -136,7 +137,7 @@ public class Client {
       return result;
     }
 
-    return runner.post(uri, body, Device.class);
+    return runner.post(uri, body, Device.class, contentType, mediaTypes);
   }
 
   /**
@@ -148,6 +149,7 @@ public class Client {
    */
   public Result<Device> getDevice(String key) {
     checkNotNull(key);
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("device", "v1") };
 
     URI uri = null;
     try {
@@ -158,7 +160,7 @@ public class Client {
       throw new IllegalArgumentException(message, e);
     }
 
-    return runner.get(uri, Device.class);
+    return runner.get(uri, Device.class, "", mediaTypes);
   }
 
   /**
@@ -172,6 +174,9 @@ public class Client {
    */
   public Result<Device> updateDevice(Device device) {
     URI uri = null;
+    String contentType = mediaType("device", "v1");
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("device", "v1") };
+
     try {
       URIBuilder builder = new URIBuilder(String.format("/%s/devices/%s/", API_VERSION2, urlencode(device.getKey())));
       uri = builder.build();
@@ -190,7 +195,7 @@ public class Client {
       return result;
     }
 
-    return runner.put(uri, body, Device.class);
+    return runner.put(uri, body, Device.class, contentType, mediaTypes);
   }
 
   /**
@@ -202,6 +207,7 @@ public class Client {
    */
   public Result<DeleteSummary> deleteDevice(Device device) {
     checkNotNull(device);
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("delete-summary", "v1") };
 
     URI uri = null;
     try {
@@ -212,7 +218,7 @@ public class Client {
       throw new IllegalArgumentException(message, e);
     }
 
-    return runner.delete(uri);
+    return runner.delete(uri, null, "", mediaTypes);
   }
 
   /**
@@ -227,6 +233,8 @@ public class Client {
    */
   public Result<DeleteSummary> deleteDevices(Selection selection) {
     checkNotNull(selection);
+    String contentType = mediaType("query", "v1");
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("delete-summary", "v1") };
 
     URI uri = null;
     try {
@@ -251,7 +259,7 @@ public class Client {
       return result;
     }
 
-    return runner.delete(uri, body);
+    return runner.delete(uri, body, contentType, mediaTypes);
   }
 
   public Result<Void> writeDataPoints(Device device, MultiDataPoint data) {
@@ -294,6 +302,8 @@ public class Client {
    */
   public Result<Void> writeDataPoints(WriteRequest request) {
     checkNotNull(request);
+    String contentType = mediaType("write-request", "v1");
+    String[] mediaTypes = new String[] { mediaType("error", "v1") };
 
     URI uri = null;
     try {
@@ -314,7 +324,7 @@ public class Client {
       return result;
     }
 
-    return runner.post(uri, body, Void.class);
+    return runner.post(uri, body, Void.class, contentType, mediaTypes);
   }
 
   public DeviceCursor listDevices(Selection selection) {
@@ -323,7 +333,8 @@ public class Client {
 
   public DeviceCursor listDevices(Selection selection, Integer limit) {
     checkNotNull(selection);
-    String mediaType = mediaType("datapoint-collection", "v2");
+    String contentType =  mediaType("query", "v2");
+    String[] mediaTypes = new String[] { mediaType("datapoint-collection", "v2"), mediaType("error", "v1") };
 
     URI uri = null;
     try {
@@ -343,19 +354,20 @@ public class Client {
     String body = null;
     try {
       body = Json.dumps(query);
-      result = runner.get(uri, body, DeviceSegment.class, mediaType);
+      result = runner.get(uri, body, DeviceSegment.class, contentType, mediaTypes);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<DeviceSegment>(null, GENERIC_ERROR_CODE, message);
     }
-    return new DeviceCursor(result, this.runner, uri, mediaType);
+    return new DeviceCursor(result, this.runner, uri, contentType, mediaTypes);
   }
 
   public DataPointRowCursor read(Selection selection, Pipeline pipeline, DateTime start, DateTime stop, Integer limit) {
     checkNotNull(selection);
     checkNotNull(start);
     checkNotNull(stop);
-    String mediaType = mediaType("datapoint-collection", "v2");
+    String contentType = mediaType("query", "v1");
+    String[] mediaTypes = new String[] { mediaType("datapoint-collection", "v2"), mediaType("error", "v1") };
 
     URI uri = null;
     try {
@@ -374,12 +386,12 @@ public class Client {
     String body = null;
     try {
       body = Json.dumps(query);
-      result = runner.get(uri, body, RowSegment.class, mediaType);
+      result = runner.get(uri, body, RowSegment.class, contentType, mediaTypes);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
     }
-    return new DataPointRowCursor(result, this.runner, uri, mediaType);
+    return new DataPointRowCursor(result, this.runner, uri, contentType, mediaTypes);
   }
 
   public DataPointRowCursor read(Selection selection, DateTime start, DateTime stop) {
@@ -397,7 +409,8 @@ public class Client {
   public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
     checkNotNull(selection);
     checkNotNull(pipeline);
-    String mediaType = mediaType("datapoint-collection", "v2");
+    String contentType = mediaType("query", "v1");
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("datapoint-collection", "v1") };
 
     URI uri = null;
     try {
@@ -417,12 +430,12 @@ public class Client {
     String body = null;
     try {
       body = Json.dumps(query);
-      result = runner.get(uri, body, RowSegment.class, mediaType);
+      result = runner.get(uri, body, RowSegment.class, contentType, mediaTypes);
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
       result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
     }
-    return new DataPointRowCursor(result, this.runner, uri, mediaType);
+    return new DataPointRowCursor(result, this.runner, uri, contentType, mediaTypes);
   }
 
   public DataPointRowCursor latest(Selection selection) {
@@ -434,6 +447,7 @@ public class Client {
     checkNotNull(sensor);
     checkNotNull(start);
     checkNotNull(stop);
+    String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("delete-summary", "v1") };
 
     URI uri = null;
     try {
@@ -455,7 +469,7 @@ public class Client {
       result = new Result<DeleteSummary>(null, GENERIC_ERROR_CODE, message);
       return result;
     }
-    return runner.delete(uri, body);
+    return runner.delete(uri, body, "", mediaTypes);
   }
 
   public void setHttpClient(HttpClient client) { this.runner.setHttpClient(client); }

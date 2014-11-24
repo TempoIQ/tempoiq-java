@@ -9,14 +9,20 @@ public class DataPointRowCursor implements Cursor<Row> {
   private final RowSegment first;
   private final Executor runner;
   private final URI endpoint;
-  private final String mediaTypeVersion;
+  private final String contentType;
+  private final String[] mediaTypeVersions;
 
-  public DataPointRowCursor(Result<RowSegment> result, Executor runner, URI endpoint, String mediaTypeVersion) {
+  public DataPointRowCursor(Result<RowSegment> result,
+                            Executor runner,
+                            URI endpoint,
+                            String contentType,
+                            String[] mediaTypeVersion) {
     if (result.getState().equals(State.SUCCESS)) {
       this.first = checkNotNull(checkNotNull(result.getValue()));
       this.runner = runner;
       this.endpoint = endpoint;
-      this.mediaTypeVersion = mediaTypeVersion;
+      this.contentType = contentType;
+      this.mediaTypeVersions = mediaTypeVersion;
     } else {
       throw new TempoIQException(result.getMessage(), result.getCode());
     }
@@ -44,7 +50,7 @@ public class DataPointRowCursor implements Cursor<Row> {
   }
 
   public Iterator<Row> iterator() {
-      RowPageLoader pages = new RowPageLoader(first, endpoint, runner, mediaTypeVersion);
+      RowPageLoader pages = new RowPageLoader(first, endpoint, runner, contentType, mediaTypeVersions);
       return new PagingIterator<Row>(pages);
   }
 
