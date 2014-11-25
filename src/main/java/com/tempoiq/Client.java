@@ -66,10 +66,6 @@ public class Client {
 
   private Executor runner;
   private static final String API_VERSION2 = "v2";
-  private static final String SIMPLE_READ_MEDIATYPE = "application/prs.tempoiq.datapoint-collection.v1";
-  private static final String PAGINATED_READ_MEDIATYPE = "application/prs.tempoiq.datapoint-collection.v2";
-  private static final String SIMPLE_SEARCH_MEDIATYPE = "application/prs.tempoiq.device-collection.v1";
-  private static final String PAGINATED_SEARCH_MEDIATYPE = "application/prs.tempoiq.device-collection.v2";
   private static final int GENERIC_ERROR_CODE = 600;
 
   /**
