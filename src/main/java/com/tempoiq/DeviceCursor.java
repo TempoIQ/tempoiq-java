@@ -3,43 +3,33 @@ package com.tempoiq;
 import java.net.URI;
 import java.util.Iterator;
 
-import org.apache.http.HttpRequest;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 
-
 public class DeviceCursor implements Cursor<Device> {
-  private final URI uri;
-  private final Client client;
-  private Query query;
+  private DeviceSegment first;
+  private final Executor runner;
+  private final URI endpoint;
+  private final String contentType;
+  private final String[] mediaTypeVersions;
 
-  public DeviceCursor(URI uri, Client client, Query query) {
-    this.uri = checkNotNull(uri);
-    this.client = checkNotNull(client);
-    this.query = checkNotNull(query);
-  }
-
-  public Iterator<Device> iterator() {
-    String body = null;
-    try {
-      body = Json.dumps(query);
-    } catch (JsonProcessingException e) {
-      throw new TempoIQException("Error serializing the body of the request. More detail: " + e.getMessage(), 0);
-    }
-    HttpRequest request = client.buildRequest(uri.toString(), body);
-    Result<DeviceSegment> result = client.execute(request, DeviceSegment.class);
-
-    Iterator<Device> iterator = null;
-    if(result.getState() == State.SUCCESS) {
-      @SuppressWarnings("unchecked") // This cast is always ok
-      SegmentIterator<Segment<Device>> segments = new SegmentIterator(client, result.getValue(), DeviceSegment.class);
-      iterator = new SegmentInnerIterator<Device>(segments);
+  public DeviceCursor(Result<DeviceSegment> result,
+                      Executor runner,
+                      URI endpoint,
+                      String contentType,
+                      String[] mediaTypeVersions) {
+    if (result.getState().equals(State.SUCCESS)) {
+      this.first = checkNotNull(result.getValue());
+      this.runner = checkNotNull(runner);
+      this.endpoint = checkNotNull(endpoint);
+      this.contentType = checkNotNull(contentType);
+      this.mediaTypeVersions = checkNotNull(mediaTypeVersions);
     } else {
       throw new TempoIQException(result.getMessage(), result.getCode());
     }
-    return iterator;
+  }
+
+  public Iterator<Device> iterator() {
+    final DevicePageLoader pages =  new DevicePageLoader(first, endpoint, runner, contentType, mediaTypeVersions);
+    return new PagingIterator<Device>(pages);
   }
 }

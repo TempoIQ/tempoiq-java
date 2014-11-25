@@ -10,34 +10,33 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.tempoiq.Device;
-import com.tempoiq.DeviceSegment;
-import com.tempoiq.Rollup;
+import com.tempoiq.Row;
+import com.tempoiq.RowSegment;
 
+public class RowSegmentModule extends SimpleModule {
 
-public class DeviceSegmentModule extends SimpleModule {
-
-  public DeviceSegmentModule() {
-    addDeserializer(DeviceSegment.class, new DeviceSegmentDeserializer());
+  public RowSegmentModule() {
+    addDeserializer(RowSegment.class, new RowSegmentDeserializer());
   }
 
-  private static class DeviceSegmentDeserializer extends StdScalarDeserializer<DeviceSegment> {
-    public DeviceSegmentDeserializer() { super(DeviceSegment.class); }
+  private static class RowSegmentDeserializer extends StdScalarDeserializer<RowSegment> {
+    public RowSegmentDeserializer() { super(RowSegment.class); }
 
     @Override
-    public DeviceSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+    public RowSegment deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
       JsonNode root = parser.readValueAsTree();
-      JsonNode devicesNode = root.get("data");
+      JsonNode rowsNode = root.get("data");
       JsonNode pageNode = root.get("next_page");
 
-      if(devicesNode == null) {
-        throw context.mappingException("Missing 'data' field in DeviceSegment.");
+      if(rowsNode == null) {
+        throw context.mappingException("Missing 'data' field in RowSegment.");
       }
 
-      List<Device> data = Json.getObjectMapper()
-                                 .reader()
-                                 .withType(new TypeReference<List<Device>>() {})
-                                 .readValue(devicesNode);
+      List<Row> data = Json.getObjectMapper()
+              .reader()
+              .withType(new TypeReference<List<Row>>() {})
+              .readValue(rowsNode);
+
 
       if (pageNode != null) {
         JsonNode queryNode = pageNode.get("next_query");
@@ -45,17 +44,17 @@ public class DeviceSegmentModule extends SimpleModule {
           throw context.mappingException("Missing 'next_query' field in RowSegment.");
         } else {
           String nextPage = Json.getObjectMapper().writeValueAsString(queryNode);
-          return new DeviceSegment(data, nextPage);
+          return new RowSegment(data, nextPage);
         }
       } else {
-        return new DeviceSegment(data);
+        return new RowSegment(data);
       }
     }
   }
 
   @Override
   public String getModuleName() {
-    return "device-segment";
+    return "row-segment";
   }
 
   @Override

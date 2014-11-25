@@ -13,12 +13,16 @@ import org.apache.http.util.EntityUtils;
 
 import com.tempoiq.json.Json;
 
-class RowSegment extends Segment<Row> {
+public class RowSegment extends Segment<Row> {
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
   @JsonCreator
   public RowSegment(@JsonProperty("data") List<Row> rows) {
     super(rows, "");
+  }
+
+  public RowSegment(List<Row> rows, String nextPage) {
+    super(rows, nextPage);
   }
 
   static RowSegment make(HttpResponse response) throws IOException {

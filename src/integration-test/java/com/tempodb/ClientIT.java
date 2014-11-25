@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
+import java.util.Iterator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
@@ -189,6 +189,37 @@ public class ClientIT {
   }
 
   @Test
+  public void testPagingReadDataPoints() {
+    Device device = createDevice();
+    DateTime start = new DateTime(2000, 1, 1, 0, 0, 0, 0, timezone);
+    DateTime stop = new DateTime(2015, 1, 2, 0, 0, 0, 0, timezone);
+    List<MultiDataPoint> mps = new ArrayList<MultiDataPoint>();
+
+    for(int i=0; i<10; i++) {
+      Map<String, Number> points = new HashMap<String, Number>();
+      points.put("sensor1", i+1.5);
+      points.put("sensor2", i*10+1.5);
+      MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, i+1, 1, 1, 0, 0, 0, timezone), points);
+      mps.add(mp);
+    }
+
+    for(MultiDataPoint mp : mps) {
+      Result<Void> result = client.writeDataPoints(device, mp);
+      assertEquals(State.SUCCESS, result.getState());
+    }
+
+    Selection sel = new Selection().
+      addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    DataPointRowCursor cursor = client.read(sel, start, stop, 6);
+    Iterator<Row> iterator = cursor.iterator();
+    for (int i=0; i<10; i++) {
+      assert(iterator.hasNext());
+      iterator.next();
+    }
+  }
+
+  @Test
   public void testSingleValue() {
     Device device = createDevice();
 
@@ -249,7 +280,6 @@ public class ClientIT {
     DateTime stop = new DateTime(2012, 1, 4, 0, 0, 0, 0, timezone);
 
     Result<DeleteSummary> delResult = client.deleteDataPoints(device, sensor1, start, stop);
-    System.out.printf("DEL RESULT: %s\n", delResult);
     assertEquals(State.SUCCESS, result.getState());
     assertEquals(delResult.getValue().getDeleted(), 2);
 

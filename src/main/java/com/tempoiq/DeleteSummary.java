@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-
 import com.tempoiq.json.Json;
 import static com.tempoiq.util.Preconditions.*;
 

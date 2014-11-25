@@ -1,7 +1,6 @@
 package com.tempoiq.json;
 
 import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -24,12 +23,11 @@ public class Json {
       _mapper.registerModule(new JodaModule());
       _mapper.registerModule(new DateTimeZoneModule());
       _mapper.registerModule(new FoldModule());
-      _mapper.registerModule(new DataPointFoundSegmentModule());
       _mapper.registerModule(new DeviceSegmentModule());
       _mapper.registerModule(new IntervalModule());
       _mapper.registerModule(new QueryModule());
+      _mapper.registerModule(new RowSegmentModule());
       _mapper.registerModule(new SelectorModule());
-      _mapper.registerModule(new SensorSegmentModule());
       _mapper.registerModule(new SingleValueActionModule());
       _mapper.registerModule(new SummaryModule());
       _mapper.registerModule(new WritableDataPointModule());
