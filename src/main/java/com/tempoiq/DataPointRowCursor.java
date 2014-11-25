@@ -54,6 +54,10 @@ public class DataPointRowCursor implements Cursor<Row> {
       return new PagingIterator<Row>(pages);
   }
 
+  public Segment<Row> getFirst() {
+    return this.first;
+  }
+
   public Set<String> devicesForCursor() {
     Set<String> seen = new HashSet<String>();
     for (Row row : this) {

@@ -28,6 +28,10 @@ public class DeviceCursor implements Cursor<Device> {
     }
   }
 
+  public Segment<Device> getFirst() {
+    return this.first;
+  }
+
   public Iterator<Device> iterator() {
     final DevicePageLoader pages =  new DevicePageLoader(first, endpoint, runner, contentType, mediaTypeVersions);
     return new PagingIterator<Device>(pages);
