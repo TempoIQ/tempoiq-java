@@ -97,7 +97,7 @@ public class Client {
   private static final int DEFAULT_TIMEOUT_MILLIS = 50000;  // 50 seconds
   private static final long DEFAULT_KEEPALIVE_TIMEOUT_MILLIS = 50000;  // 50 seconds
   private static final int GENERIC_ERROR_CODE = 600;
-  private static final String VERSION = "1.0-SNAPSHOT";
+  private static final String VERSION = "1.1.7";
   private static final String API_VERSION = "v1";
   private static final String API_VERSION2 = "v2";
   private final DateTimeFormatter iso8601 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
