@@ -3,12 +3,12 @@
 
   <groupId>com.tempoiq</groupId>
   <artifactId>tempoiq-java</artifactId>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>1.1.7</version>
   <packaging>jar</packaging>
 
   <name>tempoiq-java</name>
   <url>http://github.com/tempoiq/tempoiq-java</url>
-  <description>TempoIQ REST Client</description>
+  <description>TempoIQ Java Library</description>
   <scm>
     <connection>scm:git:file://${basedir}</connection>
     <developerConnection>scm:git:file://${basedir}</developerConnection>
@@ -18,9 +18,9 @@
   <developers>
     <developer>
       <id>tempoiq</id>
-      <name>TempoIQ Open Source</name>
-      <email>opensource@tempoiq.com</email>
-      <url>http://tempoiq.com</url>
+      <name>TempoIQ Inc</name>
+      <email>software@tempoiq.com</email>
+      <url>https://tempoiq.com</url>
     </developer>
   </developers>
   <licenses>
