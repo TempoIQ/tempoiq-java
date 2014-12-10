@@ -28,7 +28,7 @@ public class Json {
       _mapper.registerModule(new QueryModule());
       _mapper.registerModule(new RowSegmentModule());
       _mapper.registerModule(new SelectorModule());
-      _mapper.registerModule(new SingleValueActionModule());
+      _mapper.registerModule(new SingleActionModule());
       _mapper.registerModule(new SummaryModule());
       _mapper.registerModule(new WritableDataPointModule());
       _mapper.registerModule(new WriteRequestModule());

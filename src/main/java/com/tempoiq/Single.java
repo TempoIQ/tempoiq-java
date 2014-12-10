@@ -6,45 +6,45 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SingleValue implements QueryAction {
+public class Single implements QueryAction {
   private final Integer limit;
   private final DirectionFunction function;
   private final boolean includeSelection;
   private final DateTime timestamp;
 
-  public SingleValue(DirectionFunction function, DateTime timestamp, int limit, boolean includeSelection) {
+  public Single(DirectionFunction function, DateTime timestamp, int limit, boolean includeSelection) {
     this.function = function;
     this.timestamp = timestamp;
     this.limit = limit;
     this.includeSelection = includeSelection;
   }
 
-  public SingleValue(DirectionFunction function) {
+  public Single(DirectionFunction function) {
     if (function.equals(DirectionFunction.EARLIEST) || function.equals(DirectionFunction.LATEST)) {
       this.function = function;
       this.timestamp = null;
       this.limit = null;
       this.includeSelection = false;
     } else {
-      throw new IllegalArgumentException("Cannot call singleValue without a timestamp except for earliest or latest");
+      throw new IllegalArgumentException("Cannot call single without a timestamp except for earliest or latest");
     }
   }
 
-  public SingleValue(DirectionFunction function, DateTime timestamp) {
+  public Single(DirectionFunction function, DateTime timestamp) {
     this.function = function;
     this.timestamp = timestamp;
     this.limit = null;
     this.includeSelection = false;
   }
 
-  public SingleValue(DirectionFunction function, DateTime timestamp, int limit) {
+  public Single(DirectionFunction function, DateTime timestamp, int limit) {
     this.function = function;
     this.timestamp = timestamp;
     this.limit = limit;
     this.includeSelection = false;
   }
 
-  public SingleValue() {
+  public Single() {
     this.function = DirectionFunction.LATEST;
     this.timestamp = null;
     this.limit = null;

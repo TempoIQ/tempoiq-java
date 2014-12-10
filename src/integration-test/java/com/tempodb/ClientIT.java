@@ -264,7 +264,7 @@ public class ClientIT {
 
     Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
 
-    Cursor<Row> cursor = client.singleValue(sel, new Pipeline(), new SingleValue(DirectionFunction.EARLIEST));
+    Cursor<Row> cursor = client.single(sel, new Pipeline(), new Single(DirectionFunction.EARLIEST));
     assert(cursor.iterator().hasNext());
     for (Row row : cursor) {
       assertEquals(4.0, row.getValue(device.getKey(), "sensor1"));

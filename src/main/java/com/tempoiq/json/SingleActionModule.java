@@ -8,15 +8,15 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
-import com.tempoiq.SingleValue;
+import com.tempoiq.Single;
 
-public class SingleValueActionModule extends SimpleModule {
+public class SingleActionModule extends SimpleModule {
 
-  private static class SingleValueActionDeserializer extends StdScalarSerializer<SingleValue> {
-    public SingleValueActionDeserializer() { super(SingleValue.class); }
+  private static class SingleValueActionDeserializer extends StdScalarSerializer<Single> {
+    public SingleValueActionDeserializer() { super(Single.class); }
 
     @Override
-    public void serialize(SingleValue action, JsonGenerator jgen, SerializerProvider provider)
+    public void serialize(Single action, JsonGenerator jgen, SerializerProvider provider)
       throws IOException, JsonProcessingException {
       jgen.writeStartObject();
       jgen.writeEndObject();

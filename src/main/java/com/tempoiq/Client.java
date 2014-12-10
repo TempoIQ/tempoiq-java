@@ -403,14 +403,14 @@ public class Client {
   }
 
   public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
-    return singleValue(selection, pipeline, new SingleValue());
+    return single(selection, pipeline, new Single());
   }
 
   public DataPointRowCursor latest(Selection selection) {
     return latest(selection, new Pipeline());
   }
 
-  public DataPointRowCursor singleValue(Selection selection, Pipeline pipeline, SingleValue action) {
+  public DataPointRowCursor single(Selection selection, Pipeline pipeline, Single action) {
     checkNotNull(selection);
     String contentType = mediaType("query", "v2");
     String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("datapoint-collection", "v1") };
