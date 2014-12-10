@@ -403,9 +403,16 @@ public class Client {
   }
 
   public DataPointRowCursor latest(Selection selection, Pipeline pipeline) {
+    return singleValue(selection, pipeline, new SingleValue());
+  }
+
+  public DataPointRowCursor latest(Selection selection) {
+    return latest(selection, new Pipeline());
+  }
+
+  public DataPointRowCursor singleValue(Selection selection, Pipeline pipeline, SingleValue action) {
     checkNotNull(selection);
-    checkNotNull(pipeline);
-    String contentType = mediaType("query", "v1");
+    String contentType = mediaType("query", "v2");
     String[] mediaTypes = new String[] { mediaType("error", "v1"), mediaType("datapoint-collection", "v1") };
 
     URI uri = null;
@@ -418,9 +425,9 @@ public class Client {
     }
 
     Query query = new Query(
-      new QuerySearch(Selector.Type.DEVICES, selection),
-      pipeline,
-      new SingleValueAction());
+            new QuerySearch(Selector.Type.DEVICES, selection),
+            pipeline,
+            action);
 
     Result<RowSegment> result = null;
     String body = null;
@@ -432,10 +439,6 @@ public class Client {
       result = new Result<RowSegment>(null, GENERIC_ERROR_CODE, message);
     }
     return new DataPointRowCursor(result, this.runner, uri, contentType, mediaTypes);
-  }
-
-  public DataPointRowCursor latest(Selection selection) {
-    return latest(selection, new Pipeline());
   }
 
   public Result<DeleteSummary> deleteDataPoints(Device device, Sensor sensor, DateTime start, DateTime stop) {

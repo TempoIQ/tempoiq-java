@@ -13,9 +13,7 @@ import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
-
 import com.tempoiq.Fold;
-
 
 public class FoldModule extends SimpleModule {
   public FoldModule() {
