@@ -46,7 +46,6 @@ public class ClientIT {
 
       System.err.print(message);
     }
-    System.out.println("CREDENTIALS PATH: " + credentials.getAbsolutePath());
     client = getClient(credentials);
     invalidClient = new Client(new Credentials("key", "secret"),
                                client.getHost(), client.getScheme());
@@ -81,7 +80,6 @@ public class ClientIT {
       addSelector(Selector.Type.DEVICES, Selector.attributes(DEVICE_PREFIX, DEVICE_PREFIX));
 
     Result<DeleteSummary> result = client.deleteDevices(sel);
-    System.out.println("CLEANUP RESULT: " + result.getMessage());
     assertEquals(State.SUCCESS, result.getState());
   }
 
