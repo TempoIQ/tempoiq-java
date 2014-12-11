@@ -65,7 +65,7 @@ import static com.tempoiq.util.Preconditions.*;
 public class Client {
 
   private Executor runner;
-  private static final String VERSION = "1.1.8";
+  public static final String VERSION = "1.1.8";
   private static final String API_VERSION2 = "v2";
   private static final int GENERIC_ERROR_CODE = 600;
 
