@@ -146,7 +146,6 @@ public class ClientIT {
     }
     Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
     Cursor<Row> rows = client.read(sel, start, stop, 6);
-    System.out.println("ROWS");
     int numRows = 0;
     for(Row r : rows) {
       numRows ++;
@@ -244,7 +243,7 @@ public class ClientIT {
   }
 
   @Test
-  public void testSingle() {
+  public void testEarliest() {
     Device device = createDevice();
 
     Map<String, Number> points = new HashMap<String, Number>();
@@ -269,6 +268,32 @@ public class ClientIT {
     }
   }
 
+  @Test
+  public void testBefore() {
+    Device device = createDevice();
+
+    Map<String, Number> points = new HashMap<String, Number>();
+    points.put("sensor1", 4.0);
+    points.put("sensor2", 2.0);
+    MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 1, 0, 0, 0, timezone), points);
+    MultiDataPoint mp2 = new MultiDataPoint(new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone), points);
+
+    List<MultiDataPoint> allPoints = new ArrayList<MultiDataPoint>();
+    allPoints.add(mp);
+    allPoints.add(mp2);
+
+    Result<Void> result = client.writeDataPoints(device, allPoints);
+    assertEquals(State.SUCCESS, result.getState());
+
+    Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Cursor<Row> cursor = client.single(sel, new Pipeline(),
+            new Single(DirectionFunction.BEFORE, new DateTime(2012, 1, 1, 3, 0, 0, 0, timezone)));
+    assert(cursor.iterator().hasNext());
+    for (Row row : cursor) {
+      assertEquals(4.0, row.getValue(device.getKey(), "sensor1"));
+    }
+  }
   @Test
   public void testDeletePoints() {
     Device device = createDevice();
