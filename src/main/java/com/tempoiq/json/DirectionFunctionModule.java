@@ -58,7 +58,7 @@ public class DirectionFunctionModule extends SimpleModule {
 
     @Override
     public String getModuleName() {
-        return "fold";
+        return "direction-function";
     }
 
     @Override
