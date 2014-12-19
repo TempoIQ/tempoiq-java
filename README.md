@@ -1,13 +1,19 @@
-## TempoIQ Java API Client
+## TempoIQ Java API library
 
-### Usage
+The TempoIQ Java API library makes calls to the [TempoIQ API](https://tempoiq.com/). The module is available on [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.tempoiq%22); simply add the following to the dependencies in your project's pom.xml:
 
-Clone this repository and build with maven:
+```
+<dependency>
+    <groupId>com.tempoiq</groupId>
+    <artifactId>tempoiq-java</artifactId>
+    <version>1.1.7</version>
+</dependency>
+```
 
-    mvn compile
+You can also check out this repository and install from source:
 
-To generate a Jar file:
-
+    git clone https://github.com/TempoIQ/tempoiq-java.git
+    cd tempoiq-java
     mvn package
 
 
