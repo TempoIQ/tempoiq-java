@@ -134,4 +134,28 @@ public class Snippets {
     }
     // snippet-end
   }
+
+  public void testReadRawDataPoints() {
+    // snippet-begin read-data-one-device
+    // import java.util.*;
+    // import com.tempoiq.*;
+    // import org.joda.time.*;
+
+    // Set up the time range to read [2015-01-01, 2015-01-02)
+    DateTime start = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC);
+    DateTime end = new DateTime(2015, 1, 2, 0, 0, 0, 0, DateTimeZone.UTC);
+
+    Device device = new Device("thermostat.0");
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
+
+    Cursor<Row> cursor = client.read(selection, start, end);
+    for(Row row : cursor) {
+      System.out.println(String.format("timestamp %s, temperature: %f, humidity: %f",
+            row.getTimestamp(),
+            row.getValue("thermostat.0", "temperature"),
+            row.getValue("thermostat.0", "humidity")));
+    }
+    // snippet-end
+  }
 }
