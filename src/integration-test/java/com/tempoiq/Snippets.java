@@ -159,6 +159,22 @@ public class Snippets {
     // snippet-end
   }
 
+  public void testGetDevice() {
+    // snippet-begin get-device
+    // import java.util.*;
+    // import com.tempoiq.*;
+    // import org.joda.time.*;
+
+    // get the device with key "thermostat.1"
+    Result<Device> result = client.getDevice("thermostat.1");
+
+    // Check that the request was successful
+    if(result.getState() != State.SUCCESS) {
+      System.out.println(String.format("Error creating device! %s", result.getMessage()));
+    }
+    // snippet-end
+  }
+
   public void testGetDevices() {
     // snippet-begin get-devices
     // import java.util.*;
