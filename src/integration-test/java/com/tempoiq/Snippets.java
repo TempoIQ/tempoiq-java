@@ -312,4 +312,14 @@ public class Snippets {
     }
     // snippet-end
   }
+
+  public void testSearch() {
+    // snippet-begin search
+    // import com.tempoiq.*;
+
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.attributes("building", "headquarters"))
+      .addSelector(Selector.Type.SENSORS, Selector.key("temperature"));
+    // snippet-end
+  }
 }
