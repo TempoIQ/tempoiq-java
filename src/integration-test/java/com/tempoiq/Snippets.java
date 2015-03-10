@@ -245,6 +245,7 @@ public class Snippets {
   public void testSinglePoint() {
     // snippet-begin single-point
     // import com.tempoiq.*;
+    // import org.joda.time.*;
 
     // select the sensor "temperature" in the device "thermostat.1"
     Selection selection = new Selection()
@@ -260,6 +261,27 @@ public class Snippets {
       System.out.format("ts: %s value: %f",
           row.getTimestamp(),
           row.getValue("thermostat.1", "temperature")).println();
+    }
+    // snippet-end
+  }
+
+  public void testDeleteDatapoints() {
+    // snippet-begin delete-data
+    // import com.tempoiq.*;
+    // import org.joda.time.*;
+    DateTime start = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC);
+    DateTime end = new DateTime(2015, 1, 1, 1, 0, 0, 0, DateTimeZone.UTC);
+
+    // delete datapoints for sensor "humidity" in device "thermostat.1"
+    // in the range [2015-01-01T00:00:00Z, 2015-01-01T01:00:00Z)
+    Device device = new Device("thermostat.1");
+    Sensor sensor = new Sensor("humidity");
+    Result<DeleteSummary> result = client.deleteDataPoints(device, sensor, start, end);
+
+    if(result.getState() == State.SUCCESS) {
+      System.out.format("Deleted %d datapoints", result.getValue().getDeleted()).println();
+    } else {
+      System.out.format("Error deleting datapoints! %s", result.getMessage()).println();
     }
     // snippet-end
   }
