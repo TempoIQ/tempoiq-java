@@ -158,4 +158,30 @@ public class Snippets {
     }
     // snippet-end
   }
+
+  public void testGetDevices() {
+    // snippet-begin get-devices
+    // import java.util.*;
+    // imoprt com.tempoiq.*;
+    // import org.joda.time.*;
+
+    // create selection for all devices with attribute region in "south" or "east"
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES,
+          Selector.or(
+            Selector.attributes("region", "south"),
+            Selector.attributes("region", "east")
+          )
+      );
+
+    Cursor<Device> cursor = client.listDevices(selection);
+
+    for(Device device : cursor) {
+      System.out.println(String.format("device: %s", device.getKey()));
+      for(Sensor sensor : device.getSensors()) {
+        System.out.println(String.format("\tsensor: %s", sensor.getKey()));
+      }
+    }
+    // snippet-end
+  }
 }
