@@ -99,7 +99,7 @@ public class Snippets {
 
     // Check that the request was successful
     if(result.getState() != State.SUCCESS) {
-      System.out.println(String.format("Error creating device! %s", result.getMessage()));
+      System.out.format("Error creating device! %s", result.getMessage()).println();
     }
     // snippet-end
   }
@@ -130,7 +130,7 @@ public class Snippets {
 
     // Check that the request was successful
     if(result.getState() != State.SUCCESS) {
-      System.out.println(String.format("Error writing data! %s", result.getMessage()));
+      System.out.format("Error writing data! %s", result.getMessage()).println();
     }
     // snippet-end
   }
@@ -151,35 +151,31 @@ public class Snippets {
 
     Cursor<Row> cursor = client.read(selection, start, end);
     for(Row row : cursor) {
-      System.out.println(String.format("timestamp %s, temperature: %f, humidity: %f",
+      System.out.format("timestamp %s, temperature: %f, humidity: %f",
             row.getTimestamp(),
             row.getValue("thermostat.0", "temperature"),
-            row.getValue("thermostat.0", "humidity")));
+            row.getValue("thermostat.0", "humidity")).println();
     }
     // snippet-end
   }
 
   public void testGetDevice() {
     // snippet-begin get-device
-    // import java.util.*;
     // import com.tempoiq.*;
-    // import org.joda.time.*;
 
     // get the device with key "thermostat.1"
     Result<Device> result = client.getDevice("thermostat.1");
 
     // Check that the request was successful
     if(result.getState() != State.SUCCESS) {
-      System.out.println(String.format("Error creating device! %s", result.getMessage()));
+      System.out.format("Error getting device! %s", result.getMessage()).println();
     }
     // snippet-end
   }
 
   public void testGetDevices() {
     // snippet-begin get-devices
-    // import java.util.*;
     // imoprt com.tempoiq.*;
-    // import org.joda.time.*;
 
     // create selection for all devices with attribute region in "south" or "east"
     Selection selection = new Selection()
@@ -193,10 +189,53 @@ public class Snippets {
     Cursor<Device> cursor = client.listDevices(selection);
 
     for(Device device : cursor) {
-      System.out.println(String.format("device: %s", device.getKey()));
+      System.out.format("device: %s", device.getKey()).println();
       for(Sensor sensor : device.getSensors()) {
-        System.out.println(String.format("\tsensor: %s", sensor.getKey()));
+        System.out.format("\tsensor: %s", sensor.getKey()).println();
       }
+    }
+    // snippet-end
+  }
+
+  public void testUpdateDevice() {
+    // snippet-begin update-device
+    // import com.tempoiq.*;
+
+    Result<Device> result = client.getDevice("thermostat.4");
+
+    // Check that the request was successful
+    if(result.getState() != State.SUCCESS) {
+      System.out.format("Error getting device! %s", result.getMessage()).println();
+    }
+
+    // mutate the device
+    Device device = result.getValue();
+    device.getAttributes().put("customer", "internal-test");
+    device.getAttributes().put("region", "east");
+
+    // update in TempoIQ
+    result = client.updateDevice(device);
+
+    if(result.getState() != State.SUCCESS) {
+      System.out.format("Error updating device! %s", result.getMessage()).println();
+    }
+    // snippet-end
+  }
+
+  public void testDeleteDevices() {
+    Device create = new Device("thermostat.5");
+    Result<Device> create_result = client.createDevice(create);
+
+    // snippet-begin delete-devices
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.key("thermostat.5"));
+
+    Result<DeleteSummary> result = client.deleteDevices(selection);
+
+    if(result.getState() == State.SUCCESS) {
+      System.out.format("Deleted %d devices.", result.getValue().getDeleted()).println();
+    } else {
+      System.out.format("Error deleting devices! %s", result.getMessage()).println();
     }
     // snippet-end
   }
