@@ -285,4 +285,31 @@ public class Snippets {
     }
     // snippet-end
   }
+
+  public void testPipeline() {
+    // snippet-begin pipeline
+    // import com.tempoiq.*;
+    // import org.joda.time.*;
+
+    // Set up the time range to read [2015-01-01, 2015-01-02)
+    DateTime start = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeZone.UTC);
+    DateTime end = new DateTime(2015, 1, 2, 0, 0, 0, 0, DateTimeZone.UTC);
+
+    // select device with key "thermostat.0"
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.key("thermostat.0"));
+
+    // create a pipeline that calculates the hourly max
+    Pipeline pipeline = new Pipeline().rollup(Period.hours(1), Fold.MAX, start);
+
+    Cursor<Row> cursor = client.read(selection, pipeline, start, end);
+
+    for(Row row : cursor) {
+      System.out.format("timestamp %s, temperature: %f, humidity: %f",
+            row.getTimestamp(),
+            row.getValue("thermostat.0", "temperature"),
+            row.getValue("thermostat.0", "humidity")).println();
+    }
+    // snippet-end
+  }
 }
