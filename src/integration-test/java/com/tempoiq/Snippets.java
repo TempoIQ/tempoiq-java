@@ -227,6 +227,8 @@ public class Snippets {
     Result<Device> create_result = client.createDevice(create);
 
     // snippet-begin delete-devices
+    // import com.tempoiq.*;
+
     Selection selection = new Selection()
       .addSelector(Selector.Type.DEVICES, Selector.key("thermostat.5"));
 
@@ -236,6 +238,28 @@ public class Snippets {
       System.out.format("Deleted %d devices.", result.getValue().getDeleted()).println();
     } else {
       System.out.format("Error deleting devices! %s", result.getMessage()).println();
+    }
+    // snippet-end
+  }
+
+  public void testSinglePoint() {
+    // snippet-begin single-point
+    // import com.tempoiq.*;
+
+    // select the sensor "temperature" in the device "thermostat.1"
+    Selection selection = new Selection()
+      .addSelector(Selector.Type.DEVICES, Selector.key("thermostat.1"))
+      .addSelector(Selector.Type.SENSORS, Selector.key("temperature"));
+
+    // get the first point before 2015-01-10T00:00:00.000Z
+    DateTime time = new DateTime(2015, 1, 10, 0, 0, 0, 0, DateTimeZone.UTC);
+    Single single = new Single(DirectionFunction.BEFORE, time);
+
+    Cursor<Row> cursor = client.single(selection, new Pipeline(), single);
+    for(Row row : cursor) {
+      System.out.format("ts: %s value: %f",
+          row.getTimestamp(),
+          row.getValue("thermostat.1", "temperature")).println();
     }
     // snippet-end
   }
