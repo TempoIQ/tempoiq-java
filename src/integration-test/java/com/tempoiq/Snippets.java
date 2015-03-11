@@ -104,6 +104,7 @@ public class Snippets {
       System.out.format("Error creating device! %s", result.getMessage()).println();
     }
     // snippet-end
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @Test
@@ -136,6 +137,7 @@ public class Snippets {
       System.out.format("Error writing data! %s", result.getMessage()).println();
     }
     // snippet-end
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @Test
@@ -176,6 +178,7 @@ public class Snippets {
       System.out.format("Error getting device! %s", result.getMessage()).println();
     }
     // snippet-end
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @Test
@@ -227,6 +230,7 @@ public class Snippets {
       System.out.format("Error updating device! %s", result.getMessage()).println();
     }
     // snippet-end
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @Test
@@ -248,6 +252,7 @@ public class Snippets {
       System.out.format("Error deleting devices! %s", result.getMessage()).println();
     }
     // snippet-end
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @Test
@@ -294,6 +299,7 @@ public class Snippets {
       System.out.format("Error deleting datapoints! %s", result.getMessage()).println();
     }
     // snippet-end
+    assertEquals(State.SUCCESS, result.getState());
   }
 
   @Test
