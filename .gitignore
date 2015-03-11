@@ -1,5 +1,6 @@
 /target
 integration-credentials.properties
+snippet-credentials.properties
 /.settings
 .classpath
 .project

@@ -14,6 +14,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import static com.tempoiq.util.Preconditions.*;
 
@@ -28,10 +30,10 @@ public class Snippets {
   private static final Interval interval = new Interval(start, end);
 
   static {
-    File credentials = new File("integration-credentials.properties");
+    File credentials = new File("snippet-credentials.properties");
     if(!credentials.exists()) {
-      String message = "Missing credentials file for integration test.\n" +
-        "Please supply a file 'integration-credentials.properties' with the following format:\n" +
+      String message = "Missing credentials file for snippets.\n" +
+        "Please supply a file 'snippets-credentials.properties' with the following format:\n" +
         "  credentials.key=<key>\n" +
         "  credentials.secret=<secret>\n" +
         "  hostname=<hostname>\n" +
@@ -45,8 +47,7 @@ public class Snippets {
                                client.getHost(), client.getScheme());
   }
 
-  static Client getcClient() {
-
+  static Client getClient() {
     // snippet-begin create-client
     // import com.tempoiq.*;
 
@@ -75,6 +76,7 @@ public class Snippets {
     return new Client(credentials, host, scheme);
   }
 
+  @Test
   public void testCreateDevice() {
     // snippet-begin create-device
     // import java.util.*;
@@ -104,6 +106,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testWriteDataPoints() {
     // snippet-begin write-data
     // import java.util.*;
@@ -135,6 +138,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testReadRawDataPoints() {
     // snippet-begin read-data-one-device
     // import java.util.*;
@@ -159,6 +163,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testGetDevice() {
     // snippet-begin get-device
     // import com.tempoiq.*;
@@ -173,6 +178,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testGetDevices() {
     // snippet-begin get-devices
     // imoprt com.tempoiq.*;
@@ -197,6 +203,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testUpdateDevice() {
     // snippet-begin update-device
     // import com.tempoiq.*;
@@ -222,6 +229,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testDeleteDevices() {
     Device create = new Device("thermostat.5");
     Result<Device> create_result = client.createDevice(create);
@@ -242,6 +250,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testSinglePoint() {
     // snippet-begin single-point
     // import com.tempoiq.*;
@@ -265,6 +274,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testDeleteDatapoints() {
     // snippet-begin delete-data
     // import com.tempoiq.*;
@@ -286,6 +296,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testPipeline() {
     // snippet-begin pipeline
     // import com.tempoiq.*;
@@ -313,6 +324,7 @@ public class Snippets {
     // snippet-end
   }
 
+  @Test
   public void testSearch() {
     // snippet-begin search
     // import com.tempoiq.*;
