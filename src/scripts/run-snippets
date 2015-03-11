@@ -1,0 +1,62 @@
+#!/bin/bash
+
+DIR=$( cd "$( dirname "$0" )" && pwd )
+BASE_DIR=${DIR%%/}/../../
+INSTALL_DIR=${BASE_DIR%%/}/src/integration-test/resources/example-data/
+INSTALL_SCRIPT=${INSTALL_DIR}initialize.py
+usage="Usage: $(basename "$0") -k <api-key> -s <api-secret> -n <hostname>
+
+Options:
+  -k        api key
+  -s        api secret
+  -n        backend hostname (with scheme)
+  -h        print this help message"
+
+while getopts ":hk:n:s:" opt; do
+  case $opt in
+    k) key="$OPTARG"
+       ;;
+    s) secret="$OPTARG"
+       ;;
+    n) host="$OPTARG"
+       ;;
+    h) echo "$usage"
+       exit
+       ;;
+    :) echo "missing argument for -$OPTARG"
+       echo "$usage" >&2
+       exit 1
+       ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+        echo "$usage" >&2
+        exit 1
+    ;;
+  esac
+done
+
+
+shift $(($OPTIND - 1))
+
+if [ -z ${key+x} ]
+then
+    echo "-k must be used to supply api key" >&2
+    echo "$usage"
+    exit 1
+fi
+
+if [ -z ${secret+x} ]
+then
+    echo "-s must be used to supply api secret" >&2
+    echo "$usage"
+    exit 1
+fi
+
+if [ -z ${host+x} ]
+then
+    echo "-n must be used to supply backend hostname" >&2
+    echo "$usage"
+    exit 1
+fi
+
+cd $INSTALL_DIR && python $INSTALL_SCRIPT -k $key -s $secret -n $host
+cd $BASE_DIR && mvn verify -Psnippets
