@@ -58,5 +58,8 @@ then
     exit 1
 fi
 
+echo "Loading example data"
 cd $INSTALL_DIR && python $INSTALL_SCRIPT -k $key -s $secret -n $host
+
+echo "Running snippets tests"
 cd $BASE_DIR && mvn verify -Psnippets
