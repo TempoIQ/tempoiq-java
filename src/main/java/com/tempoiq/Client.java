@@ -259,7 +259,7 @@ public class Client {
     return runner.delete(uri, body, contentType, mediaTypes);
   }
 
-  public Result<Void> writeDataPoints(Device device, MultiDataPoint data) {
+  public Result<UpsertResponse> writeDataPoints(Device device, MultiDataPoint data) {
     checkNotNull(device);
     checkNotNull(data);
 
@@ -271,7 +271,7 @@ public class Client {
     return writeDataPoints(wr);
   }
 
-  public Result<Void> writeDataPoints(Device device, List<MultiDataPoint> data) {
+  public Result<UpsertResponse> writeDataPoints(Device device, List<MultiDataPoint> data) {
     checkNotNull(device);
     checkNotNull(data);
     WriteRequest wr = new WriteRequest();
@@ -287,17 +287,17 @@ public class Client {
    *  Writes datapoints to multiple Devices and Sensor.
    *
    *  <p>This request can partially succeed. You should check the {@link Result#getState()} to check if the request was
-   *  successful. If the request was partially successful, the result's {@link MultiStatus} can be inspected to determine
+   *  successful. If the request was partially successful, the result's {@link UpsertResponse} can be inspected to determine
    *  what failed.
    *
    *  @param request A WriteRequest for the DataPoints to write.
    *  @return {@link Void}
    *
    *  @see MultiDataPoint
-   *  @see MultiStatus
+   *  @see UpsertResponse
    *  @since 1.0.0
    */
-  public Result<Void> writeDataPoints(WriteRequest request) {
+  public Result<UpsertResponse> writeDataPoints(WriteRequest request) {
     checkNotNull(request);
     String contentType = mediaType("write-request", "v1");
     String[] mediaTypes = new String[] { mediaType("error", "v1") };
@@ -311,17 +311,17 @@ public class Client {
       throw new IllegalArgumentException(message, e);
     }
 
-    Result<Void> result = null;
+    Result<UpsertResponse> result = null;
     String body = null;
     try {
       body = Json.dumps(request.asMap());
     } catch (JsonProcessingException e) {
       String message = "Error serializing the body of the request. More detail: " + e.getMessage();
-      result = new Result<Void>(null, GENERIC_ERROR_CODE, message);
+      result = new Result<UpsertResponse>(null, GENERIC_ERROR_CODE, message);
       return result;
     }
 
-    return runner.post(uri, body, Void.class, contentType, mediaTypes);
+    return runner.post(uri, body, UpsertResponse.class, contentType, mediaTypes);
   }
 
   public DeviceCursor listDevices(Selection selection) {

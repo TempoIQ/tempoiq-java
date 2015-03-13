@@ -33,6 +33,9 @@ public class Json {
       _mapper.registerModule(new WritableDataPointModule());
       _mapper.registerModule(new WriteRequestModule());
       _mapper.registerModule(new DirectionFunctionModule());
+      //_mapper.registerModule(new DeviceStatusModule()); 
+      _mapper.registerModule(new DeviceStateModule()); 
+      _mapper.registerModule(new UpsertResponseModule()); 
       _mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
       _mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       mapper = _mapper;

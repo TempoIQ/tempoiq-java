@@ -35,7 +35,7 @@ public class Result<T> {
   private final T value;
   private final int code;
   private final String message;
-  private final MultiStatus multistatus;
+  private final UpsertResponse multistatus;
 
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
@@ -51,7 +51,7 @@ public class Result<T> {
    *  @param multistatus Provides information about partially successful result
    *  @since 1.0.0
    */
-  public Result(T value, int code, String message, MultiStatus multistatus) {
+  public Result(T value, int code, String message, UpsertResponse multistatus) {
     this.value = value;
     this.code = code;
     this.message = message;
@@ -70,7 +70,7 @@ public class Result<T> {
     T value = null;
     int code = response.getStatusLine().getStatusCode();
     String message = response.getStatusLine().getReasonPhrase();
-    MultiStatus multistatus = null;
+    UpsertResponse multistatus = null;
 
     try {
       switch(getState(code)) {
@@ -78,7 +78,7 @@ public class Result<T> {
           value = newInstanceFromResponse(response, klass);
           break;
         case PARTIAL_SUCCESS:
-          multistatus = Json.loads(EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET), MultiStatus.class);
+          multistatus = UpsertResponse.make(response); 
           break;
         case FAILURE:
           message = messageFromResponse(response);
@@ -118,10 +118,10 @@ public class Result<T> {
 
   /**
    *  Returns the MultiStatus of the Result.
-   *  @return Result MultiStatus. Null if Result state is not PARTIAL_SUCCESS.
+   *  @return Result UpsertResponse.  null if the request did not result in upserted data 
    *  @since 1.0.0
    */
-  public MultiStatus getMultiStatus() { return multistatus; }
+  public UpsertResponse getUpsertResponse() { return multistatus; }
 
   /**
    *  Returns the State of the Result.
