@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.apache.http.HttpResponse;
 import org.junit.*;
 import static org.junit.Assert.*;
+import com.tempoiq.json.Json;
 
 
 public class ResultTest {
@@ -64,12 +65,12 @@ public class ResultTest {
 
   @Test
   public void testPartialFailure() throws IOException {
-    String json = "{\"multistatus\":[{\"status\":403,\"messages\":[\"Forbidden\"]}]}";
+    String json = "{\"device-1\": {\"device_state\": \"modified\", \"message\": null, \"success\": true}}";
+    UpsertResponse resp = Json.loads(json, UpsertResponse.class);
     HttpResponse response = Util.getResponse(207, json);
-    Result<Void> result = new Result<Void>(response, Void.class);
+    Result<UpsertResponse> result = new Result<UpsertResponse>(response, UpsertResponse.class);
 
-    MultiStatus multistatus = new MultiStatus(Arrays.asList(new Status(403, Arrays.asList("Forbidden"))));
-    Result<Void> expected = new Result<Void>(null, 207, "Multi-Status", multistatus);
+    Result<UpsertResponse> expected = new Result<UpsertResponse>(null, 207, "Multi-Status", resp); 
     assertEquals(expected, result);
     assertTrue(result.getState() == State.PARTIAL_SUCCESS);
   }
