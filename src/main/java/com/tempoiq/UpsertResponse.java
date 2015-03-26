@@ -36,10 +36,7 @@ public class UpsertResponse {
         failures += 1;
       }
     }
-    if (failures < entries.size()) {
-      return true;
-    }
-    return false;
+    return failures < entries.size();
   }
 
   private HashMap<String, DeviceStatus> filterByState(DeviceStatus.DeviceState state) {
