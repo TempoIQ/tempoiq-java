@@ -74,6 +74,9 @@ public class UpsertResponse {
   public static UpsertResponse make(HttpResponse response) throws java.io.IOException {
     HttpEntity entity = response.getEntity();
     String responseString = EntityUtils.toString(entity, "UTF-8");
+    if (responseString.isEmpty()) {
+      responseString = "{}";
+    }
     UpsertResponse data = Json.loads(responseString, UpsertResponse.class);
     return data; 
   }

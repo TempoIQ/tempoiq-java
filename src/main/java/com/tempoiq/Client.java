@@ -291,7 +291,7 @@ public class Client {
    *  what failed.
    *
    *  @param request A WriteRequest for the DataPoints to write.
-   *  @return {@link Void}
+   *  @return {@link UpsertResponse}
    *
    *  @see MultiDataPoint
    *  @see UpsertResponse
