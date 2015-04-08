@@ -2,6 +2,7 @@ package com.tempoiq;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.junit.*;
@@ -73,5 +74,17 @@ public class ResultTest {
     Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 207, "Multi-Status"); 
     assertEquals(expected, result);
     assertTrue(result.getState() == State.PARTIAL_SUCCESS);
+  }
+
+  @Test
+  public void testUpsertNoBody() throws IOException {
+    String json = "";
+    HttpResponse response = Util.getResponse(200, json);
+    UpsertResponse resp = new UpsertResponse(new HashMap<String, DeviceStatus>());
+    Result<UpsertResponse> result = new Result<UpsertResponse>(response, UpsertResponse.class);
+
+    Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 200, "OK");
+    assertEquals(expected, result);
+    assertTrue(result.getState() == State.SUCCESS);
   }
 }
