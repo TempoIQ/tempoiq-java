@@ -86,14 +86,14 @@ public class WriteDataPointsTest {
   }
 
   @Test
-  public void testMultiStatus() throws IOException {
+  public void testUpsertResponse() throws IOException {
     UpsertResponse resp = Json.loads(multistatus_json, UpsertResponse.class);
     HttpResponse response = Util.getResponse(207, multistatus_json);
     Client client = Util.getClient(response);
 
     Result<UpsertResponse> result = client.writeDataPoints(wr);
 
-    Result<UpsertResponse> expected = new Result<UpsertResponse>(null, 207, "Multi-Status", resp);
+    Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 207, "Multi-Status");
     assertEquals(expected, result);
   }
 }
