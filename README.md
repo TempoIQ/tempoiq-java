@@ -6,7 +6,7 @@ The TempoIQ Java API library makes calls to the [TempoIQ API](https://tempoiq.co
 <dependency>
     <groupId>com.tempoiq</groupId>
     <artifactId>tempoiq-java</artifactId>
-    <version>1.1.7</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
