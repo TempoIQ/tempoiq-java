@@ -12,10 +12,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 import com.tempoiq.json.Json;
 
-public class UpsertResponse {
+public class WriteResponse {
   private HashMap<String, DeviceStatus> statuses;
 
-  public UpsertResponse(HashMap<String, DeviceStatus> response) {
+  public WriteResponse(HashMap<String, DeviceStatus> response) {
     this.statuses = response;
   }
 
@@ -71,13 +71,13 @@ public class UpsertResponse {
     return results;
   }
   
-  public static UpsertResponse make(HttpResponse response) throws java.io.IOException {
+  public static WriteResponse make(HttpResponse response) throws java.io.IOException {
     HttpEntity entity = response.getEntity();
     String responseString = EntityUtils.toString(entity, "UTF-8");
     if (responseString.isEmpty()) {
       responseString = "{}";
     }
-    UpsertResponse data = Json.loads(responseString, UpsertResponse.class);
+    WriteResponse data = Json.loads(responseString, WriteResponse.class);
     return data; 
   }
 
@@ -92,9 +92,9 @@ public class UpsertResponse {
   public boolean equals(Object obj) {
     if(obj == null) return false;
     if(obj == this) return true;
-    if(!(obj instanceof UpsertResponse)) return false;
+    if(!(obj instanceof WriteResponse)) return false;
 
-    UpsertResponse rhs = (UpsertResponse)obj;
+    WriteResponse rhs = (WriteResponse)obj;
     return new EqualsBuilder()
       .append(statuses, rhs.statuses)
       .isEquals();

@@ -67,11 +67,11 @@ public class ResultTest {
   @Test
   public void testPartialFailure() throws IOException {
     String json = "{\"device-1\": {\"device_state\": \"modified\", \"message\": null, \"success\": true}}";
-    UpsertResponse resp = Json.loads(json, UpsertResponse.class);
+    WriteResponse resp = Json.loads(json, WriteResponse.class);
     HttpResponse response = Util.getResponse(207, json);
-    Result<UpsertResponse> result = new Result<UpsertResponse>(response, UpsertResponse.class);
+    Result<WriteResponse> result = new Result<WriteResponse>(response, WriteResponse.class);
 
-    Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 207, "Multi-Status"); 
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 207, "Multi-Status"); 
     assertEquals(expected, result);
     assertTrue(result.getState() == State.PARTIAL_SUCCESS);
   }
@@ -80,10 +80,10 @@ public class ResultTest {
   public void testUpsertNoBody() throws IOException {
     String json = "";
     HttpResponse response = Util.getResponse(200, json);
-    UpsertResponse resp = new UpsertResponse(new HashMap<String, DeviceStatus>());
-    Result<UpsertResponse> result = new Result<UpsertResponse>(response, UpsertResponse.class);
+    WriteResponse resp = new WriteResponse(new HashMap<String, DeviceStatus>());
+    Result<WriteResponse> result = new Result<WriteResponse>(response, WriteResponse.class);
 
-    Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 200, "OK");
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 200, "OK");
     assertEquals(expected, result);
     assertTrue(result.getState() == State.SUCCESS);
   }

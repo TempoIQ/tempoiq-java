@@ -16,21 +16,21 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import com.tempoiq.DeviceStatus;
-import com.tempoiq.UpsertResponse;
+import com.tempoiq.WriteResponse;
 
-public class UpsertResponseModule extends SimpleModule {
-  public UpsertResponseModule() {
-    addDeserializer(UpsertResponse.class, new UpsertResponseDeserializer());
+public class WriteResponseModule extends SimpleModule {
+  public WriteResponseModule() {
+    addDeserializer(WriteResponse.class, new WriteResponseDeserializer());
   }
 
-  private static class UpsertResponseDeserializer extends StdScalarDeserializer<UpsertResponse> {
+  private static class WriteResponseDeserializer extends StdScalarDeserializer<WriteResponse> {
 
-    public UpsertResponseDeserializer() {
-      super(UpsertResponse.class);
+    public WriteResponseDeserializer() {
+      super(WriteResponse.class);
     }
 
     @Override
-    public UpsertResponse deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public WriteResponse deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
       JsonNode node = jp.readValueAsTree(); 
       Iterator<String> fields = node.fieldNames();
       HashMap<String, DeviceStatus> statuses = new HashMap<String, DeviceStatus>();
@@ -39,7 +39,7 @@ public class UpsertResponseModule extends SimpleModule {
         DeviceStatus status = Json.getObjectMapper().treeToValue(node.get(key), DeviceStatus.class);
         statuses.put(key, status);
       }
-      return new UpsertResponse(statuses);
+      return new WriteResponse(statuses);
     }
   }
 
