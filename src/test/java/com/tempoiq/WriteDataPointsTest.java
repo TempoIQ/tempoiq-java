@@ -37,12 +37,12 @@ public class WriteDataPointsTest {
 
   @Test
   public void smokeTest() throws IOException {
-    UpsertResponse resp = Json.loads(multistatus_json, UpsertResponse.class);
+    WriteResponse resp = Json.loads(multistatus_json, WriteResponse.class);
     HttpResponse response = Util.getResponse(200, multistatus_json);
     Client client = Util.getClient(response);
-    Result<UpsertResponse> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
     
-    Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 200, "OK");
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 200, "OK");
     assertEquals(expected, result);
     assertEquals("OK", result.getMessage());
   }
@@ -53,7 +53,7 @@ public class WriteDataPointsTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<UpsertResponse> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
     HttpRequest request = Util.captureRequest(mockClient);
     assertEquals("POST", request.getRequestLine().getMethod());
@@ -65,7 +65,7 @@ public class WriteDataPointsTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<UpsertResponse> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
     HttpRequest request = Util.captureRequest(mockClient);
     URI uri = new URI(request.getRequestLine().getUri());
@@ -78,7 +78,7 @@ public class WriteDataPointsTest {
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<UpsertResponse> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
     ArgumentCaptor<HttpPost> argument = ArgumentCaptor.forClass(HttpPost.class);
     verify(mockClient).execute(any(HttpHost.class), argument.capture(), any(HttpContext.class));
@@ -86,14 +86,14 @@ public class WriteDataPointsTest {
   }
 
   @Test
-  public void testUpsertResponse() throws IOException {
-    UpsertResponse resp = Json.loads(multistatus_json, UpsertResponse.class);
+  public void testWriteResponse() throws IOException {
+    WriteResponse resp = Json.loads(multistatus_json, WriteResponse.class);
     HttpResponse response = Util.getResponse(207, multistatus_json);
     Client client = Util.getClient(response);
 
-    Result<UpsertResponse> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
-    Result<UpsertResponse> expected = new Result<UpsertResponse>(resp, 207, "Multi-Status");
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 207, "Multi-Status");
     assertEquals(expected, result);
   }
 }

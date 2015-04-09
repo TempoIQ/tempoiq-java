@@ -126,7 +126,7 @@ public class ClientIT {
     points.put("sensor1", 1.23);
     points.put("sensor2", 1.67);
     MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, 1, 1, 0, 0, 0, 0, timezone), points);
-    Result<UpsertResponse> result = client.writeDataPoints(device, mp);
+    Result<WriteResponse> result = client.writeDataPoints(device, mp);
     assertEquals(State.SUCCESS, result.getState());
   }
 
@@ -141,7 +141,7 @@ public class ClientIT {
       points.put("sensor1", i+0.1);
       points.put("sensor2", i+10.1);
       MultiDataPoint mp = new MultiDataPoint(new DateTime(2012, i, 1, 1, 0, 0, 0, timezone), points);
-      Result<UpsertResponse> result = client.writeDataPoints(device, mp);
+      Result<WriteResponse> result = client.writeDataPoints(device, mp);
       assertEquals(State.SUCCESS, result.getState());
     }
     Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
@@ -169,7 +169,7 @@ public class ClientIT {
     allPoints.add(mp);
     allPoints.add(mp2);
 
-    Result<UpsertResponse> result = client.writeDataPoints(device, allPoints);
+    Result<WriteResponse> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
     Selection sel = new Selection().
@@ -201,7 +201,7 @@ public class ClientIT {
     }
 
     for(MultiDataPoint mp : mps) {
-      Result<UpsertResponse> result = client.writeDataPoints(device, mp);
+      Result<WriteResponse> result = client.writeDataPoints(device, mp);
       assertEquals(State.SUCCESS, result.getState());
     }
 
@@ -230,7 +230,7 @@ public class ClientIT {
     allPoints.add(mp);
     allPoints.add(mp2);
 
-    Result<UpsertResponse> result = client.writeDataPoints(device, allPoints);
+    Result<WriteResponse> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
     Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
@@ -256,7 +256,7 @@ public class ClientIT {
     allPoints.add(mp);
     allPoints.add(mp2);
 
-    Result<UpsertResponse> result = client.writeDataPoints(device, allPoints);
+    Result<WriteResponse> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
     Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
@@ -282,7 +282,7 @@ public class ClientIT {
     allPoints.add(mp);
     allPoints.add(mp2);
 
-    Result<UpsertResponse> result = client.writeDataPoints(device, allPoints);
+    Result<WriteResponse> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
     Selection sel = new Selection().addSelector(Selector.Type.DEVICES, Selector.key(device.getKey()));
@@ -322,7 +322,7 @@ public class ClientIT {
     allPoints.add(mp2);
     allPoints.add(mp3);
 
-    Result<UpsertResponse> result = client.writeDataPoints(device, allPoints);
+    Result<WriteResponse> result = client.writeDataPoints(device, allPoints);
     assertEquals(State.SUCCESS, result.getState());
 
     DateTime start = new DateTime(2012, 1, 1, 2, 0, 0, 0, timezone);
