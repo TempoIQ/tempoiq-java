@@ -21,8 +21,7 @@ public enum State {
   SUCCESS,
 
   /** Request partially succeeded.
-   *  Check the MultiStatus for more information.
-   *  @see MultiStatus
+   *  Check the response type for more information.
    *  @since 1.0.0
    */
   PARTIAL_SUCCESS

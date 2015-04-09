@@ -2,10 +2,12 @@ package com.tempoiq;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
 import org.junit.*;
 import static org.junit.Assert.*;
+import com.tempoiq.json.Json;
 
 
 public class ResultTest {
@@ -39,7 +41,7 @@ public class ResultTest {
   public void testSuccessfulRequest() throws IOException {
     HttpResponse response = Util.getResponse(200, "");
     Result<Void> result = new Result<Void>(response, Void.class);
-    Result<Void> expected = new Result<Void>(null, 200, "OK", null);
+    Result<Void> expected = new Result<Void>(null, 200, "OK");
     assertEquals(expected, result);
     assertTrue(result.getState() == State.SUCCESS);
   }
@@ -48,7 +50,7 @@ public class ResultTest {
   public void testFailedRequest_Body() throws IOException {
     HttpResponse response = Util.getResponse(403, "You are forbidden");
     Result<Void> result = new Result<Void>(response, Void.class);
-    Result<Void> expected = new Result<Void>(null, 403, "You are forbidden", null);
+    Result<Void> expected = new Result<Void>(null, 403, "You are forbidden");
     assertEquals(expected, result);
     assertTrue(result.getState() == State.FAILURE);
   }
@@ -57,20 +59,32 @@ public class ResultTest {
   public void testFailedRequest_NoBody() throws IOException {
     HttpResponse response = Util.getResponse(403, "");
     Result<Void> result = new Result<Void>(response, Void.class);
-    Result<Void> expected = new Result<Void>(null, 403, "Forbidden", null);
+    Result<Void> expected = new Result<Void>(null, 403, "Forbidden");
     assertEquals(expected, result);
     assertTrue(result.getState() == State.FAILURE);
   }
 
   @Test
   public void testPartialFailure() throws IOException {
-    String json = "{\"multistatus\":[{\"status\":403,\"messages\":[\"Forbidden\"]}]}";
+    String json = "{\"device-1\": {\"device_state\": \"modified\", \"message\": null, \"success\": true}}";
+    WriteResponse resp = Json.loads(json, WriteResponse.class);
     HttpResponse response = Util.getResponse(207, json);
-    Result<Void> result = new Result<Void>(response, Void.class);
+    Result<WriteResponse> result = new Result<WriteResponse>(response, WriteResponse.class);
 
-    MultiStatus multistatus = new MultiStatus(Arrays.asList(new Status(403, Arrays.asList("Forbidden"))));
-    Result<Void> expected = new Result<Void>(null, 207, "Multi-Status", multistatus);
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 207, "Multi-Status"); 
     assertEquals(expected, result);
     assertTrue(result.getState() == State.PARTIAL_SUCCESS);
+  }
+
+  @Test
+  public void testUpsertNoBody() throws IOException {
+    String json = "";
+    HttpResponse response = Util.getResponse(200, json);
+    WriteResponse resp = new WriteResponse(new HashMap<String, DeviceStatus>());
+    Result<WriteResponse> result = new Result<WriteResponse>(response, WriteResponse.class);
+
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 200, "OK");
+    assertEquals(expected, result);
+    assertTrue(result.getState() == State.SUCCESS);
   }
 }

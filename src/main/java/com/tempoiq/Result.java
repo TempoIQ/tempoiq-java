@@ -10,7 +10,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import com.tempoiq.DeleteSummary;
-import com.tempoiq.MultiStatus;
 import com.tempoiq.json.Json;
 
 
@@ -24,10 +23,6 @@ import com.tempoiq.json.Json;
  *  <p>In the event of a failure, the value is set to null. The code and message will provide more
  *  information about the failure.
  *
- *  <p>In some cases, a request can partially succeed. This is indicated with state PARTIAL_SUCCESS.
- *  If a partial success occurs, the {@link MultiStatus} (member of Result) will be populated with
- *  more information about which request failed.
- *
  *  @since 1.0.0
  */
 public class Result<T> {
@@ -35,27 +30,19 @@ public class Result<T> {
   private final T value;
   private final int code;
   private final String message;
-  private final MultiStatus multistatus;
 
   private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-
-  public Result(T value, int code, String message) {
-    this(value, code, message, null);
-  }
-
+  
   /**
-   *  Used mainly for testing.
    *  @param value The returned value.
    *  @param code The status code of the entire result.
    *  @param message Message providing information about the state of the result.
-   *  @param multistatus Provides information about partially successful result
-   *  @since 1.0.0
    */
-  public Result(T value, int code, String message, MultiStatus multistatus) {
+
+  public Result(T value, int code, String message) {
     this.value = value;
     this.code = code;
     this.message = message;
-    this.multistatus = multistatus;
   }
 
   /**
@@ -70,15 +57,12 @@ public class Result<T> {
     T value = null;
     int code = response.getStatusLine().getStatusCode();
     String message = response.getStatusLine().getReasonPhrase();
-    MultiStatus multistatus = null;
 
     try {
       switch(getState(code)) {
         case SUCCESS:
-          value = newInstanceFromResponse(response, klass);
-          break;
         case PARTIAL_SUCCESS:
-          multistatus = Json.loads(EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET), MultiStatus.class);
+          value = newInstanceFromResponse(response, klass);
           break;
         case FAILURE:
           message = messageFromResponse(response);
@@ -92,7 +76,6 @@ public class Result<T> {
     this.value = value;
     this.code = code;
     this.message = message;
-    this.multistatus = multistatus;
   }
 
   /**
@@ -115,13 +98,6 @@ public class Result<T> {
    *  @since 1.0.0
    */
   public String getMessage() { return message; }
-
-  /**
-   *  Returns the MultiStatus of the Result.
-   *  @return Result MultiStatus. Null if Result state is not PARTIAL_SUCCESS.
-   *  @since 1.0.0
-   */
-  public MultiStatus getMultiStatus() { return multistatus; }
 
   /**
    *  Returns the State of the Result.
@@ -170,7 +146,7 @@ public class Result<T> {
 
   @Override
   public String toString() {
-    return String.format("Result(value=%s, code=%s, message=\"%s\", multistatus=%s)", value, code, message, multistatus);
+    return String.format("Result(value=%s, code=%s, message=\"%s\")", value, code, message);
   }
 
   @Override
@@ -179,7 +155,6 @@ public class Result<T> {
       .append(value)
       .append(code)
       .append(message)
-      .append(multistatus)
       .toHashCode();
   }
 
@@ -194,7 +169,6 @@ public class Result<T> {
       .append(value, rhs.value)
       .append(code, rhs.code)
       .append(message, rhs.message)
-      .append(multistatus, rhs.multistatus)
       .isEquals();
   }
 }

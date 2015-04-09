@@ -5,3 +5,6 @@ integration-credentials.properties
 .project
 .idea/
 *.iml
+*.swo
+*.swp
+*.swn

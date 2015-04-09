@@ -19,13 +19,15 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import org.mockito.ArgumentCaptor;
 
+import com.tempoiq.json.Json;
+
 
 public class WriteDataPointsTest {
 
   private static final String json = "{" +
     "\"key1\":{\"key1\":[{\"t\":\"2012-03-27T05:00:00.000Z\",\"v\":12.34}]}" +
     "}";
-  private static final String multistatus_json = "{\"multistatus\":[{\"status\":403,\"messages\":[\"Forbidden\"]}]}";
+  private static final String multistatus_json = "{\"device-1\": {\"device_state\": \"modified\", \"message\": null, \"success\": true}}";
 
   private static final DateTimeZone timezone = DateTimeZone.UTC;
   private static final WriteRequest wr = new WriteRequest()
@@ -35,22 +37,23 @@ public class WriteDataPointsTest {
 
   @Test
   public void smokeTest() throws IOException {
-    HttpResponse response = Util.getResponse(200, "");
+    WriteResponse resp = Json.loads(multistatus_json, WriteResponse.class);
+    HttpResponse response = Util.getResponse(200, multistatus_json);
     Client client = Util.getClient(response);
-    Result<Void> result = client.writeDataPoints(wr);
-
-    Result<Void> expected = new Result<Void>(null, 200, "OK");
+    Result<WriteResponse> result = client.writeDataPoints(wr);
+    
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 200, "OK");
     assertEquals(expected, result);
     assertEquals("OK", result.getMessage());
   }
 
   @Test
   public void testMethod() throws IOException {
-    HttpResponse response = Util.getResponse(200, "");
+    HttpResponse response = Util.getResponse(200, multistatus_json);
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Void> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
     HttpRequest request = Util.captureRequest(mockClient);
     assertEquals("POST", request.getRequestLine().getMethod());
@@ -58,11 +61,11 @@ public class WriteDataPointsTest {
 
   @Test
   public void testUri() throws IOException, URISyntaxException {
-    HttpResponse response = Util.getResponse(200, "");
+    HttpResponse response = Util.getResponse(200, multistatus_json);
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Void> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
     HttpRequest request = Util.captureRequest(mockClient);
     URI uri = new URI(request.getRequestLine().getUri());
@@ -71,11 +74,11 @@ public class WriteDataPointsTest {
 
   @Test
   public void testBody() throws IOException {
-    HttpResponse response = Util.getResponse(200, "");
+    HttpResponse response = Util.getResponse(200, multistatus_json);
     HttpClient mockClient = Util.getMockHttpClient(response);
     Client client = Util.getClient(mockClient);
 
-    Result<Void> result = client.writeDataPoints(wr);
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
     ArgumentCaptor<HttpPost> argument = ArgumentCaptor.forClass(HttpPost.class);
     verify(mockClient).execute(any(HttpHost.class), argument.capture(), any(HttpContext.class));
@@ -83,14 +86,14 @@ public class WriteDataPointsTest {
   }
 
   @Test
-  public void testMultiStatus() throws IOException {
+  public void testWriteResponse() throws IOException {
+    WriteResponse resp = Json.loads(multistatus_json, WriteResponse.class);
     HttpResponse response = Util.getResponse(207, multistatus_json);
     Client client = Util.getClient(response);
 
-    Result<Void> result = client.writeDataPoints(wr);
-    MultiStatus multistatus = new MultiStatus(Arrays.asList(new Status(403, Arrays.asList("Forbidden"))));
+    Result<WriteResponse> result = client.writeDataPoints(wr);
 
-    Result<Void> expected = new Result<Void>(null, 207, "Multi-Status", multistatus);
+    Result<WriteResponse> expected = new Result<WriteResponse>(resp, 207, "Multi-Status");
     assertEquals(expected, result);
   }
 }
