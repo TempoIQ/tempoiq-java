@@ -236,7 +236,7 @@ public class Snippets {
   @Test
   public void testDeleteDevices() {
     Device create = new Device("thermostat.5");
-    Result<Device> create_result = client.createDevice(create);
+    Result<Device> createdResult = client.createDevice(create);
 
     // snippet-begin delete-devices
     // import com.tempoiq.*;
