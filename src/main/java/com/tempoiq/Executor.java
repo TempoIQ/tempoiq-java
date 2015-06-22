@@ -107,22 +107,19 @@ public class Executor {
   }
 
   <T> Result<T> execute(HttpRequest request, Class<T> klass) {
-    Result<T> result = null;
     try {
       HttpResponse response = executeRequest(request);
-      result = new Result<T>(response, klass);
+      return new Result<T>(response, klass);
     } catch (IOException e) {
-      result = new Result<T>(null, GENERIC_ERROR_CODE, e.getMessage());
+      return new Result<T>(null, GENERIC_ERROR_CODE, e.getMessage());
     }
-    return result;
   }
 
   HttpResponse executeRequest(HttpRequest request) throws IOException {
     HttpClient client = getHttpClient();
     HttpContext context = getContext();
     HttpHost target = getTarget();
-    HttpResponse response = client.execute(target, request, context);
-    return response;
+    return client.execute(target, request, context);
   }
 
   HttpRequest buildRequest(URI uri, HttpMethod method, String body, String contentType, String[] mediaTypes) {
