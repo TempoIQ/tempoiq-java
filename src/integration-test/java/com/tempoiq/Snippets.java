@@ -130,7 +130,7 @@ public class Snippets {
 
     // Store datapoints in TempoIQ
     Device device = new Device("thermostat.0");
-    Result<Void> result = client.writeDataPoints(device, Arrays.asList(mp1, mp2));
+    Result<WriteResponse> result = client.writeDataPoints(device, Arrays.asList(mp1, mp2));
 
     // Check that the request was successful
     if(result.getState() != State.SUCCESS) {
