@@ -19,7 +19,12 @@ public class RollupTest {
   @Test
   public void testSerialize() throws IOException {
     Rollup rollup = new Rollup(Period.minutes(1), Fold.SUM, start);
-    String expected = "{\"name\":\"rollup\",\"arguments\":[\"sum\",\"PT1M\",\"2012-01-01T00:00:00.000Z\"]}";
-    assertEquals(expected, Json.dumps(rollup));
+    String expected1 = "{\"name\":\"rollup\",\"arguments\":[\"sum\",\"PT1M\",\"2012-01-01T00:00:00.000Z\"]}";
+    String expected2 = "{\"arguments\":[\"sum\",\"PT1M\",\"2012-01-01T00:00:00.000Z\",\"name\":\"rollup\",}";
+    try {
+      assertEquals(expected1, Json.dumps(rollup));
+    } catch (Exception e) {
+      assertEquals(expected2, Json.dumps(rollup));
+    }
   }
 }
