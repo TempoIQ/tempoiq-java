@@ -23,7 +23,7 @@ public class RollupTest {
     String expected2 = "{\"arguments\":[\"sum\",\"PT1M\",\"2012-01-01T00:00:00.000Z\",\"name\":\"rollup\",}";
     try {
       assertEquals(expected1, Json.dumps(rollup));
-    } catch (Exception e) {
+    } catch (Throwable e) {
       assertEquals(expected2, Json.dumps(rollup));
     }
   }
